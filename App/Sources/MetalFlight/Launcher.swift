@@ -66,6 +66,8 @@ struct Launcher {
     }
 
     func startSteam() throws {
+        // Steam's CEF also needs the native D3D11 pair selected by its profile.
+        try applyPatches()
         _ = try wine.start(Paths.steam.appendingPathComponent("steam.exe").path, profile.steamArguments,
                            environment: steamEnvironment, directory: Paths.steam, log: log("steam.log"))
     }

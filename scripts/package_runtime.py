@@ -20,6 +20,15 @@ import argparse, hashlib, json, os, shutil, subprocess, sys, time
 KEEP_BIN = {'wine', 'wineserver', 'wine-preloader', 'wine64-preloader'}
 
 
+def validate_winemetal(root):
+    """The profile loads this PE as a Wine builtin, including its Unix bridge."""
+    for relative in ('lib/wine/x86_64-windows/winemetal.dll',
+                     'share/metalflight/system32/winemetal.dll'):
+        path = root / relative
+        if path.read_bytes()[64:81] != b'Wine builtin DLL\0':
+            raise ValueError(f'{relative}: missing Wine builtin marker; build the winemetal postprocess target')
+
+
 def sha(path):
     h = hashlib.sha256()
     with open(path, 'rb') as f:
@@ -64,6 +73,7 @@ def main():
     shutil.copy2(a.profile, share / 'profile.json')
     if a.source_lock:
         shutil.copy2(a.source_lock, share / 'sources.lock.json')
+    validate_winemetal(root)
 
     if a.strip_debug:
         for p in (root / 'lib/wine/x86_64-unix').glob('*.so'): subprocess.run(['strip', '-S', str(p)], check=True)
@@ -72,6 +82,7 @@ def main():
                 if p.suffix in ('.dll', '.exe', '.drv', '.sys', '.ocx', '.acm', '.ax', '.cpl', '.tlb', '.ds', '.com'):
                     subprocess.run(['x86_64-w64-mingw32-strip' if arch.startswith('x86_64') else 'i686-w64-mingw32-strip', '--strip-debug', str(p)],
                                    check=False, capture_output=True)
+    validate_winemetal(root)
 
     files = {str(p.relative_to(root)): sha(p) for p in sorted(root.rglob('*')) if p.is_file() and not p.is_symlink()}
     (share / 'inventory.json').write_text(json.dumps(dict(version=a.version, created_unix=int(time.time()), files=files), indent=2) + '\n')

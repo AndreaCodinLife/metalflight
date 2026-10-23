@@ -6,3 +6,5 @@ App/.swiftpm/
 runtime/work/
 runtime/downloads/
 *.tar.xz
+__pycache__/
+*.py[cod]

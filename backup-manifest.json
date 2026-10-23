@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory; v0.1.0 code with corrected tested-hardware documentation; excludes this manifest",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.1 Steam sign-in fix; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-wine",
-      "commit": "26637bdfdc22c9b85ad5bbfc9be500f5276f335e"
+      "commit": "77b788cdbbe83c5ea8c3f78e17412e49e3492176"
     },
     "mullion": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
-      "commit": "335c4c3056af18cce6c34ada07e01afe552a4a66"
+      "commit": "83dbd2e84f1f5e8a8961259e6cc299cd2c607a34"
     }
   },
   "files": {
     ".gitignore": {
-      "sha256": "ac3ec4db372d83dfbe8049cba7a8caf32be956ef0a703188251526e55f80fba0",
-      "size": 91,
+      "sha256": "c7cfb60aa8e377c876aa89e25eea72fd82594ecaf62ff8665eaeff0e27352992",
+      "size": 114,
       "group": "distribution"
     },
     "App/Package.resolved": {
@@ -39,8 +39,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/ContentView.swift": {
-      "sha256": "80f2d9b02540c2f28f8901dad48cced3f9e9343657f54da36516769ff4581dfa",
-      "size": 5175,
+      "sha256": "63b45428d5559dd9b2a644a07a436d58266f88a926d6ae89c15b821eb24823e2",
+      "size": 5199,
       "group": "app"
     },
     "App/Sources/MetalFlight/GPTK.swift": {
@@ -49,13 +49,13 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Headless.swift": {
-      "sha256": "2217e90dfc717aaa9bc96f0aed96ca4b080e62990192d68197201ecb5db7f2c2",
-      "size": 3813,
+      "sha256": "d91d36ec0c32206433c405667b78a478365cf6b87bafbf05434cc3a11b748aef",
+      "size": 3920,
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "dbef8f5ec931ffc7c1fad87b9e69b5632875f08b2afdaf22ebe86b5ddd4c3fcc",
-      "size": 5279,
+      "sha256": "66335c39e23ca2a62f928acf29104887766f4930af0212ebf9cfb4e9cc05d133",
+      "size": 5387,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "9b1495c49fe7f9ee9c91ea535ee75ecaa0e485709aa11f04113108b6477c1338",
-      "size": 4909,
+      "sha256": "b40455461c2685efb78a5378014945cee3ca3676c928c05c0a7b23681046b50e",
+      "size": 5217,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "2a7ffb658007cd67106d3d992e3648080431643ce8363373a0f15cb2f1c9213f",
-      "size": 6275,
+      "sha256": "1b75af1ead70ce2c2b92f38718d12ab3f9c585d425d2827a498249c6ad7e2754",
+      "size": 7076,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -309,12 +309,12 @@
       "group": "runtime-build"
     },
     "runtime/profile.json": {
-      "sha256": "958803d9dab86106eee1e4ad0f8130dabf86ea4438f3a5b123c391fae901064e",
-      "size": 3710,
+      "sha256": "168b723f37818be57360e922a6a9588486b2931e5a913066fe6bc2cbc1422d46",
+      "size": 3855,
       "group": "runtime-build"
     },
     "runtime/sources.lock.json": {
-      "sha256": "be7411249ecba9e5dfe98a5a994692c3c5de4c76d1a4e1934c8874ce25b3c72f",
+      "sha256": "f88b1b4e995baee6f4739006dc1422896ca5b0de2ea35e7826b40b6fa915fab7",
       "size": 318,
       "group": "runtime-build"
     },
@@ -329,17 +329,27 @@
       "group": "distribution"
     },
     "scripts/package_runtime.py": {
-      "sha256": "6e0f214a76a54cfd595834ffc321f2d4595255a30d98b0106ae8bcba24a074bf",
-      "size": 5346,
+      "sha256": "cdf05b445d659069e98af83014555120e6c4afbc7432ea1fa9d4711fd5672054",
+      "size": 5852,
       "group": "distribution"
+    },
+    "probes/steam_launch_options.c": {
+      "group": "distribution",
+      "sha256": "862da316d4c2eb05f59ac46b4827e63635c17ed0e99f72545953ef462a0089ff",
+      "size": 2212
+    },
+    "runtime/test_steam_options.py": {
+      "group": "runtime-build",
+      "sha256": "7de093d40ab67c057fb8204b4f5bd3812ac498e274d1a3c8731c891afc829b99",
+      "size": 3412
     }
   },
   "groups": {
     "app": 19,
-    "distribution": 8,
+    "distribution": 9,
     "helper": 30,
     "licence": 2,
-    "runtime-build": 5
+    "runtime-build": 6
   },
   "private_prefixes_included": false
 }

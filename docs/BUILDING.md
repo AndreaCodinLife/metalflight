@@ -12,7 +12,7 @@ The CPU helper needs llvm-mingw 20260908 (UCRT, clang 23.1.1) to reproduce the q
 
 ```sh
 git clone https://github.com/AndreaCodinLife/metalflight-wine runtime/work/metalflight-wine
-git -C runtime/work/metalflight-wine checkout runtime-2026.10.23-dev3
+git -C runtime/work/metalflight-wine checkout runtime-2026.10.23-dev4
 python3 runtime/fetch_sources.py        # pinned archives, SHA-256 verified
 ```
 
@@ -40,8 +40,25 @@ x86_64-w64-mingw32-gcc -O2 probes/steam_session.c -o out/steam_session.exe
 ```
 
 Mullion builds from metalflight-mullion. The Steam readiness probe builds from `probes/steam_session.c`.
-Clone Mullion with `--recurse-submodules` and check out `runtime-2026.10.23-dev3` to reproduce
+Clone Mullion with `--recurse-submodules` and check out `runtime-2026.10.23-dev4` to reproduce
 this runtime's source revision. Its `METALFLIGHT.md` documents the renderer build.
+
+For subsequent builds, the renderer's `winemetal.dll.postproc` Ninja target must
+run before staging `winemetal.dll`. The corrected renderer build script and
+runtime packager check its Wine builtin marker; a bridge without that marker
+cannot load under the profile's `winemetal=b` setting.
+
+The Steam rendering configuration uses
+`MSFS24_WINE_STEAM_IN_PROCESS_GPU=1` in the patched Wine source. Validate a
+candidate Wine runtime with authored executables in a new private prefix:
+
+```sh
+python3 runtime/test_steam_options.py --runtime /path/to/candidate-runtime \
+    --compiler /path/to/x86_64-w64-mingw32-gcc --work /path/to/new-owned-check
+```
+
+This checks option gating, Unicode arguments, duplicate prevention and child
+processes. It does not launch Steam or establish account or game readiness.
 
 ## 5. Package and publish
 
@@ -76,7 +93,7 @@ updates have independent release assets. Sparkle follows its upstream
 For an ad-hoc signed, non-notarized preview DMG:
 
 ```sh
-scripts/package_app.sh 0.1.0
+scripts/package_app.sh 0.1.1
 ```
 
 Copy `MetalFlight.app` from the DMG to Applications. This DMG is not notarized.
@@ -104,7 +121,7 @@ Do not commit a private key. Install a **Developer ID Application** certificate 
 
 ```sh
 export METALFLIGHT_UPDATE_PUBLIC_KEY='<public key printed by generate_keys>'
-scripts/package_app.sh 0.1.0 'Developer ID Application: …' '<notary-profile>'
+scripts/package_app.sh 0.1.1 'Developer ID Application: …' '<notary-profile>'
 App/.build/artifacts/sparkle/Sparkle/bin/generate_appcast \
   --account metalflight-release-updates \
   --download-url-prefix 'https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.0/' dist

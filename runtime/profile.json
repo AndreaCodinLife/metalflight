@@ -66,16 +66,19 @@
     "WINEPATH": "C:\\Program Files (x86)\\Steam;C:\\windows\\system32;C:\\windows;C:\\windows\\system32\\wbem;C:\\windows\\system32\\WindowsPowerShell\\v1.0"
   },
   "steamArguments": [
-    "-cef-disable-gpu",
-    "-cef-disable-gpu-compositing",
+    "-cef-force-gpu",
+    "-no-cef-sandbox",
+    "-cef-disable-renderer-restart",
     "-tcp"
   ],
   "steamDebug": "-all",
   "steamSettings": {
     "WINEMSYNC": "0",
     "ROSETTA_ADVERTISE_AVX": "1",
-    "MSFS24_WINE_SOFT_DEBUG": "1",
-    "MSFS24_WINE_PAGE_DEBUG": "1",
+    "MSFS24_WINE_SOFT_DEBUG": "0",
+    "MSFS24_WINE_PAGE_DEBUG": "0",
+    "MSFS24_WINE_STEAM_IN_PROCESS_GPU": "1",
+    "WINEDLLOVERRIDES": "d3d11,dxgi,d3d10core=n;winemetal=b;mscoree,mshtml=",
     "MSFS24_WINE_SELECTIVE_FREEZE": "0",
     "MSFS24_WINE_EAGER_STACK_GUARDS": "0",
     "MSFS24_WINE_FIBER_STACK_GUARDS": "0",

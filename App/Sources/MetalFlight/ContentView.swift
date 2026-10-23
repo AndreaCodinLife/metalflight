@@ -56,7 +56,7 @@ struct ContentView: View {
                 StepRow(number: 5, title: "Steam", detail: "Installs Valve's Steam client. Sign in, then install Microsoft Flight Simulator 2024 (your own copy).",
                         done: model.steamInstalled && model.gameInstalled) {
                     if !model.steamInstalled { Button("Install Steam") { model.installSteam() }.disabled(!model.prefixReady) }
-                    else { Button("Open Steam") { model.openSteam() } }
+                    else { Button("Open Steam") { model.openSteam() }.disabled(model.playing) }
                 }
                 StepRow(number: 6, title: "Play", detail: model.playing ? "Microsoft Flight Simulator 2024 is running." : "Starts Steam if needed, then the simulator with MetalFlight's patches.",
                         done: false) {

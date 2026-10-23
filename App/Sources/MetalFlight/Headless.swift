@@ -1,7 +1,7 @@
 import Foundation
 
 /// `MetalFlight --headless <command>`: the app's own code paths without the window (tests, CI).
-///   status | check-runtime | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam
+///   status | check-runtime | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam | start-steam
 ///   run PROGRAM [ARGS...]   (in the prefix, with the game's environment and DLL overrides)
 enum Headless {
     static func run(_ arguments: [String]) -> Int32 {
@@ -52,6 +52,8 @@ enum Headless {
             try launcher().applyPatches(); print("patches: applied")
         case "install-steam":
             try await launcher().installSteam(); print("steam: installed")
+        case "start-steam":
+            try launcher().startSteam(); print("steam: started")
         case "run":
             guard arguments.count > 1 else { throw MetalFlightError.message("run needs a program") }
             let l = try launcher()

@@ -5,19 +5,20 @@ on Apple Silicon Macs, through a Wine runtime built from source with patches for
 
 > **Experimental preview.** The source-built research runtime completed a flight on an
 > **Apple M1 Pro with 32 GB of unified memory** (the maintainer's Mac).
-> This app's fresh environment has passed runtime installation, Steam installation and media
-> checks; game sign-in and flight through this app are not yet qualified. Long flights,
-> repeated-launch reliability and other Mac models are unverified.
+> Steam's readable sign-in window, successful sign-in and saved login after restarting through
+> the launcher are user-confirmed on that Mac. Game sign-in and flight through this app
+> are not yet qualified. Long flights, repeated-launch reliability and other Mac models remain
+> unverified.
 
 ## Download
 
-Download [MetalFlight-0.1.0.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.0/MetalFlight-0.1.0.dmg),
+Download [MetalFlight-0.1.1.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.1/MetalFlight-0.1.1.dmg),
 open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
 The runtime downloads separately; Steam and the game are installed using your own account.
 
-This first preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
+This preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
 launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
-choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.0)
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1)
 describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
@@ -46,7 +47,10 @@ to say which game the app runs.
    Apple signed it.
 4. Creates a private Windows environment (Wine prefix) in
    `~/Library/Application Support/MetalFlight`.
-5. Installs Valve's Steam client. You sign in and install the game as on Windows.
+5. Installs Valve's Steam client. Its interface uses a separate DirectX 11 configuration;
+   you sign in and install the game as on Windows. Steam remembers the login when enabled.
+   Version 0.1.1 fixes the missing graphics bridge and keeps Steam's browser rendering
+   in one process, while leaving the simulator's DirectX 12 configuration separate.
 6. **Play** starts Steam if needed and waits until the Steam SDK reports you are signed in and own
    the game. It then starts the simulator with MetalFlight's patches.
 
@@ -61,7 +65,7 @@ to say which game the app runs.
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
 Corresponding dependency source archives are attached to the release. Wine and Mullion are
-pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev3` in their repositories.
+pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev4` in their repositories.
 
 ## Building
 
