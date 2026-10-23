@@ -20,6 +20,7 @@ Corresponding source:
 | PCRE2 | 10.42 | BSD-3-Clause |
 | proxy-libintl | 0.4 | LGPL-2.1-or-later |
 | SDL2 | 2.30.11 | zlib |
+| Sparkle (bundled in the app, not the Wine runtime) | 2.10.0 | MIT; full notice in the app's Resources/Sparkle-LICENSE |
 
 Not distributed:
 - **Apple's `libd3dshared.dylib`** (Game Porting Toolkit). Each user downloads the toolkit from Apple

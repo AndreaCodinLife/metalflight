@@ -27,7 +27,9 @@ enum Paths {
 
     static func ensure() throws {
         for dir in [support, runtimes, gptk, downloads, logs] {
-            try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+            try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true,
+                                                    attributes: [.posixPermissions: 0o700])
+            try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: dir.path)
         }
     }
 

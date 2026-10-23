@@ -14,7 +14,7 @@ to say which game the app runs.
 ## Requirements
 
 - An Apple Silicon Mac. The Mullion renderer targets M3-generation and later GPUs.
-- macOS 14 or later, with Rosetta 2 (macOS offers to install it).
+- macOS 15 or later, with Rosetta 2 (the shipped renderer requires macOS 15).
 - About 20 GB free for MetalFlight, plus the game itself.
 - A free Apple Account, to download Apple's **Game Porting Toolkit** from developer.apple.com. It is
   only used to get Apple's `libd3dshared.dylib`; MetalFlight never redistributes it.
@@ -25,6 +25,7 @@ to say which game the app runs.
 1. Checks your Mac.
 2. Downloads the MetalFlight runtime from this repository's releases and verifies its SHA-256.
    Updates install side by side, and one click rolls back to the previous runtime.
+   Application updates use Sparkle, with a separate “Check for Application Updates…” menu item.
 3. Imports `libd3dshared.dylib` from the Game Porting Toolkit you downloaded, after checking that
    Apple signed it.
 4. Creates a private Windows environment (Wine prefix) in

@@ -20,8 +20,13 @@ final class AppModel {
 
     func refresh() {
         system = SystemCheck.run()
+        refreshInstallation()
+    }
+
+    func refreshInstallation() {
         installedRuntime = Updater.installedVersion()
         gptkInstalled = GPTK.installed
+        prefixReady = false; steamInstalled = false; gameInstalled = false
         if let runtime = Paths.resolvedRuntime(), let launcher = try? Launcher(runtime: runtime) {
             prefixReady = launcher.prefixReady
             steamInstalled = launcher.steamInstalled
@@ -56,16 +61,24 @@ final class AppModel {
     }
 
     func installRuntime() {
+        guard !playing else { return }
         perform("Installing runtime…") {
             let manifest = try await Updater.fetchManifest()
-            try await Updater.install(manifest.runtime) { message in Task { @MainActor in self.note(message) } }
+            try await Updater.install(manifest.runtime, progress: { message in Task { @MainActor in self.note(message) } },
+                                      beforeActivation: {
+                if let current = try? self.launcher() { await current.wine.stopAll() }
+            })
             self.availableRuntime = manifest.runtime.version
             if (try self.launcher()).prefixReady { try await self.launcher().preparePrefix() }
         }
     }
 
     func rollbackRuntime() {
-        perform("Rolling back the runtime…") { try Updater.rollback(); try await self.launcher().preparePrefix() }
+        guard !playing else { return }
+        perform("Rolling back the runtime…") {
+            if let current = try? self.launcher() { await current.wine.stopAll() }
+            try Updater.rollback(); try await self.launcher().preparePrefix()
+        }
     }
 
     func importGPTK(from url: URL? = nil) {
@@ -86,7 +99,10 @@ final class AppModel {
         if panel.runModal() == .OK, let url = panel.url { importGPTK(from: url) }
     }
 
-    func preparePrefix() { perform("Creating the Windows environment…") { try await self.launcher().preparePrefix() } }
+    func preparePrefix() {
+        guard !playing else { return }
+        perform("Creating the Windows environment…") { try await self.launcher().preparePrefix() }
+    }
 
     func installSteam() {
         perform("Installing Steam…") {

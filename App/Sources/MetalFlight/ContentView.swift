@@ -38,9 +38,9 @@ struct ContentView: View {
                 StepRow(number: 2, title: "Runtime",
                         detail: "Installed: \(model.installedRuntime ?? "none")" + (model.availableRuntime.map { " · Latest: \($0)" } ?? ""),
                         done: model.installedRuntime != nil && (model.availableRuntime == nil || model.availableRuntime == model.installedRuntime)) {
-                    Button(model.installedRuntime == nil ? "Install" : "Update") { model.installRuntime() }
+                    Button(model.installedRuntime == nil ? "Install" : "Update") { model.installRuntime() }.disabled(model.playing)
                     Button("Check") { model.checkForUpdates() }
-                    if model.installedRuntime != nil { Button("Roll back") { model.rollbackRuntime() } }
+                    if model.installedRuntime != nil { Button("Roll back") { model.rollbackRuntime() }.disabled(model.playing) }
                 }
                 StepRow(number: 3, title: "Apple Game Porting Toolkit",
                         detail: "Download the Game Porting Toolkit from developer.apple.com (free Apple Account, Apple's licence) and open its disk image. MetalFlight copies only libd3dshared.dylib, after checking Apple's signature.",
@@ -50,7 +50,7 @@ struct ContentView: View {
                     Button("Choose file…") { model.chooseGPTK() }
                 }
                 StepRow(number: 4, title: "Windows environment", detail: "A private Wine prefix inside MetalFlight's folder.", done: model.prefixReady) {
-                    Button(model.prefixReady ? "Repair" : "Create") { model.preparePrefix() }.disabled(model.installedRuntime == nil)
+                    Button(model.prefixReady ? "Repair" : "Create") { model.preparePrefix() }.disabled(model.installedRuntime == nil || model.playing)
                 }
                 StepRow(number: 5, title: "Steam", detail: "Installs Valve's Steam client. Sign in, then install Microsoft Flight Simulator 2024 (your own copy).",
                         done: model.steamInstalled && model.gameInstalled) {
@@ -82,5 +82,8 @@ struct ContentView: View {
         }
         .frame(minWidth: 640, minHeight: 620)
         .onAppear { model.refresh() }
+        .onReceive(Timer.publish(every: 5, on: .main, in: .common).autoconnect()) { _ in
+            model.refreshInstallation()
+        }
     }
 }

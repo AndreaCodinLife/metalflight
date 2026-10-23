@@ -16,7 +16,7 @@ struct SystemCheck {
         check.appleSilicon = sysctlbyname("hw.optional.arm64", &arm, &size, nil, 0) == 0 && arm == 1
         let version = ProcessInfo.processInfo.operatingSystemVersion
         check.macOSVersion = "\(version.majorVersion).\(version.minorVersion)"
-        check.macOSSupported = version.majorVersion >= 14
+        check.macOSSupported = version.majorVersion >= 15
         // Rosetta is present when an x86_64 slice of a system binary runs.
         check.rosetta = (try? Shell.capture("/usr/bin/arch", ["-x86_64", "/usr/bin/true"]).0) == 0
         if let values = try? Paths.support.deletingLastPathComponent()

@@ -12,6 +12,7 @@ enum Entry {
 
 struct MetalFlightApp: App {
     @State private var model = AppModel()
+    @StateObject private var updates = AppUpdates()
 
     var body: some Scene {
         WindowGroup("MetalFlight") {
@@ -21,6 +22,10 @@ struct MetalFlightApp: App {
         .windowResizability(.contentSize)
         .commands {
             CommandGroup(replacing: .newItem) {}
+            CommandGroup(after: .appInfo) {
+                Button("Check for Application Updates…") { updates.check() }
+                    .disabled(!updates.canCheck || model.playing || model.busy != nil)
+            }
         }
     }
 }

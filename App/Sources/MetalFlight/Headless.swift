@@ -1,7 +1,7 @@
 import Foundation
 
 /// `MetalFlight --headless <command>`: the app's own code paths without the window (tests, CI).
-///   status | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches
+///   status | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam
 ///   run PROGRAM [ARGS...]   (in the prefix, with the game's environment and DLL overrides)
 enum Headless {
     static func run(_ arguments: [String]) -> Int32 {
@@ -31,8 +31,11 @@ enum Headless {
             if let l = try? launcher() { print("prefix: \(l.prefixReady)  steam: \(l.steamInstalled)  game: \(l.gameInstalled)") }
         case "install-runtime":
             let manifest = try await Updater.fetchManifest()
-            try await Updater.install(manifest.runtime) { print($0) }
+            try await Updater.install(manifest.runtime, progress: { print($0) }, beforeActivation: {
+                if let runtime = Paths.resolvedRuntime() { await Wine(runtime: runtime).stopAll() }
+            })
         case "rollback":
+            if let runtime = Paths.resolvedRuntime() { await Wine(runtime: runtime).stopAll() }
             try Updater.rollback(); print("runtime: \(Updater.installedVersion() ?? "none")")
         case "import-gptk":
             guard let source = arguments.count > 1 ? URL(fileURLWithPath: arguments[1]) : GPTK.findSource() else {
@@ -43,6 +46,8 @@ enum Headless {
             try await launcher().preparePrefix(); print("prefix: ready")
         case "apply-patches":
             try launcher().applyPatches(); print("patches: applied")
+        case "install-steam":
+            try await launcher().installSteam(); print("steam: installed")
         case "run":
             guard arguments.count > 1 else { throw MetalFlightError.message("run needs a program") }
             let l = try launcher()

@@ -1,6 +1,6 @@
 # Building MetalFlight
 
-Everything builds on an Apple Silicon Mac (macOS 14+) with Xcode, Rosetta and Homebrew. The runtime
+Everything builds on an Apple Silicon Mac (macOS 15+) with Xcode, Rosetta and Homebrew. The runtime
 is x86_64 and runs under Rosetta. The app is arm64.
 
 Homebrew packages: `mingw-w64` (GCC 16.2 cross compilers, used for every PE module),
@@ -52,3 +52,58 @@ scripts/bundle_app.sh <app-version> "Developer ID Application: …"
 
 Upload `metalflight-runtime-<version>.tar.xz` and `metalflight-manifest.json` to the release.
 The app reads `releases/latest/download/metalflight-manifest.json`.
+
+## 6. Application installer and application updates
+
+The Swift package pins Sparkle 2.10.0 in `App/Package.resolved`. Runtime updates and application
+updates have independent release assets. Sparkle follows its upstream
+[SwiftUI integration](https://sparkle-project.org/documentation/programmatic-setup/) and
+[signing/distribution procedure](https://sparkle-project.org/documentation/).
+
+For a local, ad-hoc signed DMG (application updates disabled):
+
+```sh
+scripts/package_app.sh 0.1.0
+```
+
+Copy `MetalFlight.app` from the DMG to Applications. This development DMG is not notarized and
+is not the public release. The default runtime download requires the GitHub release to exist.
+Tests can override `METALFLIGHT_SUPPORT_DIR` and `METALFLIGHT_MANIFEST_URL` with a temporary
+directory and a local HTTP server; use a new prefix, never the research default.
+
+Before the first public release, generate the Sparkle signing key once:
+
+```sh
+swift package --package-path App resolve
+App/.build/artifacts/sparkle/Sparkle/bin/generate_keys
+```
+
+The private key stays in the login Keychain. Save the public key in the release configuration as
+`METALFLIGHT_UPDATE_PUBLIC_KEY`; retain a private backup of the signing key using Sparkle's tools.
+Do not commit a private key. Install a **Developer ID Application** certificate and configure a
+`notarytool` Keychain profile through your Apple Developer account, then build:
+
+```sh
+export METALFLIGHT_UPDATE_PUBLIC_KEY='<public key printed by generate_keys>'
+scripts/package_app.sh 0.1.0 'Developer ID Application: …' '<notary-profile>'
+App/.build/artifacts/sparkle/Sparkle/bin/generate_appcast \
+  --download-url-prefix 'https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.0/' dist
+```
+
+The packaging script signs nested Sparkle services, notarizes and staples the app, builds the DMG,
+then signs, notarizes and staples the DMG. `generate_appcast` signs the update with the Keychain
+key. Publish the DMG and `appcast.xml` alongside the runtime archive and manifest in the same
+GitHub Release. Keep prior update archives when generating later feeds. Publish the corresponding
+Wine/Mullion source tags and dependency archives with each runtime, and record their commits.
+
+Validate the updater before publishing:
+
+```sh
+swift test --package-path App
+```
+
+The tests exercise installation from a hash-pinned archive, repeat installation, round-trip
+rollback, corrupted rollback refusal, failed-update preservation and invalid version refusal.
+A complete application update still needs testing between two notarized releases using the
+real update feed. Fresh Steam sign-in, game installation and flight through this application's
+prefix are separate acceptance steps; the earlier research flight does not qualify them.

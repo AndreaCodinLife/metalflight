@@ -34,6 +34,7 @@ def main():
     ap.add_argument('--app-version', default='0.1.0'); ap.add_argument('--output', type=Path, required=True)
     ap.add_argument('--base-url', required=True, help='e.g. https://github.com/<owner>/metalflight/releases/download/<tag>/')
     ap.add_argument('--strip-debug', action='store_true', help='Strip DWARF from Unix modules and PE files (smaller download)')
+    ap.add_argument('--source-lock', type=Path, help='Corresponding source repository commits for this build')
     a = ap.parse_args()
     name = f'metalflight-runtime-{a.version}'
     a.output.mkdir(parents=True, exist_ok=True)
@@ -61,6 +62,8 @@ def main():
     for rel in profile['system32'] + [profile['helper'], profile['readinessProbe']]:
         if not (root / rel).is_file(): raise SystemExit(f'profile references a missing file: {rel}')
     shutil.copy2(a.profile, share / 'profile.json')
+    if a.source_lock:
+        shutil.copy2(a.source_lock, share / 'sources.lock.json')
 
     if a.strip_debug:
         for p in (root / 'lib/wine/x86_64-unix').glob('*.so'): subprocess.run(['strip', '-S', str(p)], check=True)
