@@ -3,9 +3,21 @@
 MetalFlight is a macOS app that runs **your own Steam copy of Microsoft Flight Simulator 2024**
 on Apple Silicon Macs, through a Wine runtime built from source with patches for this game.
 
-> **Status: experimental.** A complete session (sign-in, menu video, globe, free flight, normal
-> exit) has been verified on one Mac. Repeated-launch reliability, long flights and other Mac models
-> are not yet established. Expect rough edges.
+> **Experimental preview.** The source-built research runtime completed a flight on one Mac.
+> This app's fresh environment has passed runtime installation, Steam installation and media
+> checks; game sign-in and flight through this app are not yet qualified. Long flights,
+> repeated-launch reliability and other Mac models are unverified.
+
+## Download
+
+Download [MetalFlight-0.1.0.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.0/MetalFlight-0.1.0.dmg),
+open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
+The runtime downloads separately; Steam and the game are installed using your own account.
+
+This first preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
+launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.0)
+describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
 Apple or CodeWeavers. "Microsoft Flight Simulator" is a trademark of Microsoft; it is used here only
@@ -26,6 +38,8 @@ to say which game the app runs.
 2. Downloads the MetalFlight runtime from this repository's releases and verifies its SHA-256.
    Updates install side by side, and one click rolls back to the previous runtime.
    Application updates use Sparkle, with a separate “Check for Application Updates…” menu item.
+   Update archives are signed with the project's Ed25519 key; its private key stays in the
+   maintainer's Keychain. An application update between two public versions is still untested.
 3. Imports `libd3dshared.dylib` from the Game Porting Toolkit you downloaded, after checking that
    Apple signed it.
 4. Creates a private Windows environment (Wine prefix) in
@@ -44,6 +58,8 @@ to say which game the app runs.
 | GLib, GStreamer, gnutls, nettle, GMP, FreeType, libffi, PCRE2, proxy-libintl, SDL2 | built by `runtime/` | see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) |
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
+Corresponding dependency source archives are attached to the release. Wine and Mullion are
+pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev3` in their repositories.
 
 ## Building
 

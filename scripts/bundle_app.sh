@@ -6,6 +6,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PROJECT_ROOT="$(pwd -P)"
+if [[ -z "${METALFLIGHT_UPDATE_PUBLIC_KEY:-}" && -f config/update-public-key.txt ]]; then
+  METALFLIGHT_UPDATE_PUBLIC_KEY="$(cat config/update-public-key.txt)"
+fi
 VERSION="${1:-0.1.0}"
 IDENTITY="${2:--}"
 OUT="build/MetalFlight.app"

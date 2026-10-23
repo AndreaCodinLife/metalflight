@@ -12,6 +12,7 @@ The CPU helper needs llvm-mingw 20260908 (UCRT, clang 23.1.1) to reproduce the q
 
 ```sh
 git clone https://github.com/AndreaCodinLife/metalflight-wine runtime/work/metalflight-wine
+git -C runtime/work/metalflight-wine checkout runtime-2026.10.23-dev3
 python3 runtime/fetch_sources.py        # pinned archives, SHA-256 verified
 ```
 
@@ -35,9 +36,12 @@ module RVAs and byte preimages, stay valid.
 
 ```sh
 helper/build.sh /path/to/llvm-mingw-20260908-ucrt-macos-universal out/
+x86_64-w64-mingw32-gcc -O2 probes/steam_session.c -o out/steam_session.exe
 ```
 
 Mullion builds from metalflight-mullion. The Steam readiness probe builds from `probes/steam_session.c`.
+Clone Mullion with `--recurse-submodules` and check out `runtime-2026.10.23-dev3` to reproduce
+this runtime's source revision. Its `METALFLIGHT.md` documents the renderer build.
 
 ## 5. Package and publish
 
@@ -60,19 +64,23 @@ Packaging requires Xcode 26 or later: `actool` builds its layered asset and macO
 fallback before signing. The fallback is also a Swift package resource, so Xcode runs display
 the icon in the Dock. Edit the project's copy; the original download is retained separately.
 
+The public update key is in `config/update-public-key.txt`; the packaging script reads it unless
+`METALFLIGHT_UPDATE_PUBLIC_KEY` is explicitly set. The private release key is stored only in the
+maintainer's login Keychain under the Sparkle account `metalflight-release-updates`.
+
 The Swift package pins Sparkle 2.10.0 in `App/Package.resolved`. Runtime updates and application
 updates have independent release assets. Sparkle follows its upstream
 [SwiftUI integration](https://sparkle-project.org/documentation/programmatic-setup/) and
 [signing/distribution procedure](https://sparkle-project.org/documentation/).
 
-For a local, ad-hoc signed DMG (application updates disabled):
+For an ad-hoc signed, non-notarized preview DMG:
 
 ```sh
 scripts/package_app.sh 0.1.0
 ```
 
-Copy `MetalFlight.app` from the DMG to Applications. This development DMG is not notarized and
-is not the public release. The default runtime download requires the GitHub release to exist.
+Copy `MetalFlight.app` from the DMG to Applications. This DMG is not notarized.
+The v0.1.0 public preview uses this signing mode; it does not claim Apple approval.
 Tests can override `METALFLIGHT_SUPPORT_DIR` and `METALFLIGHT_MANIFEST_URL` with a temporary
 directory and a local HTTP server; use a new prefix, never the research default.
 For an offline local preview, `METALFLIGHT_MANIFEST_URL` also accepts a `file://` manifest whose
@@ -81,11 +89,12 @@ valid inventory. When `METALFLIGHT_SUPPORT_DIR` is explicitly set, the app also 
 `preview-manifest.json` in that directory. This is a configured source, not an HTTP-error
 fallback. An already active, verified version is left running when Update is pressed again.
 
-Before the first public release, generate the Sparkle signing key once:
+The first public preview already has a signing key. Future maintainer releases must reuse it.
+For a separate fork, generate a separate Sparkle signing key once:
 
 ```sh
 swift package --package-path App resolve
-App/.build/artifacts/sparkle/Sparkle/bin/generate_keys
+App/.build/artifacts/sparkle/Sparkle/bin/generate_keys --account '<your-fork-account>'
 ```
 
 The private key stays in the login Keychain. Save the public key in the release configuration as
@@ -97,6 +106,7 @@ Do not commit a private key. Install a **Developer ID Application** certificate 
 export METALFLIGHT_UPDATE_PUBLIC_KEY='<public key printed by generate_keys>'
 scripts/package_app.sh 0.1.0 'Developer ID Application: …' '<notary-profile>'
 App/.build/artifacts/sparkle/Sparkle/bin/generate_appcast \
+  --account metalflight-release-updates \
   --download-url-prefix 'https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.0/' dist
 ```
 

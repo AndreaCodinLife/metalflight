@@ -1,0 +1,345 @@
+{
+  "schema": 1,
+  "purpose": "Reviewed public source inventory for MetalFlight v0.1.0; excludes this self-describing manifest",
+  "corresponding_runtime_sources": {
+    "schema": 1,
+    "wine": {
+      "repository": "https://github.com/AndreaCodinLife/metalflight-wine",
+      "commit": "26637bdfdc22c9b85ad5bbfc9be500f5276f335e"
+    },
+    "mullion": {
+      "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
+      "commit": "335c4c3056af18cce6c34ada07e01afe552a4a66"
+    }
+  },
+  "files": {
+    ".gitignore": {
+      "sha256": "ac3ec4db372d83dfbe8049cba7a8caf32be956ef0a703188251526e55f80fba0",
+      "size": 91,
+      "group": "distribution"
+    },
+    "App/Package.resolved": {
+      "sha256": "2809e840ef4fa878afd49b6c2f118133bd54b39591e85835ef0415183ae74da6",
+      "size": 388,
+      "group": "app"
+    },
+    "App/Package.swift": {
+      "sha256": "6b5da35eeac64b0d4a63c2d72e80a5ad61b93ab779be1f5e05f3d4b81d59dd60",
+      "size": 753,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/AppModel.swift": {
+      "sha256": "76c640a6b61791f74451217b88b4ce41bc0b8e5598ecd75bc4705c829e8f2972",
+      "size": 5234,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/AppUpdates.swift": {
+      "sha256": "70733ab54372a33aa36917377e308b5a48d039029558882dfc528d678e1d388c",
+      "size": 837,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/ContentView.swift": {
+      "sha256": "80f2d9b02540c2f28f8901dad48cced3f9e9343657f54da36516769ff4581dfa",
+      "size": 5175,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/GPTK.swift": {
+      "sha256": "408129569c407f3cd04e4124a61f939e19328b0b5a98112bc70f42504952d65a",
+      "size": 3255,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Headless.swift": {
+      "sha256": "2217e90dfc717aaa9bc96f0aed96ca4b080e62990192d68197201ecb5db7f2c2",
+      "size": 3813,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Launcher.swift": {
+      "sha256": "dbef8f5ec931ffc7c1fad87b9e69b5632875f08b2afdaf22ebe86b5ddd4c3fcc",
+      "size": 5279,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/MetalFlightApp.swift": {
+      "sha256": "11366e0115871baf8327394dbaaa498da2b567ebeff57d057049e607461a19dd",
+      "size": 1312,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Models.swift": {
+      "sha256": "0c95249fcf18440ab52e6c6d4273192eeaa99e13ac4d3f544fc9fd163a832d01",
+      "size": 1559,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Paths.swift": {
+      "sha256": "bd49532970e0377c3fa96646455288213925e23503913db24ad4a429ed8cd2f5",
+      "size": 2640,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Resources/MetalFlight.icns": {
+      "sha256": "489ddd128dbbd607878325279fa46bda9635ec6105b4870a74a79159837cb5f6",
+      "size": 43127,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Resources/MetalFlight.icon/Assets/Image 2.svg": {
+      "sha256": "ebf43e393da6287a3291edf485f836e6fdeec5d68cd712b55462fe0e764807c7",
+      "size": 1253,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Resources/MetalFlight.icon/icon.json": {
+      "sha256": "98beb4c5605cb5edb686c67fcfe08084de6d5136ca3ff46ab6cad598298df21a",
+      "size": 711,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Shell.swift": {
+      "sha256": "e51f63d5cd2ccafa49e1ef40c7876eb23a9b15e567de683368835d11e47c714e",
+      "size": 2397,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/SystemCheck.swift": {
+      "sha256": "3524a58b3e37da825256285ed9a1ce2906145bfa3a8b10979dac25f683696ee0",
+      "size": 1222,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Updater.swift": {
+      "sha256": "365aadcff93c61e903e99ce14a7bdab47fb581b95dc82eb541b90cd78d2c77eb",
+      "size": 11231,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Wine.swift": {
+      "sha256": "cf5e11eafaa34b3c80bfafd3f4107265f598133b9ad765114e70eded1fbd2bd3",
+      "size": 2825,
+      "group": "app"
+    },
+    "App/Tests/MetalFlightTests/UpdaterTests.swift": {
+      "sha256": "d59d68c865dad94485f30ba3956756793c5f7db27240587915948f505eeb47e9",
+      "size": 7269,
+      "group": "app"
+    },
+    "LICENSE": {
+      "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195",
+      "size": 35150,
+      "group": "licence"
+    },
+    "README.md": {
+      "sha256": "02f78caacd8e9b28de9ed0de27691c4349d588bbb6602bd5c0579e439dee8b75",
+      "size": 4656,
+      "group": "distribution"
+    },
+    "THIRD-PARTY-NOTICES.md": {
+      "sha256": "339c8ad097534de3d5b5a950f5c9bac7e832deb568ec65da117e614ae6b782cc",
+      "size": 1603,
+      "group": "licence"
+    },
+    "config/update-public-key.txt": {
+      "sha256": "95145651d365c9adc0d7489747b9f1272edd4606e07c12b961e4b56ef8b813d5",
+      "size": 45,
+      "group": "distribution"
+    },
+    "docs/BUILDING.md": {
+      "sha256": "2a7ffb658007cd67106d3d992e3648080431643ce8363373a0f15cb2f1c9213f",
+      "size": 6275,
+      "group": "distribution"
+    },
+    "helper/build.sh": {
+      "sha256": "ee80c85013705b702f8fa4e0f5d6e7da270af0a37282c6e014cd860b32c9049e",
+      "size": 935,
+      "group": "helper"
+    },
+    "helper/src/catalog_home_helper.c": {
+      "sha256": "f6ae73865f20ddb2a92aa2feb956cc28eb2ce631b324f6cb58a5283e361937e1",
+      "size": 13364,
+      "group": "helper"
+    },
+    "helper/src/home_entry_site.h": {
+      "sha256": "23d3be5726d7c3ab302313de03510eb01b2e6944bfc77efc0bc2a45dc3ee3738",
+      "size": 860,
+      "group": "helper"
+    },
+    "helper/src/home_entry_split.c": {
+      "sha256": "36572abdcda13f0ba7abf95cb26806a5b63a1e9a8a28f88e68e8c7e124bd4b09",
+      "size": 8917,
+      "group": "helper"
+    },
+    "helper/src/home_entry_split.h": {
+      "sha256": "c664c31b32a64656f2efc6c577018e87e19d6a724c4089fec20b9e4acd9c265a",
+      "size": 1015,
+      "group": "helper"
+    },
+    "helper/src/mission_empty_guard.c": {
+      "sha256": "4a1dafcd6158dd01f7fe8dbeb2f1bcff4e5e915d6a7064d5ce5f62c6ee8e156f",
+      "size": 8671,
+      "group": "helper"
+    },
+    "helper/src/ntdll_padded_sites.h": {
+      "sha256": "86bbf417c5763a4c7697d616b0af3a4f8162f8af246d22c19c06551edd2b5c71",
+      "size": 1720,
+      "group": "helper"
+    },
+    "helper/src/optional_inline_sites.h": {
+      "sha256": "64946f6e2a5546bf62d37337b3900395408309a847db4f7737fe37359a7167c1",
+      "size": 2887,
+      "group": "helper"
+    },
+    "helper/src/owned_catalog_functions.s": {
+      "sha256": "d3522baf2d5e5ed1075f45a542bd4f7d3ab10064d1fbdf6731a2693070440b8e",
+      "size": 6134,
+      "group": "helper"
+    },
+    "helper/src/owned_catalog_home.c": {
+      "sha256": "06a385c06d830bab97d3953733c96f2c32426cc1447b566bb0428d2823e73071",
+      "size": 12575,
+      "group": "helper"
+    },
+    "helper/src/owned_game30_newmismatch.s": {
+      "sha256": "5d1ba7424b04db58b13050a2c55a381635e35dbf8a39bc0b4f0f7677fcb4284d",
+      "size": 211,
+      "group": "helper"
+    },
+    "helper/src/owned_game30_normal.s": {
+      "sha256": "8316ce9455dbacdecb4cffdb51994771eb404ec2d0351e1e64b5f07f8bdbf697",
+      "size": 211,
+      "group": "helper"
+    },
+    "helper/src/owned_gi_mismatch.s": {
+      "sha256": "176684b45129f86a6c7de0c8a3957509349775abac10362f04a2210a168ac92d",
+      "size": 551,
+      "group": "helper"
+    },
+    "helper/src/owned_gi_normal.s": {
+      "sha256": "c536870dbff65b1c51b0020f7ae14829d4565b957407e355e3f20a84276c7976",
+      "size": 476,
+      "group": "helper"
+    },
+    "helper/src/owned_home_entry.s": {
+      "sha256": "9b42bdd2aaa19d67ddacab322dbf5211b1e4ab4fdd90027eae54553f29126efd",
+      "size": 1279,
+      "group": "helper"
+    },
+    "helper/src/owned_home_target2_mismatch.s": {
+      "sha256": "fae30bfdbc4cefb91a7db15308a0a9720872bf1d123af245599bcce4cea7aaba",
+      "size": 1456,
+      "group": "helper"
+    },
+    "helper/src/owned_home_target2_normal.s": {
+      "sha256": "2c427a21e39fcd6639fd7501b6f4dc17c2de5b7ea6c62928bf8a385fdcf60c65",
+      "size": 1456,
+      "group": "helper"
+    },
+    "helper/src/owned_kb_target_mismatch.s": {
+      "sha256": "e4482f2eef90db9157fb8b0fadfcb9c3980633e3ea41d203b65d192d88fd27ba",
+      "size": 1378,
+      "group": "helper"
+    },
+    "helper/src/owned_kb_target_normal.s": {
+      "sha256": "26b7ce6198894fd27f8b2098c742fc78f03c6926535e0827c3e9dcd73ac5dee2",
+      "size": 1378,
+      "group": "helper"
+    },
+    "helper/src/owned_mi_mimismatch.s": {
+      "sha256": "0342b97757a391a66cb31024f6fe8dec6dfb05a2ba0c1b041f3a0eaa1c97e46b",
+      "size": 532,
+      "group": "helper"
+    },
+    "helper/src/owned_mi_normal.s": {
+      "sha256": "01b54cf8b9088ee89aaa076ee20487a99c896e552a126c9e12ab44b41fc146eb",
+      "size": 532,
+      "group": "helper"
+    },
+    "helper/src/owned_ri_normal.s": {
+      "sha256": "136dfff7e4f380e1da449fd3dba831bb2a144ad96e15c60d68b2b28c821016e3",
+      "size": 467,
+      "group": "helper"
+    },
+    "helper/src/owned_ri_rimismatch.s": {
+      "sha256": "0121ea2cd517a16b88605afa7750cecf95b8bce25007aa038dc76166ff5e185d",
+      "size": 467,
+      "group": "helper"
+    },
+    "helper/src/padded_bodies.s": {
+      "sha256": "5b4a4c2161a68e297f11804dd29ee59b41e9a4e58f1b4c426c0ab28885dee261",
+      "size": 979,
+      "group": "helper"
+    },
+    "helper/src/split_push_catalog.h": {
+      "sha256": "018a190676239a6639348905ed4bd0254c094752a4b291261f4bbaba31aac53d",
+      "size": 6823,
+      "group": "helper"
+    },
+    "helper/src/split_push_detour.c": {
+      "sha256": "071b102e24f661c74282912651a7fa664e785b88ca3cfbaae53681885b2696d4",
+      "size": 13642,
+      "group": "helper"
+    },
+    "helper/src/split_push_detour.h": {
+      "sha256": "ba8bc4b07b4981b1b4acf2ed99b6985c971fa96fb7c7dcc1fab23f156ef81b71",
+      "size": 1619,
+      "group": "helper"
+    },
+    "helper/src/split_push_padded.c": {
+      "sha256": "d95c62e2774b072ab7630b67f9f10a1b3a0d61d60174c018ec2909f9a43aab60",
+      "size": 5148,
+      "group": "helper"
+    },
+    "helper/src/split_push_padded.h": {
+      "sha256": "df75411daf77eabf8991d79def081827a886b1b3a2c2e12eb0509e9fd612e245",
+      "size": 2559,
+      "group": "helper"
+    },
+    "helper/src/stack_call.s": {
+      "sha256": "ec2d5b468d58511d0a16fd849af1ad2c395abd3dea986de71e9e80cf884ccc2d",
+      "size": 264,
+      "group": "helper"
+    },
+    "probes/steam_session.c": {
+      "sha256": "cc7b31659aa83248969d404ccd1c554882068a2e5f30f26ac5ab582da27daf63",
+      "size": 4614,
+      "group": "distribution"
+    },
+    "runtime/build_deps.py": {
+      "sha256": "12dfdc9f79a1f44536834925922874ce621cb25011e5fc7e101c7ed10b8a4c07",
+      "size": 16930,
+      "group": "runtime-build"
+    },
+    "runtime/build_wine.py": {
+      "sha256": "d825cb554a8138ed6bdd20c222d941f6d65bb913f1234c435843e297854750c4",
+      "size": 8567,
+      "group": "runtime-build"
+    },
+    "runtime/fetch_sources.py": {
+      "sha256": "120c8a3c423ba57087bbf4ef3994291b7f0e0d1334c9987682c2c260b5a61a97",
+      "size": 2871,
+      "group": "runtime-build"
+    },
+    "runtime/profile.json": {
+      "sha256": "958803d9dab86106eee1e4ad0f8130dabf86ea4438f3a5b123c391fae901064e",
+      "size": 3710,
+      "group": "runtime-build"
+    },
+    "runtime/sources.lock.json": {
+      "sha256": "be7411249ecba9e5dfe98a5a994692c3c5de4c76d1a4e1934c8874ce25b3c72f",
+      "size": 318,
+      "group": "runtime-build"
+    },
+    "scripts/bundle_app.sh": {
+      "sha256": "57fcd32f7aaf75db96e18878c44537cc43d0c1ed47dbb6d272b2ece0b84a9bdd",
+      "size": 4584,
+      "group": "distribution"
+    },
+    "scripts/package_app.sh": {
+      "sha256": "2cbe5890e8a42b1efdd1a2a6a0d8249ecf2dd7cfaf0eda11896e4d516f935e69",
+      "size": 1544,
+      "group": "distribution"
+    },
+    "scripts/package_runtime.py": {
+      "sha256": "6e0f214a76a54cfd595834ffc321f2d4595255a30d98b0106ae8bcba24a074bf",
+      "size": 5346,
+      "group": "distribution"
+    }
+  },
+  "groups": {
+    "app": 19,
+    "distribution": 8,
+    "helper": 30,
+    "licence": 2,
+    "runtime-build": 5
+  },
+  "private_prefixes_included": false
+}
