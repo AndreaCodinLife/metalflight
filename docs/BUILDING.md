@@ -55,6 +55,11 @@ The app reads `releases/latest/download/metalflight-manifest.json`.
 
 ## 6. Application installer and application updates
 
+The editable app icon is `App/Sources/MetalFlight/Resources/MetalFlight.icon` (Apple Icon Composer).
+Packaging requires Xcode 26 or later: `actool` builds its layered asset and macOS 15 `.icns`
+fallback before signing. The fallback is also a Swift package resource, so Xcode runs display
+the icon in the Dock. Edit the project's copy; the original download is retained separately.
+
 The Swift package pins Sparkle 2.10.0 in `App/Package.resolved`. Runtime updates and application
 updates have independent release assets. Sparkle follows its upstream
 [SwiftUI integration](https://sparkle-project.org/documentation/programmatic-setup/) and

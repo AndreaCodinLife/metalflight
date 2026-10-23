@@ -5,6 +5,7 @@
 #   for distribution, then scripts/package_app.sh.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+PROJECT_ROOT="$(pwd -P)"
 VERSION="${1:-0.1.0}"
 IDENTITY="${2:--}"
 OUT="build/MetalFlight.app"
@@ -12,11 +13,22 @@ if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Version must have the form 0.1.0" >&2; exit 2
 fi
 
+mkdir -p build/icon
+xcrun actool "$PROJECT_ROOT/App/Sources/MetalFlight/Resources/MetalFlight.icon" \
+  --compile "$PROJECT_ROOT/build/icon" --app-icon MetalFlight \
+  --enable-on-demand-resources NO --target-device mac --platform macosx \
+  --minimum-deployment-target 15.0 --output-partial-info-plist "$PROJECT_ROOT/build/icon-info.plist" \
+  --output-format human-readable-text --errors --warnings
+cp build/icon/MetalFlight.icns App/Sources/MetalFlight/Resources/MetalFlight.icns
 swift build -c release --package-path App --arch arm64
 BIN="$(swift build -c release --package-path App --arch arm64 --show-bin-path)"
 rm -rf "$OUT"
 mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources" "$OUT/Contents/Frameworks"
 cp "$BIN/MetalFlight" "$OUT/Contents/MacOS/MetalFlight"
+for RESOURCE_BUNDLE in "$BIN"/*.bundle; do
+  [[ -d "$RESOURCE_BUNDLE" ]] && ditto "$RESOURCE_BUNDLE" "$OUT/Contents/Resources/$(basename "$RESOURCE_BUNDLE")"
+done
+cp build/icon/Assets.car build/icon/MetalFlight.icns "$OUT/Contents/Resources/"
 SPARKLE="App/.build/artifacts/sparkle/Sparkle"
 ditto "$SPARKLE/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework" "$OUT/Contents/Frameworks/Sparkle.framework"
 cp LICENSE THIRD-PARTY-NOTICES.md "$OUT/Contents/Resources/"
@@ -40,6 +52,7 @@ cat > "$OUT/Contents/Info.plist" <<PLIST
 </dict>
 </plist>
 PLIST
+/usr/libexec/PlistBuddy -c 'Merge build/icon-info.plist' "$OUT/Contents/Info.plist"
 if [[ -n "${METALFLIGHT_UPDATE_PUBLIC_KEY:-}" ]]; then
   /usr/libexec/PlistBuddy -c "Add :SUPublicEDKey string $METALFLIGHT_UPDATE_PUBLIC_KEY" "$OUT/Contents/Info.plist"
   /usr/libexec/PlistBuddy -c 'Add :SUFeedURL string https://github.com/AndreaCodinLife/metalflight/releases/latest/download/appcast.xml' "$OUT/Contents/Info.plist"

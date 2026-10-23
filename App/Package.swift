@@ -10,7 +10,10 @@ let package = Package(
     targets: [
         .executableTarget(name: "MetalFlight", dependencies: [
             .product(name: "Sparkle", package: "Sparkle")
-        ], path: "Sources/MetalFlight", linkerSettings: [
+        ], path: "Sources/MetalFlight", resources: [
+            .copy("Resources/MetalFlight.icon"),
+            .copy("Resources/MetalFlight.icns")
+        ], linkerSettings: [
             .unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])
         ]),
         .testTarget(name: "MetalFlightTests", dependencies: ["MetalFlight"])
