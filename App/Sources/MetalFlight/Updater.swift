@@ -4,16 +4,35 @@ import Foundation
 /// Installs runtimes from the GitHub release manifest: download, verify SHA-256, extract,
 /// switch the current symlink atomically, keep the previous runtime for rollback.
 struct Updater {
+    static let publicManifestURL = URL(string: "https://github.com/AndreaCodinLife/metalflight/releases/latest/download/metalflight-manifest.json")!
     /// Overridable for testing: `defaults write com.andreacodinlife.metalflight manifestURL file:///...`
     static var manifestURL: URL {
         if let custom = ProcessInfo.processInfo.environment["METALFLIGHT_MANIFEST_URL"], let url = URL(string: custom) { return url }
+        // A preview's local feed is explicit, confined to its own support folder,
+        // and never substituted after a public download failure.
+        let local = Paths.support.appendingPathComponent("preview-manifest.json")
+        if ProcessInfo.processInfo.environment["METALFLIGHT_SUPPORT_DIR"] != nil,
+           FileManager.default.fileExists(atPath: local.path) { return local }
         if let custom = UserDefaults.standard.string(forKey: "manifestURL"), let url = URL(string: custom) { return url }
-        return URL(string: "https://github.com/AndreaCodinLife/metalflight/releases/latest/download/metalflight-manifest.json")!
+        return publicManifestURL
     }
 
     static func fetchManifest() async throws -> ReleaseManifest {
-        let (data, response) = try await URLSession.shared.data(from: manifestURL)
-        try checkResponse(response)
+        try await fetchManifest(from: manifestURL)
+    }
+
+    static func fetchManifest(from url: URL) async throws -> ReleaseManifest {
+        let data: Data
+        if url.isFileURL {
+            data = try Data(contentsOf: url)
+        } else {
+            let (download, response) = try await URLSession.shared.data(from: url)
+            if let http = response as? HTTPURLResponse, http.statusCode == 404, url == publicManifestURL {
+                throw MetalFlightError.message("No public MetalFlight runtime release is available yet. For local testing, run the MetalFlight Preview scheme or the preview launcher.")
+            }
+            try checkResponse(response)
+            data = download
+        }
         let manifest = try JSONDecoder().decode(ReleaseManifest.self, from: data)
         guard manifest.schema == 1 else { throw MetalFlightError.message("Unsupported manifest schema \(manifest.schema)") }
         try validate(manifest.runtime)
@@ -36,17 +55,30 @@ struct Updater {
                 throw MetalFlightError.message("Runtime \(runtime.version) already exists with different or unknown contents. Publish a new version instead of replacing it.")
             }
             try verifyInventory(destination)
-            try await beforeActivation()
-            try activate(destination)
+            if Paths.resolvedRuntime()?.standardizedFileURL.path != destination.standardizedFileURL.path {
+                try await beforeActivation()
+                try activate(destination)
+            }
+            progress("Runtime \(runtime.version) is ready.")
             return
         }
         let archive = Paths.downloads.appendingPathComponent("metalflight-runtime-\(runtime.version).tar.xz")
         if !(FileManager.default.fileExists(atPath: archive.path) && (try? sha256(of: archive)) == runtime.sha256) {
-            progress("Downloading runtime \(runtime.version)…")
-            let (temporary, response) = try await URLSession.shared.download(from: runtime.url)
-            try checkResponse(response)
-            try? FileManager.default.removeItem(at: archive)
-            try FileManager.default.moveItem(at: temporary, to: archive)
+            if runtime.url.isFileURL {
+                progress("Importing local runtime \(runtime.version)…")
+                // Keep a usable cache until the replacement is copied successfully.
+                let temporary = Paths.downloads.appendingPathComponent(".import-\(UUID().uuidString)")
+                defer { try? FileManager.default.removeItem(at: temporary) }
+                try FileManager.default.copyItem(at: runtime.url, to: temporary)
+                try? FileManager.default.removeItem(at: archive)
+                try FileManager.default.moveItem(at: temporary, to: archive)
+            } else {
+                progress("Downloading runtime \(runtime.version)…")
+                let (temporary, response) = try await URLSession.shared.download(from: runtime.url)
+                try checkResponse(response)
+                try? FileManager.default.removeItem(at: archive)
+                try FileManager.default.moveItem(at: temporary, to: archive)
+            }
         }
         progress("Verifying…")
         let attributes = try FileManager.default.attributesOfItem(atPath: archive.path)
@@ -109,7 +141,7 @@ struct Updater {
         guard runtime.version.range(of: #"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"#, options: .regularExpression) != nil,
               runtime.sha256.range(of: #"^[a-f0-9]{64}$"#, options: .regularExpression) != nil,
               runtime.size > 0,
-              ["https", "http"].contains(runtime.url.scheme?.lowercased() ?? "") else {
+              ["https", "http", "file"].contains(runtime.url.scheme?.lowercased() ?? "") else {
             throw MetalFlightError.message("Invalid runtime version, checksum, size or download URL.")
         }
     }

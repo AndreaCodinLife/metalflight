@@ -36,7 +36,8 @@ struct ContentView: View {
                     if !s.rosetta { Button("Install Rosetta…") { NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:")!) } }
                 }
                 StepRow(number: 2, title: "Runtime",
-                        detail: "Installed: \(model.installedRuntime ?? "none")" + (model.availableRuntime.map { " · Latest: \($0)" } ?? ""),
+                        detail: "Installed: \(model.installedRuntime ?? "none")" + (model.availableRuntime.map { " · Latest: \($0)" } ?? "")
+                            + (Updater.manifestURL.isFileURL ? " · Local preview" : ""),
                         done: model.installedRuntime != nil && (model.availableRuntime == nil || model.availableRuntime == model.installedRuntime)) {
                     Button(model.installedRuntime == nil ? "Install" : "Update") { model.installRuntime() }.disabled(model.playing)
                     Button("Check") { model.checkForUpdates() }

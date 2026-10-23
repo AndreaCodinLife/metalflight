@@ -56,7 +56,8 @@ final class AppModel {
         perform("Checking for updates…") {
             let manifest = try await Updater.fetchManifest()
             self.availableRuntime = manifest.runtime.version
-            self.note("Latest runtime: \(manifest.runtime.version)")
+            let source = Updater.manifestURL.isFileURL ? "Local preview" : "Latest runtime"
+            self.note("\(source): \(manifest.runtime.version)")
         }
     }
 
@@ -64,12 +65,13 @@ final class AppModel {
         guard !playing else { return }
         perform("Installing runtime…") {
             let manifest = try await Updater.fetchManifest()
+            let alreadyActive = Updater.installedVersion() == manifest.runtime.version
             try await Updater.install(manifest.runtime, progress: { message in Task { @MainActor in self.note(message) } },
                                       beforeActivation: {
                 if let current = try? self.launcher() { await current.wine.stopAll() }
             })
             self.availableRuntime = manifest.runtime.version
-            if (try self.launcher()).prefixReady { try await self.launcher().preparePrefix() }
+            if !alreadyActive, (try self.launcher()).prefixReady { try await self.launcher().preparePrefix() }
         }
     }
 

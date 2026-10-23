@@ -75,6 +75,11 @@ Copy `MetalFlight.app` from the DMG to Applications. This development DMG is not
 is not the public release. The default runtime download requires the GitHub release to exist.
 Tests can override `METALFLIGHT_SUPPORT_DIR` and `METALFLIGHT_MANIFEST_URL` with a temporary
 directory and a local HTTP server; use a new prefix, never the research default.
+For an offline local preview, `METALFLIGHT_MANIFEST_URL` also accepts a `file://` manifest whose
+runtime URL points to a local archive. The archive still needs the published size/hash and a
+valid inventory. When `METALFLIGHT_SUPPORT_DIR` is explicitly set, the app also recognizes
+`preview-manifest.json` in that directory. This is a configured source, not an HTTP-error
+fallback. An already active, verified version is left running when Update is pressed again.
 
 Before the first public release, generate the Sparkle signing key once:
 

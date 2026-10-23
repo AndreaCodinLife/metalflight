@@ -1,7 +1,7 @@
 import Foundation
 
 /// `MetalFlight --headless <command>`: the app's own code paths without the window (tests, CI).
-///   status | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam
+///   status | check-runtime | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam
 ///   run PROGRAM [ARGS...]   (in the prefix, with the game's environment and DLL overrides)
 enum Headless {
     static func run(_ arguments: [String]) -> Int32 {
@@ -34,6 +34,10 @@ enum Headless {
             try await Updater.install(manifest.runtime, progress: { print($0) }, beforeActivation: {
                 if let runtime = Paths.resolvedRuntime() { await Wine(runtime: runtime).stopAll() }
             })
+        case "check-runtime":
+            let manifest = try await Updater.fetchManifest()
+            print("source: \(Updater.manifestURL.isFileURL ? "local preview" : "release feed")")
+            print("available runtime: \(manifest.runtime.version)")
         case "rollback":
             if let runtime = Paths.resolvedRuntime() { await Wine(runtime: runtime).stopAll() }
             try Updater.rollback(); print("runtime: \(Updater.installedVersion() ?? "none")")

@@ -85,4 +85,34 @@ final class UpdaterTests: XCTestCase {
         XCTAssertThrowsError(try Updater.rollback())
         XCTAssertEqual(Updater.installedVersion(), "2.0")
     }
+
+    func testLocalPreviewFeedImportsAndDoesNotRestartActiveRuntime() async throws {
+        let fixture = try fixture("preview1")
+        let archive = Paths.downloads.appendingPathComponent("metalflight-runtime-preview1.tar.xz")
+        let local = Paths.support.appendingPathComponent("source.tar.xz")
+        try FileManager.default.moveItem(at: archive, to: local)
+        let runtime = ReleaseManifest.Runtime(version: fixture.version, url: local, sha256: fixture.sha256, size: fixture.size)
+        let feed = Paths.support.appendingPathComponent("preview-manifest.json")
+        try JSONEncoder().encode(ReleaseManifest(schema: 1, appVersion: "0.1.0", runtime: runtime)).write(to: feed)
+        XCTAssertEqual(Updater.manifestURL, feed)
+        let loaded = try await Updater.fetchManifest(from: feed)
+        var activations = 0
+        try await Updater.install(loaded.runtime, progress: { _ in }, beforeActivation: { activations += 1 })
+        XCTAssertEqual(Updater.installedVersion(), "preview1")
+        XCTAssertEqual(try Updater.sha256(of: archive), fixture.sha256)
+        try await Updater.install(loaded.runtime, progress: { _ in }, beforeActivation: { activations += 1 })
+        XCTAssertEqual(activations, 1, "Checking an already active version must not stop Steam")
+    }
+
+    func testLocalArchiveStillRequiresPublishedChecksum() async throws {
+        let fixture = try fixture("invalid")
+        let archive = Paths.downloads.appendingPathComponent("metalflight-runtime-invalid.tar.xz")
+        let local = Paths.support.appendingPathComponent("source.tar.xz")
+        try FileManager.default.moveItem(at: archive, to: local)
+        let runtime = ReleaseManifest.Runtime(version: fixture.version, url: local,
+                                              sha256: String(repeating: "a", count: 64), size: fixture.size)
+        do { try await Updater.install(runtime, progress: { _ in }); XCTFail("accepted incorrect hash") } catch { }
+        XCTAssertNil(Paths.resolvedRuntime())
+        XCTAssertFalse(FileManager.default.fileExists(atPath: Paths.runtimes.appendingPathComponent("invalid").path))
+    }
 }
