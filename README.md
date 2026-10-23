@@ -3,7 +3,8 @@
 MetalFlight is a macOS app that runs **your own Steam copy of Microsoft Flight Simulator 2024**
 on Apple Silicon Macs, through a Wine runtime built from source with patches for this game.
 
-> **Experimental preview.** The source-built research runtime completed a flight on one Mac.
+> **Experimental preview.** The source-built research runtime completed a flight on an
+> **Apple M1 Pro with 32 GB of unified memory** (the maintainer's Mac).
 > This app's fresh environment has passed runtime installation, Steam installation and media
 > checks; game sign-in and flight through this app are not yet qualified. Long flights,
 > repeated-launch reliability and other Mac models are unverified.
@@ -25,7 +26,8 @@ to say which game the app runs.
 
 ## Requirements
 
-- An Apple Silicon Mac. The Mullion renderer targets M3-generation and later GPUs.
+- An Apple Silicon Mac. The verified research configuration is **M1 Pro with 32 GB of unified
+  memory**; other chips and memory configurations have not yet been qualified.
 - macOS 15 or later, with Rosetta 2 (the shipped renderer requires macOS 15).
 - About 20 GB free for MetalFlight, plus the game itself.
 - A free Apple Account, to download Apple's **Game Porting Toolkit** from developer.apple.com. It is
@@ -79,5 +81,7 @@ les Mac Apple Silicon, avec un runtime Wine compilé depuis les sources. Il vous
 - un compte Apple gratuit, pour télécharger le Game Porting Toolkit d'Apple, dont l'app utilise
   uniquement `libd3dshared.dylib` ;
 - votre compte Steam, avec le jeu.
+
+La configuration de recherche vérifiée est un **Mac M1 Pro avec 32 Go de mémoire unifiée**.
 
 C'est un projet expérimental, sans lien avec Microsoft, Valve, Apple ou CodeWeavers.

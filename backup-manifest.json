@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight v0.1.0; excludes this self-describing manifest",
+  "purpose": "Reviewed public source inventory; v0.1.0 code with corrected tested-hardware documentation; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "02f78caacd8e9b28de9ed0de27691c4349d588bbb6602bd5c0579e439dee8b75",
-      "size": 4656,
+      "sha256": "9b1495c49fe7f9ee9c91ea535ee75ecaa0e485709aa11f04113108b6477c1338",
+      "size": 4909,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
