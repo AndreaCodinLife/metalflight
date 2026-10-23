@@ -1,0 +1,21 @@
+.text
+.p2align 12
+# mimalloc function 0x10f60 shape: RBX/R9 home stores, then the PUSH run at block offset 10
+# (mismatch variant swaps rsi/rdi; its epilogue still restores correctly for that order).
+.globl owned_mi_function
+owned_mi_function:
+.byte 0x48,0x89,0x5c,0x24,0x10,0x4c,0x89,0x4c,0x24,0x20
+.globl owned_mi_target
+owned_mi_target:
+.byte 0x55,0x56,0x57,0x41,0x54,0x41,0x55,0x41,0x56,0x41,0x57
+.byte 0x48,0x83,0xec,0x30
+movq $42,%rax
+addq $0x30,%rsp
+popq %r15
+popq %r14
+popq %r13
+popq %r12
+popq %rdi
+popq %rsi
+popq %rbp
+retq

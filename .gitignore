@@ -1,0 +1,8 @@
+.DS_Store
+build/
+dist/
+App/.build/
+App/.swiftpm/
+runtime/work/
+runtime/downloads/
+*.tar.xz
