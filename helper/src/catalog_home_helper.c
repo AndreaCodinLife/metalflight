@@ -11,6 +11,7 @@
 #include "home_entry_site.h"
 #include "ntdll_padded_sites.h"
 #include "optional_inline_sites.h"
+#include "game_build.h"
 #include <stdio.h>
 #include <string.h>
 _Static_assert(CATALOG_COUNT<=32,"Bound the install set");
@@ -43,13 +44,17 @@ static DWORD WINAPI worker(void *unused)
     if(n && n<sizeof(path) && !strncmp(path,prefix,sizeof(prefix)-1))
         log=CreateFileA(path,GENERIC_WRITE,FILE_SHARE_READ,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
     if(!owned && log==INVALID_HANDLE_VALUE){InterlockedExchange(&state,-101);return 0;}
-    note(log,"catalog-home started version=1\n");ULONGLONG began=GetTickCount64();int result=0;
+    note(log,"catalog-home started version=1\n");
+    unsigned build=owned?GAME_BUILD_1918:game_current_build();
+    snprintf(text,sizeof(text),"catalog-home game_build=%u\n",build);note(log,text);
+    if(!build){note(log,"catalog-home unsupported game build; no patches installed\n");InterlockedExchange(&state,-102);if(log!=INVALID_HANDLE_VALUE)CloseHandle(log);return 0;}
+    ULONGLONG began=GetTickCount64();int result=0;
     unsigned installed=0,padded_installed=0;
     /* Every target and its unwind table must validate before any source edit. */
     for(unsigned i=0;i<CATALOG_COUNT;i++)
     {
         const catalog_entry *e=&catalog[i];BYTE *base=(BYTE*)GetModuleHandleA(e->module?"mimalloc.dll":NULL);
-        BYTE *entry=owned?(BYTE*)(void*)GetProcAddress(GetModuleHandleA(NULL),e->owned_export):base?base+e->rva:NULL;
+        BYTE *entry=owned?(BYTE*)(void*)GetProcAddress(GetModuleHandleA(NULL),e->owned_export):base?base+(e->module?e->rva:game_rva_for_build(build,e->rva)):NULL;
         result=10;
         while(entry && GetTickCount64()-began<120000)
         {
@@ -143,7 +148,7 @@ static DWORD WINAPI worker(void *unused)
         if(!result)
         {
             BYTE *base=(BYTE*)GetModuleHandleA(NULL);
-            BYTE *entry=owned?(BYTE*)(void*)GetProcAddress(GetModuleHandleA(NULL),o->owned_export):base?base+o->rva:NULL;
+            BYTE *entry=owned?(BYTE*)(void*)GetProcAddress(GetModuleHandleA(NULL),o->owned_export):base?base+game_rva_for_build(build,o->rva):NULL;
             ULONGLONG limit=owned?3000:600000,start=GetTickCount64();r=10;
             while(entry && GetTickCount64()-start<limit)
             {
@@ -173,7 +178,7 @@ static DWORD WINAPI worker(void *unused)
         if(!result)
         {
             BYTE *base=owned?NULL:(BYTE*)GetModuleHandleA(o->module);
-            BYTE *entry=owned?(BYTE*)(void*)GetProcAddress(GetModuleHandleA(NULL),o->owned_export):base?base+o->rva:NULL;
+            BYTE *entry=owned?(BYTE*)(void*)GetProcAddress(GetModuleHandleA(NULL),o->owned_export):base?base+(o->module?o->rva:game_rva_for_build(build,o->rva)):NULL;
             ULONGLONG limit=owned?3000:600000;r=10;
             while(entry && GetTickCount64()-start<limit)
             {

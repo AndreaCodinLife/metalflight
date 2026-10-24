@@ -12,13 +12,13 @@ on Apple Silicon Macs, through a Wine runtime built from source with patches for
 
 ## Download
 
-Download [MetalFlight-0.1.2.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.2/MetalFlight-0.1.2.dmg),
+Download [MetalFlight-0.1.3.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.3/MetalFlight-0.1.3.dmg),
 open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
 The runtime downloads separately; Steam and the game are installed using your own account.
 
 This preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
 launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
-choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.2)
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.3)
 describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
@@ -56,6 +56,8 @@ to say which game the app runs.
    the game. It then starts the simulator with MetalFlight's patches. Version 0.1.2 fixes
    an immediate exit 53 caused by missing native C++ libraries in a fresh environment.
    The Microsoft installer downloads directly from Microsoft; it is not bundled in MetalFlight.
+   Version 0.1.3 supports game builds **1.9.18.0 and 1.9.21.0** with separate CPU patch
+   locations. Other executable builds are refused before launch, with an update message.
 
 ## What the runtime contains
 
@@ -67,9 +69,10 @@ to say which game the app runs.
 | GLib, GStreamer, gnutls, nettle, GMP, FreeType, libffi, PCRE2, proxy-libintl, SDL2 | built by `runtime/` | see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) |
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
-The runtime and corresponding dependency source archives are attached to the
-[runtime release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1);
-app 0.1.2 uses that unchanged dev4 runtime. Wine and Mullion are
+Runtime dev5 ships on the app 0.1.3 release, with an updated CPU helper built from
+this repository. Wine, Mullion and dependency source archives remain on the
+[dev4 release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1);
+those components are unchanged in dev5. Wine and Mullion are
 pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev4` in their repositories.
 
 ## Building

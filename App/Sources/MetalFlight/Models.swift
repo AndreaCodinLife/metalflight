@@ -30,6 +30,9 @@ struct Profile: Codable {
     let helper: String
     /// Relative to the runtime: the Steam SDK readiness probe.
     let readinessProbe: String
+    /// Exact executable hashes supported by this runtime's CPU patch table.
+    /// Absent in older profiles, which support only the original game build.
+    var supportedGameBuilds: [String: String]? = nil
 
     static func load(runtime: URL) throws -> Profile {
         let data = try Data(contentsOf: runtime.appendingPathComponent("share/metalflight/profile.json"))

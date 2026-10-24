@@ -162,3 +162,30 @@ The authored dependency loader and MSVC exception/copy/destructor control were
 qualified against missing-prerequisite and installed-prerequisite environments
 on runtime dev4. Unit tests cover builtin, x86, truncated and partial-file
 rejection. These controls do not qualify game sign-in or flight.
+
+
+## Game build compatibility (app 0.1.3 / runtime dev5)
+
+The original helper table targeted MSFS 1.9.18.0. In 1.9.21.0, the executable's
+functions moved, so target 12 failed preparation, no core sites were installed,
+and a Rosetta EmulateForward error was observed during loading at 28%.
+
+`helper/src/game_build.h` selects explicit RVA mappings for the two known PE
+builds. The launcher checks exact executable hashes from the runtime profile
+before installing prerequisites or starting the game. Legacy profiles are
+restricted to 1.9.18.0. Unknown PE build metadata is also refused inside the
+helper. Exact code preimages and unwind validation remain mandatory before
+any edits. There is no runtime pattern scanner or fallback offset guess.
+
+New locations were aligned using matching old/new unwind metadata and nine
+neighboring function signatures, then validated by the helper's original
+preimage and unwind checks in a live 1.9.21.0 trial. All 22 core sites installed
+and the mission-empty guard verified its real caller/getter/cleanup code.
+Diagnostic RVA values remain original table keys; `game_build=2` selects the
+1.9.21.0 mapping. Owned qualification covers 16 CPU cases, eight mission-guard
+cases, and metadata/unknown-image refusal. Ten Swift tests pass.
+
+The Wine and renderer binaries remain those from dev4. Per-frame shared media
+tracing is omitted from the profile: this renderer treats the variable's
+presence as enabled, including a value of "0". Saved prefixes, credentials,
+game files and Apple libraries remain outside release assets.

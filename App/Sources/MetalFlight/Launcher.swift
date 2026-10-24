@@ -75,6 +75,7 @@ struct Launcher {
     /// Starts Steam if needed, waits for genuine readiness, then launches the game.
     func play(status: @escaping (String) -> Void) async throws -> Process {
         guard gameInstalled else { throw MetalFlightError.message("Install Microsoft Flight Simulator 2024 from Steam first.") }
+        _ = try GameBuild.verify(Paths.game, supported: profile.supportedGameBuilds)
         try await VisualCpp.ensure(wine: wine, status: status)
         try applyPatches()
         if !(await steamReady()) {

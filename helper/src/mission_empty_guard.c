@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "game_build.h"
 static const BYTE getter_bytes[]={0x48,0x8b,0x41,0x20,0x48,0x85,0xc0,0x75,0x04,0x48,0x8b,0x41,0x10,0xc3};
 static const BYTE game_caller[]={0x49,0x8b,0xcc,0xe8,0xdc,0x0c,0xbb,0xff,0x48,0x8d,0x50,0x10,0x48,0x8d,0x8d,0xa0,0x08,0x00,0x00,0xe8,0xfc,0xd9,0x90,0xff};
 static const BYTE game_cleanup[]={0x33,0xd2,0x48,0x8d,0x4d,0xf0,0xe8,0x58,0x48,0x00,0x00,0x90,0xb8,0x06,0x00,0x00,0x00};
@@ -110,12 +111,14 @@ static DWORD WINAPI game_worker(void *unused) {
  if(!n || n>=sizeof(path))return 0;char *name=strrchr(path,'\\');name=name?name+1:path;
  if(_stricmp(name,"FlightSimulator2024.exe")){InterlockedExchange(&guard_state,-100);return 0;}
  BYTE *base=(BYTE *)GetModuleHandleW(NULL);LONG state=-30;
+ unsigned build=game_current_build();
+ if(!build){InterlockedExchange(&guard_state,-32);return 0;}
  for(unsigned i=0;i<1800;i++) {
-  if(code_matches(base+0x4714510,getter_bytes,sizeof(getter_bytes),TRUE) &&
-     code_matches(base+0x4b6382c,game_caller,sizeof(game_caller),TRUE) &&
-     code_matches(base+0x4b6384d,game_cleanup,sizeof(game_cleanup),TRUE)) {
-   state=install_guard(base+0x4714510,base+0x4b6382c,sizeof(game_caller),game_caller,
-     base+0x4b63834,base+0x4b6384d,sizeof(game_cleanup),game_cleanup,TRUE);break;
+  if(code_matches(base+game_rva_for_build(build,0x4714510),getter_bytes,sizeof(getter_bytes),TRUE) &&
+     code_matches(base+game_rva_for_build(build,0x4b6382c),game_caller,sizeof(game_caller),TRUE) &&
+     code_matches(base+game_rva_for_build(build,0x4b6384d),game_cleanup,sizeof(game_cleanup),TRUE)) {
+   state=install_guard(base+game_rva_for_build(build,0x4714510),base+game_rva_for_build(build,0x4b6382c),sizeof(game_caller),game_caller,
+     base+game_rva_for_build(build,0x4b63834),base+game_rva_for_build(build,0x4b6384d),sizeof(game_cleanup),game_cleanup,TRUE);break;
   }
   Sleep(100);
  }

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.2 Visual C++ prerequisites fix; excludes this manifest",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.3 game build compatibility; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -54,8 +54,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "a0bd592583ae6c319e833ee6d8e675cf5f15abe49ecd21ae5796f874fec29a25",
-      "size": 5450,
+      "sha256": "9b178ce858f9ac1c25a517543da4c92f9dfc2437d6b19a67e47b4b3e5a0e2b45",
+      "size": 5535,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
@@ -64,8 +64,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Models.swift": {
-      "sha256": "0c95249fcf18440ab52e6c6d4273192eeaa99e13ac4d3f544fc9fd163a832d01",
-      "size": 1559,
+      "sha256": "d0a3627cb0eb7eb976b45a187baa9eaa13285b32efa8b16a73a3e23316ae4212",
+      "size": 1767,
       "group": "app"
     },
     "App/Sources/MetalFlight/Paths.swift": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "91a6a750966b47ef7613935db68bea1de771374fc371cbcc8a0aaf372570bf5e",
-      "size": 5639,
+      "sha256": "147975a99cbd7e2dc3e3c7d1cdb78044ab3aac726079fe06f267e9c412175320",
+      "size": 5891,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "78a9a944ea98e9a43d4836530ed5dbaf04beb01c4935d1d828cfbd65ec3ea1ca",
-      "size": 8063,
+      "sha256": "6c817c1e7aff213ae7ec8b06b52df76a2fc6d65324d399064b1e5cce46a89073",
+      "size": 9621,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -144,8 +144,8 @@
       "group": "helper"
     },
     "helper/src/catalog_home_helper.c": {
-      "sha256": "f6ae73865f20ddb2a92aa2feb956cc28eb2ce631b324f6cb58a5283e361937e1",
-      "size": 13364,
+      "sha256": "0d40ee20200d98defec4da5ebddaee16b5a6a2d70abc6c864d3364ca5e1414e8",
+      "size": 13834,
       "group": "helper"
     },
     "helper/src/home_entry_site.h": {
@@ -164,8 +164,8 @@
       "group": "helper"
     },
     "helper/src/mission_empty_guard.c": {
-      "sha256": "4a1dafcd6158dd01f7fe8dbeb2f1bcff4e5e915d6a7064d5ce5f62c6ee8e156f",
-      "size": 8671,
+      "sha256": "2926c618861dfef9c5cee5df298f9b2602dda946ba26873abb6dc62925c54ca6",
+      "size": 8976,
       "group": "helper"
     },
     "helper/src/ntdll_padded_sites.h": {
@@ -309,8 +309,8 @@
       "group": "runtime-build"
     },
     "runtime/profile.json": {
-      "sha256": "168b723f37818be57360e922a6a9588486b2931e5a913066fe6bc2cbc1422d46",
-      "size": 3855,
+      "sha256": "da3f3c8cff177e69e486116aa49f23ea65cd3e4fec3ef63514fbd2427e5030a7",
+      "size": 4014,
       "group": "runtime-build"
     },
     "runtime/sources.lock.json": {
@@ -352,12 +352,37 @@
       "group": "app",
       "sha256": "d0504e16b18de8e523dcfa39264f4131e59caa2ae65452e059c7932a673ee793",
       "size": 2643
+    },
+    "App/Sources/MetalFlight/GameBuild.swift": {
+      "group": "app",
+      "sha256": "7aaab34aed2a67ccd2ac406ca4197369986ad34db7fb12b45ff4067621fd5131",
+      "size": 638
+    },
+    "App/Tests/MetalFlightTests/GameBuildTests.swift": {
+      "group": "app",
+      "sha256": "73c85a0595545affd2cae61ae1d5622ffc6692e0b61607b84b65b5ba63d588bc",
+      "size": 846
+    },
+    "helper/src/game_build.h": {
+      "group": "helper",
+      "sha256": "286e95f83c0f196c41450b73d9127692395ec7136baa8114d1d4f48845ae56ea",
+      "size": 1731
+    },
+    "helper/tests/game_build_metadata.c": {
+      "group": "helper",
+      "sha256": "f42403c6da4409e0387a76e921da18e6759af8d499eb385ee9c0d2fdc6c1829b",
+      "size": 812
+    },
+    "helper/tests/unknown_game.c": {
+      "group": "helper",
+      "sha256": "eee2382e0999077dd532b03bc3ca74cbcc9bae0aba55ec7e8b89e48ed13f0ff6",
+      "size": 388
     }
   },
   "groups": {
-    "app": 21,
+    "app": 23,
     "distribution": 9,
-    "helper": 30,
+    "helper": 33,
     "licence": 2,
     "runtime-build": 6
   },
