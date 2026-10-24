@@ -17,7 +17,7 @@ The runtime downloads separately; Steam and the game are installed using your ow
 
 This preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
 launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
-choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.3)
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.4)
 describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
