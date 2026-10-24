@@ -11,7 +11,7 @@ on Apple Silicon Macs, through a Wine runtime built from source with patches for
 
 ## Download
 
-Download [MetalFlight-0.1.3.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.3/MetalFlight-0.1.3.dmg),
+Download [MetalFlight-0.1.4.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.4/MetalFlight-0.1.4.dmg),
 open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
 The runtime downloads separately; Steam and the game are installed using your own account.
 
@@ -57,6 +57,10 @@ to say which game the app runs.
    The Microsoft installer downloads directly from Microsoft; it is not bundled in MetalFlight.
    Version 0.1.3 supports game builds **1.9.18.0 and 1.9.21.0** with separate CPU patch
    locations. Other executable builds are refused before launch, with an update message.
+   Version 0.1.4 selects classic wheel notches for MSFS trackpad scrolling, which the user
+   found improves click response after scrolling on the globe in the research launcher. The
+   app applies it only to `FlightSimulator2024.exe`; globe zoom may feel less smooth. The
+   0.1.4 app-prefix behavior has not been separately confirmed.
 
 ## What the runtime contains
 

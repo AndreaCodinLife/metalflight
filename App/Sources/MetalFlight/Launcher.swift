@@ -72,6 +72,23 @@ struct Launcher {
                            environment: steamEnvironment, directory: Paths.steam, log: log("steam.log"))
     }
 
+    /// Use ordinary wheel notches for MSFS trackpad scrolling. The macOS Wine
+    /// driver otherwise sends continuous deltas, and the globe can keep clicks
+    /// unresponsive while it finishes processing the gesture.
+    func configureGameTrackpadScrolling() async throws {
+        let key = "HKCU\\Software\\Wine\\AppDefaults\\FlightSimulator2024.exe\\Mac Driver"
+        let status = try await wine.run("reg.exe", [
+            "add", key,
+            "/v", "UsePreciseScrolling",
+            "/t", "REG_SZ",
+            "/d", "N",
+            "/f",
+        ], log: log("trackpad-scrolling.log"))
+        guard status == 0 else {
+            throw MetalFlightError.message("The MSFS trackpad scrolling setting could not be applied (exit \(status)).")
+        }
+    }
+
     /// Starts Steam if needed, waits for genuine readiness, then launches the game.
     func play(status: @escaping (String) -> Void) async throws -> Process {
         guard gameInstalled else { throw MetalFlightError.message("Install Microsoft Flight Simulator 2024 from Steam first.") }
@@ -88,6 +105,8 @@ struct Launcher {
             }
             guard ready else { throw MetalFlightError.message("Steam did not become ready. Sign in to Steam, then press Play again.") }
         }
+        status("Configuring trackpad scrolling…")
+        try await configureGameTrackpadScrolling()
         status("Launching Microsoft Flight Simulator 2024…")
         let stamp = Int(Date().timeIntervalSince1970)
         let settings = profile.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\cpu-\(stamp).txt") }
