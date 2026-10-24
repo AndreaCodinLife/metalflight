@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "147975a99cbd7e2dc3e3c7d1cdb78044ab3aac726079fe06f267e9c412175320",
-      "size": 5891,
+      "sha256": "be7e12938986e84ad1ea9cf51114a609b6b50d5ebe69a2b8149fbc893dbcc682",
+      "size": 5826,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "6c817c1e7aff213ae7ec8b06b52df76a2fc6d65324d399064b1e5cce46a89073",
-      "size": 9621,
+      "sha256": "7fefd55d3d706ebd6757e02a2dc15e8626f025c4a2061151fb17af805a1194d9",
+      "size": 10104,
       "group": "distribution"
     },
     "helper/build.sh": {

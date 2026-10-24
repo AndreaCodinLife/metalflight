@@ -189,3 +189,11 @@ The Wine and renderer binaries remain those from dev4. Per-frame shared media
 tracing is omitted from the profile: this renderer treats the variable's
 presence as enabled, including a value of "0". Saved prefixes, credentials,
 game files and Apple libraries remain outside release assets.
+
+
+The 2026-10-24 trial subsequently completed a user-confirmed free-flight mission
+on the maintainer's M1 Pro (32 GB) and MSFS 1.9.21.0, with normal exit 0 and no
+Rosetta EmulateForward diagnostic. The 22 core sites and mission guard installed.
+The later optional GI and RI sites were skipped by their existing checks; they
+are not counted as installed. This is one successful application-prefix trial,
+not a repeated-launch, long-flight, other-mode or other-hardware qualification.

@@ -3,12 +3,11 @@
 MetalFlight is a macOS app that runs **your own Steam copy of Microsoft Flight Simulator 2024**
 on Apple Silicon Macs, through a Wine runtime built from source with patches for this game.
 
-> **Experimental preview.** The source-built research runtime completed a flight on an
-> **Apple M1 Pro with 32 GB of unified memory** (the maintainer's Mac).
-> Steam's readable sign-in window, successful sign-in and saved login after restarting through
-> the launcher are user-confirmed on that Mac. Game sign-in and flight through this app
-> are not yet qualified. Long flights, repeated-launch reliability and other Mac models remain
-> unverified.
+> **Experimental preview.** The maintainer completed a **free-flight mission** with
+> **MetalFlight 0.1.3 / runtime dev5 and MSFS 1.9.21.0** on an **Apple M1 Pro with
+> 32 GB of unified memory**, then exited normally (code 0). Steam sign-in and saved login
+> are also user-confirmed. Long flights, repeated-launch reliability, other game modes
+> and other Mac models remain unverified.
 
 ## Download
 
