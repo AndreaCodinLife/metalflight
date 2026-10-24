@@ -78,9 +78,10 @@ to say which game the app runs.
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
 Runtime dev6 ships on the app 0.1.5 release. It keeps runtime dev5's Wine, Mullion and
-CPU helper binaries, changing the game profile to leave bloom enabled. Wine, Mullion and dependency source archives remain on the
+CPU helper binaries, changing the game profile to leave bloom enabled. Wine, Mullion and
+dependency source archives remain on the
 [dev4 release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1);
-those components are unchanged in dev5. Wine and Mullion are
+those components are unchanged in dev5 and dev6. Wine and Mullion are
 pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev4` in their repositories.
 
 ## Building
