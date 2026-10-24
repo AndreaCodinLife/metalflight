@@ -7,17 +7,19 @@ on Apple Silicon Macs, through a Wine runtime built from source with patches for
 > **MetalFlight 0.1.3 / runtime dev5 and MSFS 1.9.21.0** on an **Apple M1 Pro with
 > 32 GB of unified memory**, then exited normally (code 0). Steam sign-in and saved login
 > are also user-confirmed. Long flights, repeated-launch reliability, other game modes
-> and other Mac models remain unverified.
+> and other Mac models remain unverified. Bloom-on sign-in, menu and moving video were
+> confirmed in a separate research launch; behavior in MetalFlight's own prefix and
+> bloom-on flight remain unverified.
 
 ## Download
 
-Download [MetalFlight-0.1.4.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.4/MetalFlight-0.1.4.dmg),
+Download [MetalFlight-0.1.5.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.5/MetalFlight-0.1.5.dmg),
 open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
 The runtime downloads separately; Steam and the game are installed using your own account.
 
 This preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
 launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
-choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.4)
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.5)
 describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
@@ -60,7 +62,10 @@ to say which game the app runs.
    Version 0.1.4 selects classic wheel notches for MSFS trackpad scrolling, which the user
    found improves click response after scrolling on the globe in the research launcher. The
    app applies it only to `FlightSimulator2024.exe`; globe zoom may feel less smooth. The
-   0.1.4 app-prefix behavior has not been separately confirmed.
+   0.1.4 app-prefix behavior has not been separately confirmed. Version 0.1.5 enables the
+   renderer's bloom input by default. Bloom-on sign-in, menu and moving video were confirmed
+   in a separate research launch; bloom appearance, flight, and behavior in MetalFlight's
+   own prefix remain unverified.
 
 ## What the runtime contains
 
@@ -72,8 +77,8 @@ to say which game the app runs.
 | GLib, GStreamer, gnutls, nettle, GMP, FreeType, libffi, PCRE2, proxy-libintl, SDL2 | built by `runtime/` | see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) |
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
-Runtime dev5 ships on the app 0.1.3 release, with an updated CPU helper built from
-this repository. Wine, Mullion and dependency source archives remain on the
+Runtime dev6 ships on the app 0.1.5 release. It keeps runtime dev5's Wine, Mullion and
+CPU helper binaries, changing the game profile to leave bloom enabled. Wine, Mullion and dependency source archives remain on the
 [dev4 release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1);
 those components are unchanged in dev5. Wine and Mullion are
 pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev4` in their repositories.
