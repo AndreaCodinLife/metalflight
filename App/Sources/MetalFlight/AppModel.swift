@@ -124,7 +124,12 @@ final class AppModel {
             Task.detached {
                 process.waitUntilExit()
                 let code = process.terminationStatus
-                await MainActor.run { self.playing = false; self.note("The game exited (\(code)).") }
+                await MainActor.run {
+                    self.playing = false
+                    if code == 53 {
+                        self.note("The game could not load a required Windows library (exit 53). Check the newest game log using Logs.")
+                    } else { self.note("The game exited (\(code)).") }
+                }
             }
         }
     }

@@ -12,13 +12,13 @@ on Apple Silicon Macs, through a Wine runtime built from source with patches for
 
 ## Download
 
-Download [MetalFlight-0.1.1.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.1/MetalFlight-0.1.1.dmg),
+Download [MetalFlight-0.1.2.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.2/MetalFlight-0.1.2.dmg),
 open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
 The runtime downloads separately; Steam and the game are installed using your own account.
 
 This preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
 launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
-choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1)
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.2)
 describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
@@ -51,8 +51,11 @@ to say which game the app runs.
    you sign in and install the game as on Windows. Steam remembers the login when enabled.
    Version 0.1.1 fixes the missing graphics bridge and keeps Steam's browser rendering
    in one process, while leaving the simulator's DirectX 12 configuration separate.
-6. **Play** starts Steam if needed and waits until the Steam SDK reports you are signed in and own
-   the game. It then starts the simulator with MetalFlight's patches.
+6. **Play** installs Microsoft's official x64 Visual C++ prerequisites when missing, then
+   starts Steam if needed and waits until the Steam SDK reports you are signed in and own
+   the game. It then starts the simulator with MetalFlight's patches. Version 0.1.2 fixes
+   an immediate exit 53 caused by missing native C++ libraries in a fresh environment.
+   The Microsoft installer downloads directly from Microsoft; it is not bundled in MetalFlight.
 
 ## What the runtime contains
 
@@ -64,7 +67,9 @@ to say which game the app runs.
 | GLib, GStreamer, gnutls, nettle, GMP, FreeType, libffi, PCRE2, proxy-libintl, SDL2 | built by `runtime/` | see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) |
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
-Corresponding dependency source archives are attached to the release. Wine and Mullion are
+The runtime and corresponding dependency source archives are attached to the
+[runtime release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1);
+app 0.1.2 uses that unchanged dev4 runtime. Wine and Mullion are
 pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev4` in their repositories.
 
 ## Building

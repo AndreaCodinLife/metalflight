@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.1 Steam sign-in fix; excludes this manifest",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.2 Visual C++ prerequisites fix; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -29,8 +29,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/AppModel.swift": {
-      "sha256": "76c640a6b61791f74451217b88b4ce41bc0b8e5598ecd75bc4705c829e8f2972",
-      "size": 5234,
+      "sha256": "eb5653fbafe7c5971f491de9e2e9cfa734f2093b60191ee5a551a7a8f8445160",
+      "size": 5473,
       "group": "app"
     },
     "App/Sources/MetalFlight/AppUpdates.swift": {
@@ -49,13 +49,13 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Headless.swift": {
-      "sha256": "d91d36ec0c32206433c405667b78a478365cf6b87bafbf05434cc3a11b748aef",
-      "size": 3920,
+      "sha256": "8b5dd6a079022efb3b00c9d5593dbe82d595ab2edf2d8c958bf39c0870155b56",
+      "size": 4609,
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "66335c39e23ca2a62f928acf29104887766f4930af0212ebf9cfb4e9cc05d133",
-      "size": 5387,
+      "sha256": "a0bd592583ae6c319e833ee6d8e675cf5f15abe49ecd21ae5796f874fec29a25",
+      "size": 5450,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "b40455461c2685efb78a5378014945cee3ca3676c928c05c0a7b23681046b50e",
-      "size": 5217,
+      "sha256": "91a6a750966b47ef7613935db68bea1de771374fc371cbcc8a0aaf372570bf5e",
+      "size": 5639,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "1b75af1ead70ce2c2b92f38718d12ab3f9c585d425d2827a498249c6ad7e2754",
-      "size": 7076,
+      "sha256": "78a9a944ea98e9a43d4836530ed5dbaf04beb01c4935d1d828cfbd65ec3ea1ca",
+      "size": 8063,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -342,10 +342,20 @@
       "group": "runtime-build",
       "sha256": "7de093d40ab67c057fb8204b4f5bd3812ac498e274d1a3c8731c891afc829b99",
       "size": 3412
+    },
+    "App/Sources/MetalFlight/VisualCpp.swift": {
+      "group": "app",
+      "sha256": "f4a8faf4bfb3f2af6a76792557349abc1cb3e5bf447ce5a2686e11b75922069a",
+      "size": 3573
+    },
+    "App/Tests/MetalFlightTests/VisualCppTests.swift": {
+      "group": "app",
+      "sha256": "d0504e16b18de8e523dcfa39264f4131e59caa2ae65452e059c7932a673ee793",
+      "size": 2643
     }
   },
   "groups": {
-    "app": 19,
+    "app": 21,
     "distribution": 9,
     "helper": 30,
     "licence": 2,

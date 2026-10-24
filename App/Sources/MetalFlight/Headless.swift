@@ -1,8 +1,9 @@
 import Foundation
 
 /// `MetalFlight --headless <command>`: the app's own code paths without the window (tests, CI).
-///   status | check-runtime | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam | start-steam
+///   status | check-runtime | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam | start-steam | install-prerequisites
 ///   run PROGRAM [ARGS...]   (in the prefix, with the game's environment and DLL overrides)
+///   play                   (normal launch sequence, reports exit; retains Steam)
 enum Headless {
     static func run(_ arguments: [String]) -> Int32 {
         var status: Int32 = 0
@@ -28,7 +29,9 @@ enum Headless {
             print("support: \(Paths.support.path)")
             print("system: arm64=\(s.appleSilicon) macOS=\(s.macOSVersion) rosetta=\(s.rosetta) freeGB=\(s.freeGigabytes)")
             print("runtime: \(Updater.installedVersion() ?? "none")  gptk: \(GPTK.installed)")
-            if let l = try? launcher() { print("prefix: \(l.prefixReady)  steam: \(l.steamInstalled)  game: \(l.gameInstalled)") }
+            if let l = try? launcher() { print("prefix: \(l.prefixReady)  steam: \(l.steamInstalled)  game: \(l.gameInstalled)  visual-cpp: \(VisualCpp.installed(in: l.wine.prefix))") }
+        case "install-prerequisites":
+            try await VisualCpp.ensure(wine: launcher().wine, status: { print($0) })
         case "install-runtime":
             let manifest = try await Updater.fetchManifest()
             try await Updater.install(manifest.runtime, progress: { print($0) }, beforeActivation: {
@@ -54,6 +57,14 @@ enum Headless {
             try await launcher().installSteam(); print("steam: installed")
         case "start-steam":
             try launcher().startSteam(); print("steam: started")
+        case "play":
+            let process = try await launcher().play { print($0) }
+            print("game pid: \(process.processIdentifier)")
+            process.waitUntilExit()
+            print("game exit: \(process.terminationStatus)")
+            if process.terminationStatus != 0 {
+                throw MetalFlightError.message("The game exited (\(process.terminationStatus)).")
+            }
         case "run":
             guard arguments.count > 1 else { throw MetalFlightError.message("run needs a program") }
             let l = try launcher()

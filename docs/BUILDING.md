@@ -144,3 +144,21 @@ rollback, corrupted rollback refusal, failed-update preservation and invalid ver
 A complete application update still needs testing between two notarized releases using the
 real update feed. Fresh Steam sign-in, game installation and flight through this application's
 prefix are separate acceptance steps; the earlier research flight does not qualify them.
+
+
+## Visual C++ prerequisites (app 0.1.2)
+
+Before starting the game, `Launcher.play` checks all six native-only x64 C++
+DLLs. Wine builtin files do not satisfy this check. Missing or partial setups
+trigger Microsoft's official x64 installer from
+`https://aka.ms/vc14/vc_redist.x64.exe`, with `/install /quiet /norestart` in
+this app's own prefix, without the game's native-only DLL overrides. The files
+are checked again before launch. Microsoft DLLs and installers are not release
+assets. `--headless install-prerequisites` repairs the same prerequisite without
+launching a game; `--headless play` exercises the normal launch sequence and
+reports the game's exit without stopping Steam.
+
+The authored dependency loader and MSVC exception/copy/destructor control were
+qualified against missing-prerequisite and installed-prerequisite environments
+on runtime dev4. Unit tests cover builtin, x86, truncated and partial-file
+rejection. These controls do not qualify game sign-in or flight.
