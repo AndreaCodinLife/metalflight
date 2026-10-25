@@ -82,7 +82,11 @@ CPU helper binaries, changing the game profile to leave bloom enabled. Wine, Mul
 dependency source archives remain on the
 [dev4 release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1);
 those components are unchanged in dev5 and dev6. Wine and Mullion are
-pinned by `runtime/sources.lock.json` and tagged `runtime-2026.10.23-dev4` in their repositories.
+pinned for those released binaries by tag `runtime-2026.10.23-dev4` in their repositories.
+The source lock now selects a candidate Wine correction for hardware breakpoint
+state across thread suspension, enabled only for the game profile. See
+[candidate validation](docs/BUILDING.md#hardware-context-cache-candidate).
+This source change has not been packaged into a public runtime release.
 
 ## Building
 

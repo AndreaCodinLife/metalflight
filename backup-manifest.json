@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.3 game build compatibility; excludes this manifest",
+  "purpose": "Reviewed source inventory for the hardware-context-cache candidate; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-wine",
-      "commit": "77b788cdbbe83c5ea8c3f78e17412e49e3492176"
+      "commit": "d3422c57b0676a7ed8e4c8655ed8b7135662ccfe"
     },
     "mullion": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
@@ -54,8 +54,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "9b178ce858f9ac1c25a517543da4c92f9dfc2437d6b19a67e47b4b3e5a0e2b45",
-      "size": 5535,
+      "sha256": "518ec54e1daf338374107e5a3e0ad82711521e507368f8a4f9ccc36db0d0b422",
+      "size": 6413,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "be7e12938986e84ad1ea9cf51114a609b6b50d5ebe69a2b8149fbc893dbcc682",
-      "size": 5826,
+      "sha256": "c64b2a73db1c3c262ae451baad3dae7ee7a0e82f84ce2c658d6c4f7b30d7f5d9",
+      "size": 6929,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "7fefd55d3d706ebd6757e02a2dc15e8626f025c4a2061151fb17af805a1194d9",
-      "size": 10104,
+      "sha256": "c603baeb64b162e8e20677f573a2e78147cba09d8312a85b8ff87b87c9bbbb9b",
+      "size": 11550,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -309,12 +309,12 @@
       "group": "runtime-build"
     },
     "runtime/profile.json": {
-      "sha256": "da3f3c8cff177e69e486116aa49f23ea65cd3e4fec3ef63514fbd2427e5030a7",
-      "size": 4014,
+      "sha256": "8da8321561403fda8247221bc9b9f91db411d71bbe4cb1a84e5862292d68ba0f",
+      "size": 4055,
       "group": "runtime-build"
     },
     "runtime/sources.lock.json": {
-      "sha256": "f88b1b4e995baee6f4739006dc1422896ca5b0de2ea35e7826b40b6fa915fab7",
+      "sha256": "73088da1c92600351d40474304e5605c7407ae38332f1e25a68471df61f9aaea",
       "size": 318,
       "group": "runtime-build"
     },
