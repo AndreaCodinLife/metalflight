@@ -13,13 +13,13 @@ on Apple Silicon Macs, through a Wine runtime built from source with patches for
 
 ## Download
 
-Download [MetalFlight-0.1.6.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.6/MetalFlight-0.1.6.dmg),
+Download [MetalFlight-0.1.7.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.7/MetalFlight-0.1.7.dmg),
 open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
 The runtime downloads separately; Steam and the game are installed using your own account.
 
 This preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
 launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
-choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.6)
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.7)
 describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
@@ -81,13 +81,35 @@ to say which game the app runs.
 | GLib, GStreamer, gnutls, nettle, GMP, FreeType, libffi, PCRE2, proxy-libintl, SDL2 | built by `runtime/` | see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) |
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
-Runtime dev7 ships with app 0.1.6. It adds the tested Wine hardware context cache
+Runtime dev7 shipped with app 0.1.6. It adds the tested Wine hardware context cache
 correction and enables it for the game profile. Mullion, the CPU helper and dependency
 binaries retain their dev6 versions; bloom remains enabled. The release includes
 corresponding Wine and app source archives. Unchanged Mullion and dependency sources
 remain available on the [dev4 release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1).
 `runtime/sources.lock.json` pins the runtime source commits. See
 [validation and limitations](docs/BUILDING.md#hardware-context-cache-correction).
+
+## Recycled-stack correction (0.1.7 / runtime dev8)
+
+Runtime 2026.10.25-dev8 adds the [Wine stack-recovery correction](https://github.com/AndreaCodinLife/metalflight-wine/pull/2)
+related to [the A320 FPLN freeze in issue 4](https://github.com/AndreaCodinLife/metalflight/issues/4).
+A recycled fiber stack can retain an old guard marker on a decommitted page.
+Wine now accepts that marker while validating the existing writable stack range,
+then grows the stack in order and retains its guard. The existing protection,
+view, distance and reserve-boundary checks remain in effect.
+
+The candidate passes 32 owned checks: ten stack contracts, six hardware-context
+contracts and sixteen CPU-helper regressions. The portable stack runner repeats
+all ten cases successfully; released dev7 reproduces the two expected recycled-stack
+failures. This fixes a reproduced platform defect matching the supplied logs.
+**The actual A320 INIT A → FPLN sequence has not yet been verified**, so issue 4
+remains open. Other guard-handling paths, aircraft, flight stability and hardware
+remain outside this qualification.
+
+The game profile, renderer, CPU helper and dependency binaries retain their dev7
+versions. Bloom and the hardware-context correction remain enabled. Previous
+runtime releases remain available for rollback. Install the new runtime with
+**Update** in the app; updating the application alone does not install Wine patches.
 
 ## Building
 

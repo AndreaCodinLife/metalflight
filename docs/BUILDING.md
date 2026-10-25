@@ -12,7 +12,7 @@ The CPU helper needs llvm-mingw 20260908 (UCRT, clang 23.1.1) to reproduce the q
 
 ```sh
 git clone https://github.com/AndreaCodinLife/metalflight-wine runtime/work/metalflight-wine
-git -C runtime/work/metalflight-wine checkout d3422c57b0676a7ed8e4c8655ed8b7135662ccfe
+git -C runtime/work/metalflight-wine checkout 3384084f9de2f8e7f835ef9ed5ca36a36094b101
 python3 runtime/fetch_sources.py        # pinned archives, SHA-256 verified
 ```
 
@@ -225,3 +225,37 @@ M2 Max remains untested. This addresses a reproduced platform defect related to
 [issue #1](https://github.com/AndreaCodinLife/metalflight/issues/1); it does not
 establish long-term game reliability or close the original report. Saved prefixes and raw fault captures are not source
 or release assets.
+
+## Recycled-stack recovery correction
+
+Release 0.1.7 / runtime 2026.10.25-dev8 pins Wine source
+`3384084f9de2f8e7f835ef9ed5ca36a36094b101`. Relative to dev7, only the native
+`ntdll.so` and the source-lock/inventory metadata change. The game profile,
+renderer, CPU helper and all other dependency binaries remain unchanged.
+`MSFS24_WINE_SKIPPED_GUARD_COMMIT=1` was already enabled in the game profile.
+No incoming-fiber priming or extra per-frame diagnostics are enabled.
+
+Rebuild Wine from the pinned source with the existing runtime build procedure.
+The qualified module was linked from the dev7 context-cache object and the new
+`virtual.c` object; all thirteen compared non-debug sections of an unmodified
+baseline rebuild match dev7. Full source archives and component hashes accompany
+the release.
+
+The new authored fixture and portable runner live in the Wine source tree:
+
+```sh
+python3 msfs24/test_recycled_stack.py --runtime /path/to/dev8-runtime \
+  --cc /path/to/x86_64-w64-mingw32-clang --work /new/owned-stack-test
+```
+
+Use `--baseline` with dev7 to require the two expected recycled-stack failures.
+Ten candidate stack contracts, six existing context contracts and sixteen CPU
+helper regressions pass; the portable stack runner independently repeats all ten
+contracts. Guard-off, read-only, no-access, committed-gap, missing-guard and
+excessive-distance cases must remain refused without partial page mutation.
+The earlier branch handling a guard marker on the faulting page is unchanged.
+
+These controls match the final stack-fault shape of both issue-4 logs, not a
+complete game trace. A320 ON APU / INIT A DEP-ARR / FPLN recovery, sign-in/video
+on dev8, flight, repeated launches and reporter-hardware behavior remain
+unverified. Do not inherit dev7's game confirmations as new dev8 observations.

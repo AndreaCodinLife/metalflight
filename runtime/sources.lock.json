@@ -2,7 +2,7 @@
   "schema": 1,
   "wine": {
     "repository": "https://github.com/AndreaCodinLife/metalflight-wine",
-    "commit": "d3422c57b0676a7ed8e4c8655ed8b7135662ccfe"
+    "commit": "3384084f9de2f8e7f835ef9ed5ca36a36094b101"
   },
   "mullion": {
     "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
