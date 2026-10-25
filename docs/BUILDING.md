@@ -12,7 +12,7 @@ The CPU helper needs llvm-mingw 20260908 (UCRT, clang 23.1.1) to reproduce the q
 
 ```sh
 git clone https://github.com/AndreaCodinLife/metalflight-wine runtime/work/metalflight-wine
-git -C runtime/work/metalflight-wine checkout runtime-2026.10.23-dev4
+git -C runtime/work/metalflight-wine checkout d3422c57b0676a7ed8e4c8655ed8b7135662ccfe
 python3 runtime/fetch_sources.py        # pinned archives, SHA-256 verified
 ```
 
@@ -197,3 +197,29 @@ Rosetta EmulateForward diagnostic. The 22 core sites and mission guard installed
 The later optional GI and RI sites were skipped by their existing checks; they
 are not counted as installed. This is one successful application-prefix trial,
 not a repeated-launch, long-flight, other-mode or other-hardware qualification.
+
+## Hardware context cache candidate
+
+The source lock selects the [Wine context-cache correction](https://github.com/AndreaCodinLife/metalflight-wine/pull/1).
+The game profile enables `MSFS24_WINE_HW_CONTEXT_CACHE=1` with the existing
+Rosetta hardware-watch setting. Steam's profile is unchanged. Build a new Wine
+runtime from the pinned source: changing a profile cannot add the correction to
+an older native module. Existing release assets are unchanged.
+
+An authored suspended-thread/NOP control reproduces zero debug-register
+readback and a false `0x80000003` breakpoint in the previous implementation.
+The correction passes six owned contracts and all 16 CPU helper regression
+controls, including expected failure controls. The portable source test runner
+also passes its six ON contracts in a fresh owned prefix.
+
+One MSFS 1.9.21.0 candidate launch with bounded trap diagnostics reached
+user-confirmed usable sign-in, moving video and menu, followed by a normal quit
+and exit 0. A repeat with extra trap tracing off reached a Microsoft sign-in
+error and was restarted at the user's request. After that restart, the user
+confirmed usable sign-in, moving video and the menu with extra trap tracing
+still off. That repeat remains open; no normal quit or exit is inferred.
+The natural game breakpoint has not reproduced in the new clone, and the issue reporter's
+M2 Max remains untested. This is a candidate for
+[issue #1](https://github.com/AndreaCodinLife/metalflight/issues/1), not a closed
+game reliability claim. Saved prefixes and raw fault captures are not source
+or release assets.
