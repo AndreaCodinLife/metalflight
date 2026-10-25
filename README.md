@@ -13,13 +13,13 @@ on Apple Silicon Macs, through a Wine runtime built from source with patches for
 
 ## Download
 
-Download [MetalFlight-0.1.5.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.5/MetalFlight-0.1.5.dmg),
+Download [MetalFlight-0.1.6.dmg](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.6/MetalFlight-0.1.6.dmg),
 open it and drag **MetalFlight** to **Applications**. Launch the app and follow the setup steps.
 The runtime downloads separately; Steam and the game are installed using your own account.
 
 This preview is **ad-hoc signed and not notarized by Apple**. macOS may block its first
 launch; review the app and use **System Settings → Privacy & Security → Open Anyway** if you
-choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.5)
+choose to allow it. [Release notes and checksums](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.6)
 describe the exact build and its limits.
 
 MetalFlight is not affiliated with, endorsed by or supported by Microsoft, Asobo Studio, Valve,
@@ -65,7 +65,11 @@ to say which game the app runs.
    0.1.4 app-prefix behavior has not been separately confirmed. Version 0.1.5 enables the
    renderer's bloom input by default. Bloom-on sign-in, menu and moving video were confirmed
    in a separate research launch; bloom appearance, flight, and behavior in MetalFlight's
-   own prefix remain unverified.
+   own prefix remain unverified. Version 0.1.6 preserves Wine's cached hardware debug
+   registers across thread suspension, correcting an authored reproduction of a false
+   startup breakpoint. Two MSFS 1.9.21.0 launches reached user-confirmed sign-in, menu
+   and moving video in an isolated research prefix; long-term reliability and the
+   issue reporter's M2 Max remain unverified.
 
 ## What the runtime contains
 
@@ -77,16 +81,13 @@ to say which game the app runs.
 | GLib, GStreamer, gnutls, nettle, GMP, FreeType, libffi, PCRE2, proxy-libintl, SDL2 | built by `runtime/` | see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) |
 
 The runtime contains no binary from CrossOver.app, no Apple software and no game file.
-Runtime dev6 ships on the app 0.1.5 release. It keeps runtime dev5's Wine, Mullion and
-CPU helper binaries, changing the game profile to leave bloom enabled. Wine, Mullion and
-dependency source archives remain on the
-[dev4 release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1);
-those components are unchanged in dev5 and dev6. Wine and Mullion are
-pinned for those released binaries by tag `runtime-2026.10.23-dev4` in their repositories.
-The source lock now selects a candidate Wine correction for hardware breakpoint
-state across thread suspension, enabled only for the game profile. See
-[candidate validation](docs/BUILDING.md#hardware-context-cache-candidate).
-This source change has not been packaged into a public runtime release.
+Runtime dev7 ships with app 0.1.6. It adds the tested Wine hardware context cache
+correction and enables it for the game profile. Mullion, the CPU helper and dependency
+binaries retain their dev6 versions; bloom remains enabled. The release includes
+corresponding Wine and app source archives. Unchanged Mullion and dependency sources
+remain available on the [dev4 release](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.1).
+`runtime/sources.lock.json` pins the runtime source commits. See
+[validation and limitations](docs/BUILDING.md#hardware-context-cache-correction).
 
 ## Building
 

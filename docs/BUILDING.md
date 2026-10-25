@@ -198,13 +198,15 @@ The later optional GI and RI sites were skipped by their existing checks; they
 are not counted as installed. This is one successful application-prefix trial,
 not a repeated-launch, long-flight, other-mode or other-hardware qualification.
 
-## Hardware context cache candidate
+## Hardware context cache correction
 
-The source lock selects the [Wine context-cache correction](https://github.com/AndreaCodinLife/metalflight-wine/pull/1).
+Runtime 2026.10.25-dev7 in release 0.1.6 uses the [Wine context-cache correction](https://github.com/AndreaCodinLife/metalflight-wine/pull/1).
 The game profile enables `MSFS24_WINE_HW_CONTEXT_CACHE=1` with the existing
 Rosetta hardware-watch setting. Steam's profile is unchanged. Build a new Wine
 runtime from the pinned source: changing a profile cannot add the correction to
-an older native module. Existing release assets are unchanged.
+an older native module. The new archive retains dev6 files except for the native
+`ntdll.so`, the game profile, source lock and inventory metadata. Prior release
+assets are preserved.
 
 An authored suspended-thread/NOP control reproduces zero debug-register
 readback and a false `0x80000003` breakpoint in the previous implementation.
@@ -219,7 +221,7 @@ error and was restarted at the user's request. After that restart, the user
 confirmed usable sign-in, moving video and the menu with extra trap tracing
 still off. That repeat remains open; no normal quit or exit is inferred.
 The natural game breakpoint has not reproduced in the new clone, and the issue reporter's
-M2 Max remains untested. This is a candidate for
-[issue #1](https://github.com/AndreaCodinLife/metalflight/issues/1), not a closed
-game reliability claim. Saved prefixes and raw fault captures are not source
+M2 Max remains untested. This addresses a reproduced platform defect related to
+[issue #1](https://github.com/AndreaCodinLife/metalflight/issues/1); it does not
+establish long-term game reliability or close the original report. Saved prefixes and raw fault captures are not source
 or release assets.

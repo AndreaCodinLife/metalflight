@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed source inventory for the hardware-context-cache candidate; excludes this manifest",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.6 hardware-context-cache correction; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "c64b2a73db1c3c262ae451baad3dae7ee7a0e82f84ce2c658d6c4f7b30d7f5d9",
-      "size": 6929,
+      "sha256": "5ca178a8be292528203d38e4badc1d20a2c1e6a3dd0808c5fc552e748ee07424",
+      "size": 7113,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "9d26d6e5c39345b28e7b64309c18b1d90aed841c03fd2f90f98ed25efa17d886",
-      "size": 11713,
+      "sha256": "d6e64d50433ac4cb42fd6a1b8bd062b243299a00acc4b9a1d9550b46069c6530",
+      "size": 11929,
       "group": "distribution"
     },
     "helper/build.sh": {
