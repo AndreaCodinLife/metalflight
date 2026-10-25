@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "c603baeb64b162e8e20677f573a2e78147cba09d8312a85b8ff87b87c9bbbb9b",
-      "size": 11550,
+      "sha256": "9d26d6e5c39345b28e7b64309c18b1d90aed841c03fd2f90f98ed25efa17d886",
+      "size": 11713,
       "group": "distribution"
     },
     "helper/build.sh": {

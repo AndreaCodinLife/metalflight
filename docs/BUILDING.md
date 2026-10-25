@@ -214,9 +214,11 @@ also passes its six ON contracts in a fresh owned prefix.
 
 One MSFS 1.9.21.0 candidate launch with bounded trap diagnostics reached
 user-confirmed usable sign-in, moving video and menu, followed by a normal quit
-and exit 0. Clean repeat validation remains pending: one repeat reached a
-Microsoft sign-in error and was restarted at the user's request. The natural
-game breakpoint has not reproduced in the new clone, and the issue reporter's
+and exit 0. A repeat with extra trap tracing off reached a Microsoft sign-in
+error and was restarted at the user's request. After that restart, the user
+confirmed usable sign-in, moving video and the menu with extra trap tracing
+still off. That repeat remains open; no normal quit or exit is inferred.
+The natural game breakpoint has not reproduced in the new clone, and the issue reporter's
 M2 Max remains untested. This is a candidate for
 [issue #1](https://github.com/AndreaCodinLife/metalflight/issues/1), not a closed
 game reliability claim. Saved prefixes and raw fault captures are not source
