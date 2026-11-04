@@ -89,10 +89,38 @@ struct Launcher {
         }
     }
 
+    /// The T.Flight Hotas One MSFS Edition needs Wine's raw HID path instead
+    /// of SDL's gamepad mapping. WineBus reads this option when its driver starts.
+    /// Refresh this prefix once after a change, before starting Steam or the game.
+    @discardableResult
+    func configureGameControllers() async throws -> Bool {
+        let key = "HKLM\\System\\CurrentControlSet\\Services\\WineBus\\Devices\\044f/b68d"
+        let wine = self.wine
+        let (queryStatus, output) = try await Task.detached {
+            try Shell.capture(wine.loader.path, ["reg.exe", "query", key, "/v", "Hidraw"],
+                              environment: wine.environment())
+        }.value
+        if queryStatus == 0,
+           output.range(of: #"(?im)^\s*Hidraw\s+REG_DWORD\s+0x0*1\s*$"#,
+                        options: .regularExpression) != nil {
+            return false
+        }
+        let status = try await wine.run("reg.exe", [
+            "add", key, "/v", "Hidraw", "/t", "REG_DWORD", "/d", "1", "/f",
+        ], log: log("flight-controllers.log"))
+        guard status == 0 else {
+            throw MetalFlightError.message("The flight controller setting could not be applied (exit \(status)).")
+        }
+        await wine.stopAll()
+        return true
+    }
+
     /// Starts Steam if needed, waits for genuine readiness, then launches the game.
-    func play(status: @escaping (String) -> Void) async throws -> Process {
+    func play(status: @escaping (String) -> Void) async throws -> GameLaunch {
         guard gameInstalled else { throw MetalFlightError.message("Install Microsoft Flight Simulator 2024 from Steam first.") }
         _ = try GameBuild.verify(Paths.game, supported: profile.supportedGameBuilds)
+        status("Configuring flight controllers…")
+        try await configureGameControllers()
         try await VisualCpp.ensure(wine: wine, status: status)
         try applyPatches()
         if !(await steamReady()) {
@@ -110,8 +138,15 @@ struct Launcher {
         status("Launching Microsoft Flight Simulator 2024…")
         let stamp = Int(Date().timeIntervalSince1970)
         let settings = profile.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\cpu-\(stamp).txt") }
-        return try wine.start(Paths.game.path, profile.gameArguments,
-                              environment: wine.environment(dllOverrides: profile.dllOverrides, debug: profile.gameDebug, settings: settings),
-                              directory: Paths.game.deletingLastPathComponent(), log: log("game-\(stamp).log"))
+        let gameLog = log("game-\(stamp).log")
+        let process = try wine.start(Paths.game.path, profile.gameArguments,
+                                     environment: wine.environment(dllOverrides: profile.dllOverrides, debug: profile.gameDebug, settings: settings),
+                                     directory: Paths.game.deletingLastPathComponent(), log: gameLog)
+        return GameLaunch(process: process, log: gameLog)
     }
+}
+
+struct GameLaunch {
+    let process: Process
+    let log: URL
 }

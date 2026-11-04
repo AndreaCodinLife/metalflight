@@ -4,7 +4,25 @@ import Foundation
 /// Installs runtimes from the GitHub release manifest: download, verify SHA-256, extract,
 /// switch the current symlink atomically, keep the previous runtime for rollback.
 struct Updater {
-    static let publicManifestURL = URL(string: "https://github.com/AndreaCodinLife/metalflight/releases/latest/download/metalflight-manifest.json")!
+    static let stableManifestURL = URL(string: "https://github.com/AndreaCodinLife/metalflight/releases/latest/download/metalflight-manifest.json")!
+    private static let repositoryReleasesURL = URL(string:
+        "https://api.github.com/repos/AndreaCodinLife/metalflight/releases?per_page=100")!
+
+    private struct GitHubRelease: Decodable {
+        struct Asset: Decodable {
+            let name: String
+            let browserDownloadURL: URL
+
+            enum CodingKeys: String, CodingKey {
+                case name
+                case browserDownloadURL = "browser_download_url"
+            }
+        }
+
+        let prerelease: Bool
+        let assets: [Asset]
+    }
+
     /// Overridable for testing: `defaults write com.andreacodinlife.metalflight manifestURL file:///...`
     static var manifestURL: URL {
         if let custom = ProcessInfo.processInfo.environment["METALFLIGHT_MANIFEST_URL"], let url = URL(string: custom) { return url }
@@ -14,11 +32,24 @@ struct Updater {
         if ProcessInfo.processInfo.environment["METALFLIGHT_SUPPORT_DIR"] != nil,
            FileManager.default.fileExists(atPath: local.path) { return local }
         if let custom = UserDefaults.standard.string(forKey: "manifestURL"), let url = URL(string: custom) { return url }
-        return publicManifestURL
+        return UpdateChannel.selected == .preview ? repositoryReleasesURL : stableManifestURL
     }
 
     static func fetchManifest() async throws -> ReleaseManifest {
-        try await fetchManifest(from: manifestURL)
+        if manifestURL != repositoryReleasesURL {
+            return try await fetchManifest(from: manifestURL)
+        }
+        let request = URLRequest(url: repositoryReleasesURL, cachePolicy: .reloadIgnoringLocalCacheData)
+        var configuredRequest = request
+        configuredRequest.setValue("MetalFlight runtime updater", forHTTPHeaderField: "User-Agent")
+        configuredRequest.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+        let (data, response) = try await URLSession.shared.data(for: configuredRequest)
+        try checkResponse(response)
+        let releases = try JSONDecoder().decode([GitHubRelease].self, from: data)
+        guard let asset = releases.first(where: \.prerelease)?.assets.first(where: { $0.name == "metalflight-manifest.json" }) else {
+            throw MetalFlightError.message("No runtime preview is currently published.")
+        }
+        return try await fetchManifest(from: asset.browserDownloadURL)
     }
 
     static func fetchManifest(from url: URL) async throws -> ReleaseManifest {
@@ -27,7 +58,7 @@ struct Updater {
             data = try Data(contentsOf: url)
         } else {
             let (download, response) = try await URLSession.shared.data(from: url)
-            if let http = response as? HTTPURLResponse, http.statusCode == 404, url == publicManifestURL {
+            if let http = response as? HTTPURLResponse, http.statusCode == 404, url == stableManifestURL {
                 throw MetalFlightError.message("No public MetalFlight runtime release is available yet. For local testing, run the MetalFlight Preview scheme or the preview launcher.")
             }
             try checkResponse(response)
@@ -96,7 +127,9 @@ struct Updater {
         defer { try? FileManager.default.removeItem(at: staging) }
         let status = try await Shell.runAsync(URL(fileURLWithPath: "/usr/bin/tar"), ["-xJf", archive.path, "-C", staging.path])
         guard status == 0 else { throw MetalFlightError.message("Extraction failed (\(status)).") }
+        // Finder can create this metadata while the staging folder is being unpacked.
         let contents = try FileManager.default.contentsOfDirectory(at: staging, includingPropertiesForKeys: nil)
+            .filter { $0.lastPathComponent != ".DS_Store" }
         guard contents.count == 1, FileManager.default.fileExists(atPath: contents[0].appendingPathComponent("bin/wine").path) else {
             throw MetalFlightError.message("Unexpected runtime archive layout.")
         }

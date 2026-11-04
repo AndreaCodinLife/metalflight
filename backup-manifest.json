@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.7 recycled-stack correction; excludes this manifest",
+  "purpose": "Reviewed public MetalFlight 0.1.8 Beta 1 source inventory; preview channel, HOTAS and graphics-memory warning candidates; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -29,18 +29,18 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/AppModel.swift": {
-      "sha256": "eb5653fbafe7c5971f491de9e2e9cfa734f2093b60191ee5a551a7a8f8445160",
-      "size": 5473,
+      "sha256": "16f7d5cb53c7cd3f1e9fbf79d32cf3926095dcfbd8cd48c2b4bce703d8b4bea5",
+      "size": 7851,
       "group": "app"
     },
     "App/Sources/MetalFlight/AppUpdates.swift": {
-      "sha256": "70733ab54372a33aa36917377e308b5a48d039029558882dfc528d678e1d388c",
-      "size": 837,
+      "sha256": "56355e9c47beac01ff0bd9efa68c31324646a26e4981dcdef650efbfbfb4eb58",
+      "size": 1592,
       "group": "app"
     },
     "App/Sources/MetalFlight/ContentView.swift": {
-      "sha256": "63b45428d5559dd9b2a644a07a436d58266f88a926d6ae89c15b821eb24823e2",
-      "size": 5199,
+      "sha256": "22fec8ad3fa2c98c493ac088076dab26874909cee4d0aba7a4d5b1cbe9f3b21b",
+      "size": 5239,
       "group": "app"
     },
     "App/Sources/MetalFlight/GPTK.swift": {
@@ -49,18 +49,18 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Headless.swift": {
-      "sha256": "8b5dd6a079022efb3b00c9d5593dbe82d595ab2edf2d8c958bf39c0870155b56",
-      "size": 4609,
+      "sha256": "984fc92ced6b7c41c5c7b4e67abe232e9017f863e8ee76d5ba56d39cbba2f0d3",
+      "size": 4958,
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "518ec54e1daf338374107e5a3e0ad82711521e507368f8a4f9ccc36db0d0b422",
-      "size": 6413,
+      "sha256": "3f6e6e9b33ce4a8d28ca0401793cc23a10b75ed77972529c414bd7c1d490aa30",
+      "size": 7956,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
-      "sha256": "11366e0115871baf8327394dbaaa498da2b567ebeff57d057049e607461a19dd",
-      "size": 1312,
+      "sha256": "ac26decd503aad3d842d56ec72118fe101b65b450a525ced6e2b1f26863697d5",
+      "size": 1494,
       "group": "app"
     },
     "App/Sources/MetalFlight/Models.swift": {
@@ -99,8 +99,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Updater.swift": {
-      "sha256": "365aadcff93c61e903e99ce14a7bdab47fb581b95dc82eb541b90cd78d2c77eb",
-      "size": 11231,
+      "sha256": "addc623e6f5b34f55ae945cfb644a21d2e8b3dc5ba85c30ee6f36fa46527116c",
+      "size": 12891,
       "group": "app"
     },
     "App/Sources/MetalFlight/Wine.swift": {
@@ -109,8 +109,8 @@
       "group": "app"
     },
     "App/Tests/MetalFlightTests/UpdaterTests.swift": {
-      "sha256": "d59d68c865dad94485f30ba3956756793c5f7db27240587915948f505eeb47e9",
-      "size": 7269,
+      "sha256": "097f386b59a7d87d36a7fe2b50c6f35656f51caa05af4f0738f60a8ed68fd3bd",
+      "size": 8306,
       "group": "app"
     },
     "LICENSE": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "61769a595819d6d9b88d3bb64dcb982bbce82d15f10dd0659094752f89bff821",
-      "size": 8540,
+      "sha256": "fd6d3fb18b177855426d0fa8963ef3fb173ad00d5478a006103b764354720e24",
+      "size": 10156,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "d613fb702003d6ba27f1525930e1b5ba681a177176ac0721e02bf0f26ced6bf3",
-      "size": 13743,
+      "sha256": "1aa71726e4eb9e96effb7b06b1c72e2d044b3164f7a66b2f85de122119e7c4f8",
+      "size": 16421,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -319,8 +319,8 @@
       "group": "runtime-build"
     },
     "scripts/bundle_app.sh": {
-      "sha256": "57fcd32f7aaf75db96e18878c44537cc43d0c1ed47dbb6d272b2ece0b84a9bdd",
-      "size": 4584,
+      "sha256": "c4ccfb06ddf9e2889a871dc4f3a3e94b508882df13f89603ff35a980d9d6042a",
+      "size": 4924,
       "group": "distribution"
     },
     "scripts/package_app.sh": {
@@ -377,10 +377,30 @@
       "group": "helper",
       "sha256": "eee2382e0999077dd532b03bc3ca74cbcc9bae0aba55ec7e8b89e48ed13f0ff6",
       "size": 388
+    },
+    "App/Sources/MetalFlight/GameMemoryErrorMonitor.swift": {
+      "group": "app",
+      "size": 2253,
+      "sha256": "41266b4bf05b3b024d5fb51e1b71685fd05fe27dfd6e92a975190edd6133bea2"
+    },
+    "App/Sources/MetalFlight/SettingsView.swift": {
+      "group": "app",
+      "size": 1206,
+      "sha256": "1cc6ddd1aee91639306f7b0bbbfaa8b0735cc8f7966e2bf963a0eb694382c5a1"
+    },
+    "App/Sources/MetalFlight/UpdateChannel.swift": {
+      "group": "app",
+      "size": 905,
+      "sha256": "5a9ef8f5406d13f4dd91e760f5581954f05953badd8003804863c0fbfd810ab6"
+    },
+    "App/Tests/MetalFlightTests/AppModelTests.swift": {
+      "group": "app",
+      "size": 5402,
+      "sha256": "8a4bc933495172dfddc9eb03d6318d7d3eaad18db23a6c5a942cd9456c2710c0"
     }
   },
   "groups": {
-    "app": 23,
+    "app": 27,
     "distribution": 9,
     "helper": 33,
     "licence": 2,

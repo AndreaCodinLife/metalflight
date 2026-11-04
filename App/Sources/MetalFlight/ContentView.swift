@@ -37,7 +37,7 @@ struct ContentView: View {
                 }
                 StepRow(number: 2, title: "Runtime",
                         detail: "Installed: \(model.installedRuntime ?? "none")" + (model.availableRuntime.map { " · Latest: \($0)" } ?? "")
-                            + (Updater.manifestURL.isFileURL ? " · Local preview" : ""),
+                            + (Updater.manifestURL.isFileURL ? " · Local preview" : " · \(model.updateChannel.title) channel"),
                         done: model.installedRuntime != nil && (model.availableRuntime == nil || model.availableRuntime == model.installedRuntime)) {
                     Button(model.installedRuntime == nil ? "Install" : "Update") { model.installRuntime() }.disabled(model.playing)
                     Button("Check") { model.checkForUpdates() }

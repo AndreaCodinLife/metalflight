@@ -12,8 +12,15 @@ fi
 VERSION="${1:-0.1.0}"
 IDENTITY="${2:--}"
 OUT="build/MetalFlight.app"
-if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "Version must have the form 0.1.0" >&2; exit 2
+if [[ ! "$VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)(-beta\.([1-9][0-9]{0,2}))?$ ]]; then
+  echo "Version must have the form 0.1.0 or 0.1.0-beta.1" >&2; exit 2
+fi
+SHORT_VERSION="${BASH_REMATCH[1]}"
+BETA_NUMBER="${BASH_REMATCH[3]:-}"
+BUILD_VERSION="$SHORT_VERSION"
+if [[ -n "$BETA_NUMBER" ]]; then
+  [[ "$BETA_NUMBER" -le 255 ]] || { echo "Beta number must be between 1 and 255" >&2; exit 2; }
+  BUILD_VERSION="${SHORT_VERSION}b${BETA_NUMBER}"
 fi
 
 mkdir -p build/icon
@@ -46,8 +53,8 @@ cat > "$OUT/Contents/Info.plist" <<PLIST
   <key>CFBundleIdentifier</key><string>com.andreacodinlife.metalflight</string>
   <key>CFBundleExecutable</key><string>MetalFlight</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>${VERSION}</string>
-  <key>CFBundleVersion</key><string>${VERSION}</string>
+  <key>CFBundleShortVersionString</key><string>${SHORT_VERSION}</string>
+  <key>CFBundleVersion</key><string>${BUILD_VERSION}</string>
   <key>LSMinimumSystemVersion</key><string>15.0</string>
   <key>LSArchitecturePriority</key><array><string>arm64</string></array>
   <key>NSHighResolutionCapable</key><true/>

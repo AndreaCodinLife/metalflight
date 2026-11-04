@@ -111,6 +111,33 @@ versions. Bloom and the hardware-context correction remain enabled. Previous
 runtime releases remain available for rollback. Install the new runtime with
 **Update** in the app; updating the application alone does not install Wine patches.
 
+## Preview channel (0.1.8 Beta 1)
+
+[Download 0.1.8 Beta 1](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.1)
+to try **Settings → Updates → Stable / Preview**. Stable remains the default;
+0.1.7 remains the latest stable release. Existing stable apps do not automatically
+install this beta. Once the beta is installed, choose Preview to receive future
+beta updates. Choosing Stable changes future checks; it does not downgrade an
+already-installed beta application.
+
+Sparkle reads a separate signed beta appcast on the `preview-channel` branch.
+The runtime updater discovers GitHub pre-releases and verifies their manifest,
+archive size, SHA-256 and extracted inventory. Switching channels clears the
+runtime availability result and ignores obsolete results and errors. Runtime
+installation also tolerates Finder’s `.DS_Store` metadata at the extraction root;
+other unexpected archive entries remain rejected.
+
+This beta reuses the unchanged **2026.10.25-dev8** runtime. It also includes two
+launcher candidates: automatic raw-HID configuration for the T.Flight Hotas One
+MSFS Edition (`044f:b68d`, PC mode), and one native warning when the active game
+log reports an explicit Metal command-buffer out-of-memory error. Controller
+input through the app and the warning UI still need in-app acceptance checks.
+The warning does not fix memory exhaustion or stop the game automatically.
+
+The application is ad-hoc signed and not notarized. Unit tests and package,
+update-signature and reconstruction controls do not establish new game sign-in,
+video, flight or repeated-launch reliability.
+
 ## Building
 
 See [docs/BUILDING.md](docs/BUILDING.md). In short: `runtime/fetch_sources.py`,

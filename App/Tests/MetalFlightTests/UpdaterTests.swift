@@ -17,7 +17,7 @@ final class UpdaterTests: XCTestCase {
         super.tearDown()
     }
 
-    private func fixture(_ version: String) throws -> ReleaseManifest.Runtime {
+    private func fixture(_ version: String, extraRootEntry: String? = nil) throws -> ReleaseManifest.Runtime {
         let work = Paths.support.appendingPathComponent("fixture-" + UUID().uuidString)
         let root = work.appendingPathComponent("runtime")
         defer { try? FileManager.default.removeItem(at: work) }
@@ -37,7 +37,12 @@ final class UpdaterTests: XCTestCase {
         let inventory = try Dictionary(uniqueKeysWithValues: paths.map { ($0, try Updater.sha256(of: root.appendingPathComponent($0))) })
         try JSONSerialization.data(withJSONObject: ["files": inventory]).write(to: share.appendingPathComponent("inventory.json"))
         let archive = Paths.downloads.appendingPathComponent("metalflight-runtime-\(version).tar.xz")
-        let process = try Shell.run(URL(fileURLWithPath: "/usr/bin/tar"), ["-cJf", archive.path, "-C", work.path, "runtime"])
+        var entries = ["runtime"]
+        if let extraRootEntry {
+            try "owned extra entry".write(to: work.appendingPathComponent(extraRootEntry), atomically: true, encoding: .utf8)
+            entries.append(extraRootEntry)
+        }
+        let process = try Shell.run(URL(fileURLWithPath: "/usr/bin/tar"), ["-cJf", archive.path, "-C", work.path] + entries)
         XCTAssertEqual(process.terminationStatus, 0)
         return ReleaseManifest.Runtime(version: version, url: URL(string: "https://example.invalid/runtime.tar.xz")!,
                                        sha256: try Updater.sha256(of: archive), size: Int64(try Data(contentsOf: archive).count))
@@ -65,6 +70,19 @@ final class UpdaterTests: XCTestCase {
         XCTAssertEqual(Updater.installedVersion(), "1.0")
         try Updater.rollback()
         XCTAssertEqual(Updater.installedVersion(), "2.0")
+    }
+
+    func testFinderMetadataDoesNotPreventInstallation() async throws {
+        try await Updater.install(fixture("metadata", extraRootEntry: ".DS_Store"), progress: { _ in })
+        XCTAssertEqual(Updater.installedVersion(), "metadata")
+    }
+
+    func testUnexpectedHiddenArchiveEntryIsStillRejected() async throws {
+        try await Updater.install(fixture("original"), progress: { _ in })
+        let malformed = try fixture("unexpected", extraRootEntry: ".unexpected")
+        do { try await Updater.install(malformed, progress: { _ in }); XCTFail("accepted unexpected archive entry") }
+        catch { XCTAssertEqual(error.localizedDescription, "Unexpected runtime archive layout.") }
+        XCTAssertEqual(Updater.installedVersion(), "original")
     }
 
     func testFailedUpdatePreservesInstalledRuntime() async throws {

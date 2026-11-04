@@ -74,6 +74,30 @@ scripts/bundle_app.sh <app-version> "Developer ID Application: …"
 Upload `metalflight-runtime-<version>.tar.xz` and `metalflight-manifest.json` to the release.
 The app reads `releases/latest/download/metalflight-manifest.json`.
 
+### Optional preview channel
+
+MetalFlight defaults to the stable channel. Users can opt into **Preview** in
+Settings → Updates; the choice is stored locally and applies to both the
+Sparkle app updater and the Wine runtime updater. Stable checks continue to use
+the stable release assets. Preview Sparkle checks use the signed
+`appcast.xml` hosted at
+`https://raw.githubusercontent.com/AndreaCodinLife/metalflight/preview-channel/appcast.xml`.
+The feed must contain beta-tagged Sparkle items whose downloads point to the
+matching GitHub pre-release. Each pre-release must also attach
+`metalflight-manifest.json` and its hash-pinned runtime archive; the runtime
+updater selects the newest GitHub release marked as a pre-release and verifies
+the manifest, archive size, archive SHA-256 and extracted inventory before
+activation. Do not mark preview releases as stable/latest.
+
+When switching channels, Sparkle resets its update cycle. Runtime rollback
+continues to use the existing `runtime-previous` link. The preview appcast
+branch and release assets must be prepared and verified before enabling Preview
+in a public build; this source change does not create or publish those feeds.
+The app clears its runtime availability and error state on a channel change.
+Pending manifest responses from before that change are discarded for checks
+and installations. An installation that has already accepted its manifest
+continues, but cannot repopulate the new channel's availability result.
+
 ## 6. Application installer and application updates
 
 The editable app icon is `App/Sources/MetalFlight/Resources/MetalFlight.icon` (Apple Icon Composer).
@@ -259,3 +283,24 @@ These controls match the final stack-fault shape of both issue-4 logs, not a
 complete game trace. A320 ON APU / INIT A DEP-ARR / FPLN recovery, sign-in/video
 on dev8, flight, repeated launches and reporter-hardware behavior remain
 unverified. Do not inherit dev7's game confirmations as new dev8 observations.
+
+
+## Preview release packaging (0.1.8 Beta 1)
+
+`package_app.sh 0.1.8-beta.1` produces a beta DMG with short version `0.1.8`
+and build version `0.1.8b1`. Beta numbers range from 1 to 255. Sparkle orders
+0.1.7 < 0.1.8b1 < 0.1.8. Use `generate_appcast --channel beta` and sign the feed
+with the existing `metalflight-release-updates` Keychain account. Publish the
+beta as a GitHub pre-release with `--latest=false`; Stable retains 0.1.7.
+
+The Preview manifest reuses the byte-identical runtime dev8 archive and its
+corresponding source references. Do not repackage the older dev6 inputs from
+other local worktrees or include later renderer research builds.
+
+Seven model tests cover invalidation on channel changes, successful and failed
+current requests, obsolete successes and errors, switching away and back, and
+refusal to install from an obsolete manifest. They do not download a runtime
+or launch Wine. The beta's HOTAS setup refreshes only MetalFlight's own prefix
+when the specific device's Hidraw setting changes; physical input validation
+through this app is still pending. The native memory alert reports only an
+explicit Metal out-of-memory record; full alert UI acceptance is pending.

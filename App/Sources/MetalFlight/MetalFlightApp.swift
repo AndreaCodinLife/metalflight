@@ -27,6 +27,12 @@ struct MetalFlightApp: App {
                 .environment(model)
         }
         .windowResizability(.contentSize)
+        Settings {
+            SettingsView {
+                model.updateChannelDidChange(UpdateChannel.selected)
+                updates.channelDidChange()
+            }
+        }
         .commands {
             CommandGroup(replacing: .newItem) {}
             CommandGroup(after: .appInfo) {

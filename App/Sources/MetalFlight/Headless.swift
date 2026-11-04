@@ -2,6 +2,7 @@ import Foundation
 
 /// `MetalFlight --headless <command>`: the app's own code paths without the window (tests, CI).
 ///   status | check-runtime | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam | start-steam | install-prerequisites
+///   configure-controllers  (same flight controller setup used by Play; no game launch)
 ///   run PROGRAM [ARGS...]   (in the prefix, with the game's environment and DLL overrides)
 ///   play                   (normal launch sequence, reports exit; retains Steam)
 enum Headless {
@@ -39,7 +40,7 @@ enum Headless {
             })
         case "check-runtime":
             let manifest = try await Updater.fetchManifest()
-            print("source: \(Updater.manifestURL.isFileURL ? "local preview" : "release feed")")
+            print("source: \(Updater.manifestURL.isFileURL ? "local preview" : "\(UpdateChannel.selected.rawValue) release feed")")
             print("available runtime: \(manifest.runtime.version)")
         case "rollback":
             if let runtime = Paths.resolvedRuntime() { await Wine(runtime: runtime).stopAll() }
@@ -53,17 +54,20 @@ enum Headless {
             try await launcher().preparePrefix(); print("prefix: ready")
         case "apply-patches":
             try launcher().applyPatches(); print("patches: applied")
+        case "configure-controllers":
+            let changed = try await launcher().configureGameControllers()
+            print("flight controllers: configured; Wine refreshed=\(changed)")
         case "install-steam":
             try await launcher().installSteam(); print("steam: installed")
         case "start-steam":
             try launcher().startSteam(); print("steam: started")
         case "play":
-            let process = try await launcher().play { print($0) }
-            print("game pid: \(process.processIdentifier)")
-            process.waitUntilExit()
-            print("game exit: \(process.terminationStatus)")
-            if process.terminationStatus != 0 {
-                throw MetalFlightError.message("The game exited (\(process.terminationStatus)).")
+            let launch = try await launcher().play { print($0) }
+            print("game pid: \(launch.process.processIdentifier)")
+            launch.process.waitUntilExit()
+            print("game exit: \(launch.process.terminationStatus)")
+            if launch.process.terminationStatus != 0 {
+                throw MetalFlightError.message("The game exited (\(launch.process.terminationStatus)).")
             }
         case "run":
             guard arguments.count > 1 else { throw MetalFlightError.message("run needs a program") }
