@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!-- sparkle-sign-warning:
+IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>MetalFlight</title>
+        <item>
+            <title>MetalFlight 0.1.8 Beta 1</title>
+            <pubDate>Thu, 05 Nov 2026 00:32:11 +0100</pubDate>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>0.1.8b1</sparkle:version>
+            <sparkle:shortVersionString>0.1.8 Beta 1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.1/MetalFlight-0.1.8-beta.1.dmg" length="3177130" type="application/octet-stream" sparkle:edSignature="LFLG+ZbxM0NlH0e36j9m/gwO2mWArurYJ+qe9B6trEVyfXdkvC+W29fk4LDJ67xpLOn4rqLV9Sg4ox0brQTMBw=="></enclosure>
+            <sparkle:deltas>
+                <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.1/MetalFlight0.1.8b1-0.1.7.delta" sparkle:deltaFrom="0.1.7" length="100306" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="941872" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="F8398kLMgbqTMGWpISMBJv501irYFRQpSM9VIMz6hu3GiHSwcW3uQJvftJqHHItoM09m/brEp2U8igKFru9sCw=="></enclosure>
+            </sparkle:deltas>
+        </item>
+    </channel>
+</rss><!-- sparkle-signatures:
+edSignature: Habcz/6Muadz/uVK6c6C1QY1U29ZPuFEiR9hGvC1c4PyZv2DTKbPQpz1mASXWIxHq+a68G5zZfDJlRZo3uoaAA==
+length: 1754
+-->
