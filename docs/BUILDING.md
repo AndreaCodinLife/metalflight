@@ -304,3 +304,20 @@ or launch Wine. The beta's HOTAS setup refreshes only MetalFlight's own prefix
 when the specific device's Hidraw setting changes; physical input validation
 through this app is still pending. The native memory alert reports only an
 explicit Metal out-of-memory record; full alert UI acceptance is pending.
+
+
+## Beta 2 runtime candidate
+
+Prepared version 0.1.8-beta.2 uses runtime 2026.11.05-dev9-preview1. Wine,
+native bridge, shader translation, media, dependencies and CPU helper retain
+dev8 versions. Only the two x64 d3d12core slots, game profile, corresponding
+source lock and inventory change. The game enables MULLION_EXPERIMENTAL_DEVICE12
+and MULLION_EXPERIMENTAL_BC1_CAST; Steam does not. Heavy memory/GPU diagnostics
+and Metal API Validation are absent from the release profile.
+
+The full renderer source and its metalflight/BC1-DEVICE12.md document the narrow
+format/resource scope, reproducible build and eight authored fixtures. Seventeen
+GPU/interface arms pass, including negative oracles. Historical LOWW/EDDF success
+is not a new game qualification for this rebuilt package. Memory exhaustion,
+Rosetta freezes and intermittent vegetation remain unresolved. This is a local
+prepared Preview candidate; publishing and signed-in acceptance remain separate.

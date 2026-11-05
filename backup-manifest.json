@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public MetalFlight 0.1.8 Beta 1 source inventory; preview channel, HOTAS and graphics-memory warning candidates; excludes this manifest",
+  "purpose": "Reviewed local MetalFlight 0.1.8 Beta 2 BC1/Device12 Preview candidate source inventory; not yet published",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -9,7 +9,7 @@
     },
     "mullion": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
-      "commit": "83dbd2e84f1f5e8a8961259e6cc299cd2c607a34"
+      "commit": "54530b939b21eb040a6cf3bd91c7c79ce12f53f3"
     }
   },
   "files": {
@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "fd6d3fb18b177855426d0fa8963ef3fb173ad00d5478a006103b764354720e24",
-      "size": 10156,
+      "sha256": "17591129feef1cc7bf0489d4f2c7c4a0bfadfef5ac1c670c28bf69af904c54d3",
+      "size": 10463,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +134,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "1aa71726e4eb9e96effb7b06b1c72e2d044b3164f7a66b2f85de122119e7c4f8",
-      "size": 16421,
+      "sha256": "81e289bc6f690e9f036c6e6ccd424719717421c31bf2c6cf52b2324875f6929d",
+      "size": 17386,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -309,12 +309,12 @@
       "group": "runtime-build"
     },
     "runtime/profile.json": {
-      "sha256": "8da8321561403fda8247221bc9b9f91db411d71bbe4cb1a84e5862292d68ba0f",
-      "size": 4055,
+      "sha256": "a1039de87006a6e2eeda208face9fe0f2eefc71742f8c83cf4fff84380e4c0e5",
+      "size": 4139,
       "group": "runtime-build"
     },
     "runtime/sources.lock.json": {
-      "sha256": "d7f197b6cd40ecb27c2c69956b21fd812bd1828b783a8271fc87188ddd793051",
+      "sha256": "875356d56517737a947ea1943add1c7d99edcb4c0d93b860ba9cb6dfeff75581",
       "size": 318,
       "group": "runtime-build"
     },

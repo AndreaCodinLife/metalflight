@@ -111,9 +111,9 @@ versions. Bloom and the hardware-context correction remain enabled. Previous
 runtime releases remain available for rollback. Install the new runtime with
 **Update** in the app; updating the application alone does not install Wine patches.
 
-## Preview channel (0.1.8 Beta 1)
+## Preview channel (0.1.8 Beta 2)
 
-[Download 0.1.8 Beta 1](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.1)
+[Preview releases](https://github.com/AndreaCodinLife/metalflight/releases)
 to try **Settings → Updates → Stable / Preview**. Stable remains the default;
 0.1.7 remains the latest stable release. Existing stable apps do not automatically
 install this beta. Once the beta is installed, choose Preview to receive future
@@ -127,7 +127,11 @@ runtime availability result and ignores obsolete results and errors. Runtime
 installation also tolerates Finder’s `.DS_Store` metadata at the extraction root;
 other unexpected archive entries remain rejected.
 
-This beta reuses the unchanged **2026.10.25-dev8** runtime. It also includes two
+Beta 2 is prepared with **2026.11.05-dev9-preview1**, adding the scoped BC1/Device12
+resource-loading correction to dev8. Historical LOWW/EDDF loading succeeded locally;
+17 newly repeated authored GPU/interface arms pass. Device12 support is partial,
+and memory exhaustion, Rosetta freezes, vegetation and FPS improvements are not
+addressed or claimed. Diagnostic capture flags remain off. It also includes two
 launcher candidates: automatic raw-HID configuration for the T.Flight Hotas One
 MSFS Edition (`044f:b68d`, PC mode), and one native warning when the active game
 log reports an explicit Metal command-buffer out-of-memory error. Controller
