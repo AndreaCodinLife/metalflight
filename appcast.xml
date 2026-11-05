@@ -4,20 +4,22 @@ IMPORTANT: This file was signed by Sparkle. Any modifications to this file requi
     <channel>
         <title>MetalFlight</title>
         <item>
-            <title>MetalFlight 0.1.8 Beta 2</title>
-            <pubDate>Thu, 05 Nov 2026 00:58:49 +0100</pubDate>
+            <title>MetalFlight 0.1.8 Beta 3</title>
+            <pubDate>Thu, 05 Nov 2026 23:29:40 +0100</pubDate>
             <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>0.1.8b2</sparkle:version>
-            <sparkle:shortVersionString>0.1.8 Beta 2</sparkle:shortVersionString>
+            <sparkle:version>0.1.8b3</sparkle:version>
+            <sparkle:shortVersionString>0.1.8 Beta 3</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.2/MetalFlight-0.1.8-beta.2.dmg" length="3177100" type="application/octet-stream" sparkle:edSignature="wEjlOtgqlidmOkElW+OmjEb7pqDhzIIR4M+HeX6ra2xfiiFzi28bofOQcVPkbJwq7umbhHLJc6E+QjubUsAXBQ=="></enclosure>
+            <description>&lt;p&gt;MSFS 2024 1.9.24 compatibility. After updating the application, select Settings → Updates → Preview and install runtime 2026.11.05-dev10-preview1 with Update.&lt;/p&gt;&lt;p&gt;Startup and mission-guard mappings are validated; one Charles de Gaulle takeoff is confirmed on M1 Pro with 32 GB. All 42 owned helper controls pass.&lt;/p&gt;&lt;p&gt;An earlier initial-loading 6% freeze required an isolated Steam/Wine restart. Long-flight and repeated-launch reliability remain unverified. Stable remains 0.1.7.&lt;/p&gt;
+</description>
+            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.3/MetalFlight-0.1.8-beta.3.dmg" length="3177178" type="application/octet-stream" sparkle:edSignature="lqOXmFgcDMKUVtfHHbZagBLEfW+LuuEm7A5itUj1J0P0xAxZpHbLIUW90ekIGFyfp37jL0DbQ3PbpAU5GT7YAA=="></enclosure>
             <sparkle:deltas>
-                <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.2/MetalFlight0.1.8b2-0.1.8b1.delta" sparkle:deltaFrom="0.1.8b1" length="2590" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="941872" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="5yDSH7+LzKZkYk1S1xxpbbsxYZiRw9/sj0FO+k97JKKLSgDrCbAMAED+3Jc1JMfLzkFbcdMs/NSXHvvFOMrcBg=="></enclosure>
+                <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.3/MetalFlight0.1.8b3-0.1.8b2.delta" sparkle:deltaFrom="0.1.8b2" length="2770" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="941872" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="oDRPZHfBWmLsRVhceBcwINBqIXSe/NWJ3iA2xZ6+GfKDKRZYr10pwyfZaSBvjt30w85tuJTSN3inXbdjNTWDCA=="></enclosure>
             </sparkle:deltas>
         </item>
     </channel>
 </rss><!-- sparkle-signatures:
-edSignature: WQl67gTKejtBPY8OK0qOST2NHZ6aJftxUVJGJESp8997999y42cf7OeczyPvhHbVVgEBRmiImYLyvJQtA2FbDA==
-length: 1756
+edSignature: airH9K5wHFbEIO9qgBZgyO4UeFdycs6POOF84EZm/6Vd8KlvRX7aDdzMFYvxNgnJetzl0gdS81IPWtQueOIZCA==
+length: 2327
 -->
