@@ -3,7 +3,7 @@
 MetalFlight is a macOS app that runs **your own Steam copy of Microsoft Flight Simulator 2024**
 on Apple Silicon Macs, through a Wine runtime built from source with patches for this game.
 
-> **Experimental preview.** The maintainer completed a **free-flight mission** with
+> **Experimental preview.** I completed a **free-flight mission** with
 > **MetalFlight 0.1.3 / runtime dev5 and MSFS 1.9.21.0** on an **Apple M1 Pro with
 > 32 GB of unified memory**, then exited normally (code 0). Steam sign-in and saved login
 > are also user-confirmed. Long flights, repeated-launch reliability, other game modes
@@ -42,8 +42,8 @@ to say which game the app runs.
 2. Downloads the MetalFlight runtime from this repository's releases and verifies its SHA-256.
    Updates install side by side, and one click rolls back to the previous runtime.
    Application updates use Sparkle, with a separate “Check for Application Updates…” menu item.
-   Update archives are signed with the project's Ed25519 key; its private key stays in the
-   maintainer's Keychain. An application update between two public versions is still untested.
+   Update archives are signed with the project's Ed25519 key, which stays in my login
+   Keychain. An application update between two public versions is still untested.
 3. Imports `libd3dshared.dylib` from the Game Porting Toolkit you downloaded, after checking that
    Apple signed it.
 4. Creates a private Windows environment (Wine prefix) in

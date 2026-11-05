@@ -119,8 +119,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "61769a595819d6d9b88d3bb64dcb982bbce82d15f10dd0659094752f89bff821",
-      "size": 8540,
+      "sha256": "eca29f3b28fc0525d6f27942ebf412e488996ccb08ed514d096cf31be9314ab7",
+      "size": 8509,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
