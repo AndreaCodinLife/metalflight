@@ -1,5 +1,11 @@
 # Building MetalFlight
 
+For Preview Beta 3, see [MSFS 1.9.24 compatibility](MSFS-1.9.24.md). Runtime
+2026.11.05-dev10-preview1 retains Beta 2's Wine, renderer and dependency binaries
+and replaces the helper/profile with the flight-checked 1.9.24 configuration.
+`helper/tests/README.md` describes the owned control sources, including explicit
+mission-guard mappings and unknown-build refusal.
+
 Everything builds on an Apple Silicon Mac (macOS 15+) with Xcode, Rosetta and Homebrew. The runtime
 is x86_64 and runs under Rosetta. The app is arm64.
 
@@ -40,8 +46,9 @@ x86_64-w64-mingw32-gcc -O2 probes/steam_session.c -o out/steam_session.exe
 ```
 
 Mullion builds from metalflight-mullion. The Steam readiness probe builds from `probes/steam_session.c`.
-Clone Mullion with `--recurse-submodules` and check out `runtime-2026.10.23-dev4` to reproduce
-this runtime's source revision. Its `METALFLIGHT.md` documents the renderer build.
+Clone Mullion with `--recurse-submodules` and check out the commit pinned in
+`runtime/sources.lock.json` to reproduce this runtime's source revision. Its
+`METALFLIGHT.md` documents the renderer build.
 
 For subsequent builds, the renderer's `winemetal.dll.postproc` Ninja target must
 run before staging `winemetal.dll`. The corrected renderer build script and

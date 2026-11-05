@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "release": "0.1.8-beta.3",
+  "runtime": "2026.11.05-dev10-preview1",
+  "helper_sha256": "a851e8adf057a8e8db5599e55c064db6fe226c3b48d933f4fdb1a8f4239e25c8",
+  "all_owned_controls_passed": true,
+  "owned_controls": [
+    {
+      "label": "metadata",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "wrong-image-name",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "unknown-metadata",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-off",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-negative-null",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": true
+    },
+    {
+      "label": "mission-bad-getter",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-bad-caller",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-bad-cleanup",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-positive",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-positive-repeat",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-00",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-01",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-02",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-03",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-04",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-05",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-06",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-07",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-08",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-09",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-10",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-11",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-12",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-13",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-14",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "mission-install-race-15",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-ri-reference",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-gi-reference",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-guard-ri-negative",
+      "passed": true,
+      "exit_code": 124,
+      "expected_failure": true
+    },
+    {
+      "label": "cpu-guard-gi-negative",
+      "passed": true,
+      "exit_code": 124,
+      "expected_failure": true
+    },
+    {
+      "label": "cpu-stacked",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-ri-mismatch",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-gi-mismatch",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-mi-mismatch",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-new-mismatch",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-kb-mismatch",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-guard-ri-positive",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-guard-gi-positive",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-guard-mi-positive",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-guard-new-positive",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-guard-old-home",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    },
+    {
+      "label": "cpu-guard-old-kb",
+      "passed": true,
+      "exit_code": 0,
+      "expected_failure": false
+    }
+  ],
+  "hardware": "Apple M1 Pro, 32 GB unified memory",
+  "game_version": "1.9.24.0",
+  "game_sha256": "7f07d859d6c94eec905a7ee914b8f1db2268b3b5952b0ed755e7ed798c484a07",
+  "game_outcome": "user-confirmed Charles de Gaulle takeoff; flight still running at confirmation",
+  "installed_core_sites": 22,
+  "installed_optional_sites": 6,
+  "mission_guard_installed": true,
+  "mission_guard_empty_redirects_at_confirmation": 12,
+  "earlier_attempt": "initial-loading 6% freeze; subsequent SDK initialization stalled; successful visible Play run followed scoped Wine/Steam restart in the same isolated prefix",
+  "limits": [
+    "One confirmed takeoff, not a completed or long flight.",
+    "Repeated-launch reliability and other hardware remain unverified.",
+    "No claim that all freezes, graphics-memory errors or vegetation problems are fixed."
+  ],
+  "contains_private_captures": false,
+  "wine_and_renderer_binaries_changed_from_beta2": false
+}

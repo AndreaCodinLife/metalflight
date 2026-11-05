@@ -123,7 +123,7 @@ static DWORD WINAPI game_worker(void *unused) {
   Sleep(100);
  }
  InterlockedExchange(&guard_state,state);char line[192];
- snprintf(line,sizeof(line),"[MISSION EMPTY GUARD] installed=%d state=%ld caller=4b63834 cleanup=4b6384d existing_return=6\n",state==1,state);OutputDebugStringA(line);
+ snprintf(line,sizeof(line),"[MISSION EMPTY GUARD] installed=%d state=%ld build=%u getter=%lx caller=%lx cleanup=%lx existing_return=6\n",state==1,state,build,(unsigned long)game_rva_for_build(build,0x4714510),(unsigned long)game_rva_for_build(build,0x4b63834),(unsigned long)game_rva_for_build(build,0x4b6384d));OutputDebugStringA(line);
  LONG64 last=-1;unsigned emitted=0;
  if(state==1)for(unsigned i=0;i<1440 && emitted<32;i++) {
   Sleep(5000);LONG64 count=MissionGuardCount();if(count==last)continue;last=count;

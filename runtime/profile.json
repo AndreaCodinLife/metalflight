@@ -99,6 +99,7 @@
   "readinessProbe": "share/metalflight/probes/steam_session.exe",
   "supportedGameBuilds": {
     "23faa2f27fc86bf5bc347498b8afd09968fd12d1f198d325acfd63c5c7360b13": "1.9.18.0",
-    "5cccf10e882be7aacd56e95e06ffb12986bcae08f3719879924b89cef1fbea70": "1.9.21.0"
+    "5cccf10e882be7aacd56e95e06ffb12986bcae08f3719879924b89cef1fbea70": "1.9.21.0",
+    "7f07d859d6c94eec905a7ee914b8f1db2268b3b5952b0ed755e7ed798c484a07": "1.9.24.0"
   }
 }

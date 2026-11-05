@@ -111,9 +111,24 @@ versions. Bloom and the hardware-context correction remain enabled. Previous
 runtime releases remain available for rollback. Install the new runtime with
 **Update** in the app; updating the application alone does not install Wine patches.
 
-## Preview channel (0.1.8 Beta 2)
+## Preview channel (0.1.8 Beta 3 — MSFS 1.9.24)
 
-[Preview releases](https://github.com/AndreaCodinLife/metalflight/releases)
+[Download MetalFlight 0.1.8 Beta 3](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.3/MetalFlight-0.1.8-beta.3.dmg).
+After installing it, select **Settings → Updates → Preview**, then use **Update**
+to install runtime **2026.11.05-dev10-preview1**. Updating the app alone does not
+replace the runtime. Stable remains 0.1.7.
+
+Beta 3 adds explicit support for MSFS **1.9.24.0**, including the mission guard
+and startup patch locations. It also corrects the leading-prefix location at
+the optional 1.9.21 Rosetta site. Exact executable hashes, code preimages and
+unwind checks remain mandatory. The maintainer confirmed takeoff at Charles
+de Gaulle on an M1 Pro with 32 GB; the guard handled 12 empty results. All 42
+owned helper controls passed. One earlier attempt froze at initial loading 6%;
+the successful normal Play run followed an isolated Wine/Steam restart after
+SDK initialization stalled. This is one confirmed takeoff; long flights and
+repeated-launch reliability remain unverified. [Evidence and limits](docs/MSFS-1.9.24.md).
+
+Use the [Preview releases](https://github.com/AndreaCodinLife/metalflight/releases)
 to try **Settings → Updates → Stable / Preview**. Stable remains the default;
 0.1.7 remains the latest stable release. Existing stable apps do not automatically
 install this beta. Once the beta is installed, choose Preview to receive future
@@ -127,9 +142,9 @@ runtime availability result and ignores obsolete results and errors. Runtime
 installation also tolerates Finder’s `.DS_Store` metadata at the extraction root;
 other unexpected archive entries remain rejected.
 
-Beta 2 is prepared with **2026.11.05-dev9-preview1**, adding the scoped BC1/Device12
-resource-loading correction to dev8. Historical LOWW/EDDF loading succeeded locally;
-17 newly repeated authored GPU/interface arms pass. Device12 support is partial,
+The retained Beta 2 graphics implementation from **2026.11.05-dev9-preview1** adds the scoped BC1/Device12
+resource-loading correction to dev8; Beta 3 retains its Wine and renderer binaries. Historical LOWW/EDDF loading succeeded locally;
+Beta 2 qualification passed 17 authored GPU/interface arms. Device12 support is partial,
 and memory exhaustion, Rosetta freezes, vegetation and FPS improvements are not
 addressed or claimed. Diagnostic capture flags remain off. It also includes two
 launcher candidates: automatic raw-HID configuration for the T.Flight Hotas One

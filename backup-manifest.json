@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed local MetalFlight 0.1.8 Beta 2 BC1/Device12 Preview candidate source inventory; not yet published",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 3 / MSFS 1.9.24 compatibility; excludes this manifest",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -48,6 +48,16 @@
       "size": 3255,
       "group": "app"
     },
+    "App/Sources/MetalFlight/GameBuild.swift": {
+      "sha256": "7aaab34aed2a67ccd2ac406ca4197369986ad34db7fb12b45ff4067621fd5131",
+      "size": 638,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/GameMemoryErrorMonitor.swift": {
+      "sha256": "41266b4bf05b3b024d5fb51e1b71685fd05fe27dfd6e92a975190edd6133bea2",
+      "size": 2253,
+      "group": "app"
+    },
     "App/Sources/MetalFlight/Headless.swift": {
       "sha256": "984fc92ced6b7c41c5c7b4e67abe232e9017f863e8ee76d5ba56d39cbba2f0d3",
       "size": 4958,
@@ -88,6 +98,11 @@
       "size": 711,
       "group": "app"
     },
+    "App/Sources/MetalFlight/SettingsView.swift": {
+      "sha256": "1cc6ddd1aee91639306f7b0bbbfaa8b0735cc8f7966e2bf963a0eb694382c5a1",
+      "size": 1206,
+      "group": "app"
+    },
     "App/Sources/MetalFlight/Shell.swift": {
       "sha256": "e51f63d5cd2ccafa49e1ef40c7876eb23a9b15e567de683368835d11e47c714e",
       "size": 2397,
@@ -98,9 +113,19 @@
       "size": 1222,
       "group": "app"
     },
+    "App/Sources/MetalFlight/UpdateChannel.swift": {
+      "sha256": "5a9ef8f5406d13f4dd91e760f5581954f05953badd8003804863c0fbfd810ab6",
+      "size": 905,
+      "group": "app"
+    },
     "App/Sources/MetalFlight/Updater.swift": {
       "sha256": "addc623e6f5b34f55ae945cfb644a21d2e8b3dc5ba85c30ee6f36fa46527116c",
       "size": 12891,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/VisualCpp.swift": {
+      "sha256": "f4a8faf4bfb3f2af6a76792557349abc1cb3e5bf447ce5a2686e11b75922069a",
+      "size": 3573,
       "group": "app"
     },
     "App/Sources/MetalFlight/Wine.swift": {
@@ -108,9 +133,24 @@
       "size": 2825,
       "group": "app"
     },
+    "App/Tests/MetalFlightTests/AppModelTests.swift": {
+      "sha256": "8a4bc933495172dfddc9eb03d6318d7d3eaad18db23a6c5a942cd9456c2710c0",
+      "size": 5402,
+      "group": "app"
+    },
+    "App/Tests/MetalFlightTests/GameBuildTests.swift": {
+      "sha256": "73c85a0595545affd2cae61ae1d5622ffc6692e0b61607b84b65b5ba63d588bc",
+      "size": 846,
+      "group": "app"
+    },
     "App/Tests/MetalFlightTests/UpdaterTests.swift": {
       "sha256": "097f386b59a7d87d36a7fe2b50c6f35656f51caa05af4f0738f60a8ed68fd3bd",
       "size": 8306,
+      "group": "app"
+    },
+    "App/Tests/MetalFlightTests/VisualCppTests.swift": {
+      "sha256": "d0504e16b18de8e523dcfa39264f4131e59caa2ae65452e059c7932a673ee793",
+      "size": 2643,
       "group": "app"
     },
     "LICENSE": {
@@ -119,8 +159,8 @@
       "group": "licence"
     },
     "README.md": {
-      "sha256": "17591129feef1cc7bf0489d4f2c7c4a0bfadfef5ac1c670c28bf69af904c54d3",
-      "size": 10463,
+      "sha256": "4a5e4d3314b4b84dc71460af8c0471219cdcba878f1c02cfaca4d200e57d7f3d",
+      "size": 11635,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -134,8 +174,18 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "81e289bc6f690e9f036c6e6ccd424719717421c31bf2c6cf52b2324875f6929d",
-      "size": 17386,
+      "sha256": "3c2f91adcd907ca203075ec41a349498fde630133ac2413ef60b81328f1c9918",
+      "size": 17778,
+      "group": "distribution"
+    },
+    "docs/MSFS-1.9.24-validation.json": {
+      "sha256": "fa5b5bf63f1cbc8669e14a8b892c991f71f53309c63c501fd7c7c96e1e575473",
+      "size": 6531,
+      "group": "distribution"
+    },
+    "docs/MSFS-1.9.24.md": {
+      "sha256": "fbefa1c40f83934ecb3c1e59dfd831d7ef71c4e6c0cc446cf98a2cb831f0010e",
+      "size": 3273,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -146,6 +196,11 @@
     "helper/src/catalog_home_helper.c": {
       "sha256": "0d40ee20200d98defec4da5ebddaee16b5a6a2d70abc6c864d3364ca5e1414e8",
       "size": 13834,
+      "group": "helper"
+    },
+    "helper/src/game_build.h": {
+      "sha256": "f912d7f8e6faeafa357f58d210ee73b159d6930a853ab0e3fd0d768b96b20877",
+      "size": 2865,
       "group": "helper"
     },
     "helper/src/home_entry_site.h": {
@@ -164,8 +219,8 @@
       "group": "helper"
     },
     "helper/src/mission_empty_guard.c": {
-      "sha256": "2926c618861dfef9c5cee5df298f9b2602dda946ba26873abb6dc62925c54ca6",
-      "size": 8976,
+      "sha256": "7f46d3d61feef361150b54df558745fba1f147beb8cc592f8e095b7524177129",
+      "size": 9147,
       "group": "helper"
     },
     "helper/src/ntdll_padded_sites.h": {
@@ -288,6 +343,31 @@
       "size": 264,
       "group": "helper"
     },
+    "helper/tests/README.md": {
+      "sha256": "19866f65f7e210257a4091f0ee3cc1da65305ff24e8408420f5226e70d9f905e",
+      "size": 1927,
+      "group": "helper"
+    },
+    "helper/tests/game_build_metadata.c": {
+      "sha256": "7d13202a6b6dc2c4cd47f8539c360b2cb38b99931bceae11347c38101e7f2890",
+      "size": 2260,
+      "group": "helper"
+    },
+    "helper/tests/owned_mission_guard.c": {
+      "sha256": "c75e868465a392e21f6db1530ca953fd6ffa00d78577d0b8aab7851d8e196bb0",
+      "size": 7676,
+      "group": "helper"
+    },
+    "helper/tests/unknown_game.c": {
+      "sha256": "65c45c568057de5f9630b41cd1e69dc6c7252dc526b1ae9ff0892243c7e5dd22",
+      "size": 476,
+      "group": "helper"
+    },
+    "probes/steam_launch_options.c": {
+      "sha256": "862da316d4c2eb05f59ac46b4827e63635c17ed0e99f72545953ef462a0089ff",
+      "size": 2212,
+      "group": "distribution"
+    },
     "probes/steam_session.c": {
       "sha256": "cc7b31659aa83248969d404ccd1c554882068a2e5f30f26ac5ab582da27daf63",
       "size": 4614,
@@ -309,13 +389,18 @@
       "group": "runtime-build"
     },
     "runtime/profile.json": {
-      "sha256": "a1039de87006a6e2eeda208face9fe0f2eefc71742f8c83cf4fff84380e4c0e5",
-      "size": 4139,
+      "sha256": "85ca8745625431d2e65ed120e4772f462960f57a47374b7847a1330846a631b6",
+      "size": 4223,
       "group": "runtime-build"
     },
     "runtime/sources.lock.json": {
       "sha256": "875356d56517737a947ea1943add1c7d99edcb4c0d93b860ba9cb6dfeff75581",
       "size": 318,
+      "group": "runtime-build"
+    },
+    "runtime/test_steam_options.py": {
+      "sha256": "7de093d40ab67c057fb8204b4f5bd3812ac498e274d1a3c8731c891afc829b99",
+      "size": 3412,
       "group": "runtime-build"
     },
     "scripts/bundle_app.sh": {
@@ -332,78 +417,13 @@
       "sha256": "cdf05b445d659069e98af83014555120e6c4afbc7432ea1fa9d4711fd5672054",
       "size": 5852,
       "group": "distribution"
-    },
-    "probes/steam_launch_options.c": {
-      "group": "distribution",
-      "sha256": "862da316d4c2eb05f59ac46b4827e63635c17ed0e99f72545953ef462a0089ff",
-      "size": 2212
-    },
-    "runtime/test_steam_options.py": {
-      "group": "runtime-build",
-      "sha256": "7de093d40ab67c057fb8204b4f5bd3812ac498e274d1a3c8731c891afc829b99",
-      "size": 3412
-    },
-    "App/Sources/MetalFlight/VisualCpp.swift": {
-      "group": "app",
-      "sha256": "f4a8faf4bfb3f2af6a76792557349abc1cb3e5bf447ce5a2686e11b75922069a",
-      "size": 3573
-    },
-    "App/Tests/MetalFlightTests/VisualCppTests.swift": {
-      "group": "app",
-      "sha256": "d0504e16b18de8e523dcfa39264f4131e59caa2ae65452e059c7932a673ee793",
-      "size": 2643
-    },
-    "App/Sources/MetalFlight/GameBuild.swift": {
-      "group": "app",
-      "sha256": "7aaab34aed2a67ccd2ac406ca4197369986ad34db7fb12b45ff4067621fd5131",
-      "size": 638
-    },
-    "App/Tests/MetalFlightTests/GameBuildTests.swift": {
-      "group": "app",
-      "sha256": "73c85a0595545affd2cae61ae1d5622ffc6692e0b61607b84b65b5ba63d588bc",
-      "size": 846
-    },
-    "helper/src/game_build.h": {
-      "group": "helper",
-      "sha256": "286e95f83c0f196c41450b73d9127692395ec7136baa8114d1d4f48845ae56ea",
-      "size": 1731
-    },
-    "helper/tests/game_build_metadata.c": {
-      "group": "helper",
-      "sha256": "f42403c6da4409e0387a76e921da18e6759af8d499eb385ee9c0d2fdc6c1829b",
-      "size": 812
-    },
-    "helper/tests/unknown_game.c": {
-      "group": "helper",
-      "sha256": "eee2382e0999077dd532b03bc3ca74cbcc9bae0aba55ec7e8b89e48ed13f0ff6",
-      "size": 388
-    },
-    "App/Sources/MetalFlight/GameMemoryErrorMonitor.swift": {
-      "group": "app",
-      "size": 2253,
-      "sha256": "41266b4bf05b3b024d5fb51e1b71685fd05fe27dfd6e92a975190edd6133bea2"
-    },
-    "App/Sources/MetalFlight/SettingsView.swift": {
-      "group": "app",
-      "size": 1206,
-      "sha256": "1cc6ddd1aee91639306f7b0bbbfaa8b0735cc8f7966e2bf963a0eb694382c5a1"
-    },
-    "App/Sources/MetalFlight/UpdateChannel.swift": {
-      "group": "app",
-      "size": 905,
-      "sha256": "5a9ef8f5406d13f4dd91e760f5581954f05953badd8003804863c0fbfd810ab6"
-    },
-    "App/Tests/MetalFlightTests/AppModelTests.swift": {
-      "group": "app",
-      "size": 5402,
-      "sha256": "8a4bc933495172dfddc9eb03d6318d7d3eaad18db23a6c5a942cd9456c2710c0"
     }
   },
   "groups": {
+    "distribution": 11,
     "app": 27,
-    "distribution": 9,
-    "helper": 33,
     "licence": 2,
+    "helper": 35,
     "runtime-build": 6
   },
   "private_prefixes_included": false
