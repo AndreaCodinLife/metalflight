@@ -1,25 +1,52 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!-- sparkle-sign-warning:
+<?xml version="1.0" standalone="yes"?><!-- sparkle-sign-warning:
 IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
 --><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
         <title>MetalFlight</title>
         <item>
-            <title>MetalFlight 0.1.8 Beta 3</title>
-            <pubDate>Thu, 05 Nov 2026 23:29:40 +0100</pubDate>
+            <title>0.1.8</title>
+            <pubDate>Sat, 07 Nov 2026 01:29:45 +0100</pubDate>
+            <sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.4</sparkle:fullReleaseNotesLink>
             <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>0.1.8b3</sparkle:version>
-            <sparkle:shortVersionString>0.1.8 Beta 3</sparkle:shortVersionString>
+            <sparkle:version>0.1.8b4</sparkle:version>
+            <sparkle:shortVersionString>0.1.8</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <description>&lt;p&gt;MSFS 2024 1.9.24 compatibility. After updating the application, select Settings → Updates → Preview and install runtime 2026.11.05-dev10-preview1 with Update.&lt;/p&gt;&lt;p&gt;Startup and mission-guard mappings are validated; one Charles de Gaulle takeoff is confirmed on M1 Pro with 32 GB. All 42 owned helper controls pass.&lt;/p&gt;&lt;p&gt;An earlier initial-loading 6% freeze required an isolated Steam/Wine restart. Long-flight and repeated-launch reliability remain unverified. Stable remains 0.1.7.&lt;/p&gt;
-</description>
-            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.3/MetalFlight-0.1.8-beta.3.dmg" length="3177178" type="application/octet-stream" sparkle:edSignature="lqOXmFgcDMKUVtfHHbZagBLEfW+LuuEm7A5itUj1J0P0xAxZpHbLIUW90ekIGFyfp37jL0DbQ3PbpAU5GT7YAA=="></enclosure>
-            <sparkle:deltas>
-                <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.3/MetalFlight0.1.8b3-0.1.8b2.delta" sparkle:deltaFrom="0.1.8b2" length="2770" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="941872" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="oDRPZHfBWmLsRVhceBcwINBqIXSe/NWJ3iA2xZ6+GfKDKRZYr10pwyfZaSBvjt30w85tuJTSN3inXbdjNTWDCA=="></enclosure>
-            </sparkle:deltas>
+            <description sparkle:format="markdown"><![CDATA[MetalFlight **0.1.8 Beta 4** updates the opt-in Preview channel. Stable remains
+**0.1.7**. This release includes the app changes and the separate runtime
+correction; installing the app alone does not install the runtime.
+
+### Changes
+
+- Aligns the windowed simulator resolution with the Mac display so visible UI
+  buttons and pointer hit-testing line up. The app restores the prior settings
+  after the game exits and preserves changes made while playing.
+- Fixes Wine credential enumeration when the host credential provider has no
+  matching entry, allowing an existing registry credential for a remembered
+  Microsoft account to remain available.
+- Adds runtime `2026.11.07-dev11-preview1`, based on the published dev10 runtime
+  with the credential fix. The Wine source patch and source lock are included.
+
+### Validation
+
+The user confirmed a working centre click at the Microsoft Continue button,
+usable sign-in, menu and moving video. The user also confirmed a successful
+flight in the Beta 4 candidate. The Hybrid Metal 4 Preview7 flight and the
+dev10-based credential-fix flight were separate runs; airport, aircraft,
+duration, takeoff and mission completion were not specified. An earlier
+separate attempt froze at 6% during initial loading; startup freezes are not
+claimed universally fixed.
+
+All 22 standard app tests pass; a separate test of the exact runtime archive through install, reinstall, rollback, and roll-forward also passes. The runtime archive contains 1,866 inventoried files
+and 52 safe symlinks, and its inventory matches the archive. The app DMG is
+ad-hoc signed and not Apple-notarized. The Preview feed and update signatures
+use the existing Sparkle key. The full interactive updater transition between
+two notarized releases has not been tested.
+]]></description>
+            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.4/MetalFlight-0.1.8-beta.4.dmg" length="3212076" type="application/octet-stream" sparkle:edSignature="hQApX6j32fZyOpTJ3bUe0Q/fBF72LBoJDS2HA2WrvT2llcrssAWqoOP7f02WBIFNoSY8B5JaCpDqhA6KeKZUBQ=="></enclosure>
         </item>
     </channel>
 </rss><!-- sparkle-signatures:
-edSignature: airH9K5wHFbEIO9qgBZgyO4UeFdycs6POOF84EZm/6Vd8KlvRX7aDdzMFYvxNgnJetzl0gdS81IPWtQueOIZCA==
-length: 2327
+edSignature: /g+jTlWRyWE37dhKzVXWBZYF2LvILv+Lmfds7wkXY88BTLpCKxobOSbFrVJcqvVaYXnPCY8Gez0sF1jR2KKuBA==
+length: 3212
 -->
