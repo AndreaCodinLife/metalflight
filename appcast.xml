@@ -1,52 +1,30 @@
-<?xml version="1.0" standalone="yes"?><!-- sparkle-sign-warning:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!-- sparkle-sign-warning:
 IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
---><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
-    <channel>
-        <title>MetalFlight</title>
-        <item>
-            <title>0.1.8</title>
-            <pubDate>Sat, 07 Nov 2026 01:29:45 +0100</pubDate>
-            <sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.4</sparkle:fullReleaseNotesLink>
-            <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>0.1.8b4</sparkle:version>
-            <sparkle:shortVersionString>0.1.8</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <description sparkle:format="markdown"><![CDATA[MetalFlight **0.1.8 Beta 4** updates the opt-in Preview channel. Stable remains
-**0.1.7**. This release includes the app changes and the separate runtime
-correction; installing the app alone does not install the runtime.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0"><channel><title>MetalFlight</title><item><title>MetalFlight 0.1.8 Beta 5</title><sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.5</sparkle:fullReleaseNotesLink><sparkle:channel>beta</sparkle:channel><sparkle:version>0.1.8b5</sparkle:version><sparkle:shortVersionString>0.1.8 Beta 5</sparkle:shortVersionString><sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion><sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements><description sparkle:format="markdown">MetalFlight **0.1.8 Beta 5** updates the opt-in Preview channel. Stable remains
+**0.1.7**. This release adds runtime `2026.11.07-dev12-preview1` for testing the
+experimental issue #8 workaround. Updating the app alone does not install the
+runtime; select **Settings → Updates → Preview**, then install the runtime
+update.
 
-### Changes
+### Issue #8 Preview experiment
 
-- Aligns the windowed simulator resolution with the Mac display so visible UI
-  buttons and pointer hit-testing line up. The app restores the prior settings
-  after the game exits and preserves changes made while playing.
-- Fixes Wine credential enumeration when the host credential provider has no
-  matching entry, allowing an existing registry credential for a remembered
-  Microsoft account to remain available.
-- Adds runtime `2026.11.07-dev11-preview1`, based on the published dev10 runtime
-  with the credential fix. The Wine source patch and source lock are included.
+- Adds a targeted TEB fiber stack preflight in Wine `ntdll` for the MSFS game
+  process. It preserves Windows guard-page and `StackLimit` bookkeeping.
+- Enables the workaround only for `FlightSimulator2024.exe` through the game
+  profile. Steam is not opted in.
+- The owned four-fiber positive control and disabled/wrong-target guard-page
+  controls pass. The app's exact runtime install/reinstall/rollback check also
+  passes.
+- **The PMDG 737-800 POS INIT and iFly 737 MAX 8 SID cases have not been tested
+  with this Preview runtime. This is an experimental test build; the issue is
+  not confirmed fixed.** Please report results and sanitized logs on
+  [issue #8](https://github.com/AndreaCodinLife/metalflight/issues/8).
 
-### Validation
-
-The user confirmed a working centre click at the Microsoft Continue button,
-usable sign-in, menu and moving video. The user also confirmed a successful
-flight in the Beta 4 candidate. The Hybrid Metal 4 Preview7 flight and the
-dev10-based credential-fix flight were separate runs; airport, aircraft,
-duration, takeoff and mission completion were not specified. An earlier
-separate attempt froze at 6% during initial loading; startup freezes are not
-claimed universally fixed.
-
-All 22 standard app tests pass; a separate test of the exact runtime archive through install, reinstall, rollback, and roll-forward also passes. The runtime archive contains 1,866 inventoried files
-and 52 safe symlinks, and its inventory matches the archive. The app DMG is
-ad-hoc signed and not Apple-notarized. The Preview feed and update signatures
-use the existing Sparkle key. The full interactive updater transition between
-two notarized releases has not been tested.
-]]></description>
-            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.4/MetalFlight-0.1.8-beta.4.dmg" length="3212076" type="application/octet-stream" sparkle:edSignature="hQApX6j32fZyOpTJ3bUe0Q/fBF72LBoJDS2HA2WrvT2llcrssAWqoOP7f02WBIFNoSY8B5JaCpDqhA6KeKZUBQ=="></enclosure>
-        </item>
-    </channel>
-</rss><!-- sparkle-signatures:
-edSignature: /g+jTlWRyWE37dhKzVXWBZYF2LvILv+Lmfds7wkXY88BTLpCKxobOSbFrVJcqvVaYXnPCY8Gez0sF1jR2KKuBA==
-length: 3212
+The runtime archive contains 1,866 inventoried files and 52 safe symlinks.
+The app is ad-hoc signed and not Apple-notarized. The Preview feed and update
+signatures use the existing Sparkle signing key. A full interactive updater
+transition between notarized releases remains unverified.
+</description><enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.5/MetalFlight-0.1.8-beta.5.dmg" length="3212059" type="application/octet-stream" sparkle:edSignature="xkXctJGz568OdKPwe0/oT9Xf52SUYkEDS8NahwyytTdI4IISJ5YK2r8EUsE/Ub8RNWyLe5o93cosumZVzCyaCg=="></enclosure></item></channel></rss><!-- sparkle-signatures:
+edSignature: rykSvky8IQH9LyBAQzOhxO0Cukiob8lWDgUnVCwf4RM6AiErRRjpMHYc3i1COQK23nnaB3a6cwNTM+gzxVMVBg==
+length: 2620
 -->
