@@ -3,12 +3,22 @@
   "wine": {
     "repository": "https://github.com/AndreaCodinLife/metalflight-wine",
     "commit": "3384084f9de2f8e7f835ef9ed5ca36a36094b101",
-    "patch": {
-      "path": "runtime/patches/credential-enumeration.patch",
-      "sha256": "ca53e6cadb672e06b9f30d31bf9afe56841ff179002f21c85bd8b3dc7fcc9c86",
-      "base_source_sha256": "e321374103209c47dd91b169406c639408ac9971c395d2ab0b94fc651d8aef82",
-      "patched_source_sha256": "a74a53abeeae71f048f282d09b720ae3832fe09efb3c75a12ac8191ee3857bea"
-    }
+    "patches": [
+      {
+        "path": "runtime/patches/credential-enumeration.patch",
+        "sha256": "ca53e6cadb672e06b9f30d31bf9afe56841ff179002f21c85bd8b3dc7fcc9c86",
+        "base_source_sha256": "e321374103209c47dd91b169406c639408ac9971c395d2ab0b94fc651d8aef82",
+        "patched_source_sha256": "a74a53abeeae71f048f282d09b720ae3832fe09efb3c75a12ac8191ee3857bea",
+        "source_path": "dlls/advapi32/cred.c"
+      },
+      {
+        "path": "runtime/patches/teb-fiber-host-guard.patch",
+        "sha256": "442d95be0792dedc77c3710959c4f147831d8f4f91b004c0f05f13b46ed228e3",
+        "source_path": "dlls/ntdll/unix/virtual.c",
+        "base_source_sha256": "e19c3861c83a1894a8bf884de9edb8beed798b2bcd7af944b28bffebc198d024",
+        "patched_source_sha256": "318abe35593b76ed4be87380758559a1e190029dfd8268ad3363fce87604abd1"
+      }
+    ]
   },
   "mullion": {
     "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",

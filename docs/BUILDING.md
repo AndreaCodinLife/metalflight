@@ -1,8 +1,10 @@
 # Building MetalFlight
 
-For Preview Beta 3, see [MSFS 1.9.24 compatibility](MSFS-1.9.24.md). Runtime
-2026.11.05-dev10-preview1 retains Beta 2's Wine, renderer and dependency binaries
-and replaces the helper/profile with the flight-checked 1.9.24 configuration.
+For Preview Beta 3, see [MSFS 1.9.24 compatibility](MSFS-1.9.24.md). For the
+Preview Beta 5 issue #8 experiment, see
+[TEB fiber stack preflight](ISSUE-8-TEB-FIBER-PREFLIGHT.md). Runtime
+2026.11.07-dev12-preview1 retains Beta 4's runtime components except for the
+targeted `ntdll.so` change, game profile, source lock and inventory.
 `helper/tests/README.md` describes the owned control sources, including explicit
 mission-guard mappings and unknown-build refusal.
 
@@ -228,6 +230,22 @@ Rosetta EmulateForward diagnostic. The 22 core sites and mission guard installed
 The later optional GI and RI sites were skipped by their existing checks; they
 are not counted as installed. This is one successful application-prefix trial,
 not a repeated-launch, long-flight, other-mode or other-hardware qualification.
+
+## TEB fiber stack preflight (Preview Beta 5)
+
+The game profile opts `FlightSimulator2024.exe` into a host stack-page
+preflight at syscall return. It applies only to the game process. The preflight
+opens host access below the active fiber's `StackLimit` while preserving the
+Windows guard page, `StackLimit`, and `VirtualQuery` bookkeeping. It is intended
+to prevent deep WASM fiber call stacks from reaching an unopened host guard
+page between syscall returns. The reporter's PMDG and iFly FMC cases have not
+been confirmed against this Preview build; see the linked validation note.
+
+`runtime/build_wine.py` verifies and applies the credential enumeration and
+TEB fiber patches from `runtime/sources.lock.json` to the pinned Wine source.
+Keep `MSFS24_WINE_STACK_OPEN=1` in the game's profile only; do not add it to
+Steam settings. The owned four-fiber positive and disabled/wrong-target
+guard-page controls are in [`runtime/tests`](../runtime/tests/README.md).
 
 ## Hardware context cache correction
 

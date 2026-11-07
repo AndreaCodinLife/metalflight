@@ -1,17 +1,27 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 4; windowed resolution alignment and remembered-account credential enumeration fix; excludes this manifest.",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 5; issue #8 TEB fiber stack preflight Preview test; excludes this manifest.",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-wine",
       "commit": "3384084f9de2f8e7f835ef9ed5ca36a36094b101",
-      "patch": {
-        "path": "runtime/patches/credential-enumeration.patch",
-        "sha256": "ca53e6cadb672e06b9f30d31bf9afe56841ff179002f21c85bd8b3dc7fcc9c86",
-        "base_source_sha256": "e321374103209c47dd91b169406c639408ac9971c395d2ab0b94fc651d8aef82",
-        "patched_source_sha256": "a74a53abeeae71f048f282d09b720ae3832fe09efb3c75a12ac8191ee3857bea"
-      }
+      "patches": [
+        {
+          "path": "runtime/patches/credential-enumeration.patch",
+          "sha256": "ca53e6cadb672e06b9f30d31bf9afe56841ff179002f21c85bd8b3dc7fcc9c86",
+          "base_source_sha256": "e321374103209c47dd91b169406c639408ac9971c395d2ab0b94fc651d8aef82",
+          "patched_source_sha256": "a74a53abeeae71f048f282d09b720ae3832fe09efb3c75a12ac8191ee3857bea",
+          "source_path": "dlls/advapi32/cred.c"
+        },
+        {
+          "path": "runtime/patches/teb-fiber-host-guard.patch",
+          "sha256": "442d95be0792dedc77c3710959c4f147831d8f4f91b004c0f05f13b46ed228e3",
+          "source_path": "dlls/ntdll/unix/virtual.c",
+          "base_source_sha256": "e19c3861c83a1894a8bf884de9edb8beed798b2bcd7af944b28bffebc198d024",
+          "patched_source_sha256": "318abe35593b76ed4be87380758559a1e190029dfd8268ad3363fce87604abd1"
+        }
+      ]
     },
     "mullion": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
@@ -175,8 +185,8 @@
       "group": "distribution"
     },
     "README.md": {
-      "sha256": "4a5e4d3314b4b84dc71460af8c0471219cdcba878f1c02cfaca4d200e57d7f3d",
-      "size": 11635,
+      "sha256": "bf74c430dfa8b9a50b379a7c4061efdd4bade2e23e7ed37ee45e0608ea8358f7",
+      "size": 12145,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -190,8 +200,13 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "3c2f91adcd907ca203075ec41a349498fde630133ac2413ef60b81328f1c9918",
-      "size": 17778,
+      "sha256": "bb27dd20292f56b1059e65c1777b9dd503e6c219b68b537f54bb178b2bbcc88e",
+      "size": 18837,
+      "group": "documentation"
+    },
+    "docs/ISSUE-8-TEB-FIBER-PREFLIGHT.md": {
+      "sha256": "ff76074cd87ce4977faa3a18e54a78db0944898d0f05e731893ee03da670dee4",
+      "size": 1609,
       "group": "documentation"
     },
     "docs/ISSUE-9-RESOLUTION-AND-SIGNIN.md": {
@@ -212,6 +227,11 @@
     "docs/RELEASE-NOTES-BETA4.md": {
       "sha256": "8a36d292ec4cc62c128c75a7a650050cad9c1f9642996b80d66b1b3681f238e1",
       "size": 1779,
+      "group": "documentation"
+    },
+    "docs/RELEASE-NOTES-BETA5.md": {
+      "sha256": "0d896e1f7fed2d99339b5f7aeb44f3cab5dea5dc0b8179398e7f6d4f22607cec",
+      "size": 1374,
       "group": "documentation"
     },
     "helper/build.sh": {
@@ -405,8 +425,8 @@
       "group": "runtime"
     },
     "runtime/build_wine.py": {
-      "sha256": "00d3d95cad77a9ccdb0c2e58bd6b864f6c2da8893fbeb4ab5a8deb828b4f3808",
-      "size": 10003,
+      "sha256": "c15eed820eacf7e084f6c0ff306125378f3563aff73bd55cf8041abb38ac5403",
+      "size": 10063,
       "group": "runtime"
     },
     "runtime/fetch_sources.py": {
@@ -419,19 +439,39 @@
       "size": 960,
       "group": "runtime"
     },
+    "runtime/patches/teb-fiber-host-guard.patch": {
+      "sha256": "442d95be0792dedc77c3710959c4f147831d8f4f91b004c0f05f13b46ed228e3",
+      "size": 7789,
+      "group": "runtime"
+    },
     "runtime/profile.json": {
-      "sha256": "85ca8745625431d2e65ed120e4772f462960f57a47374b7847a1330846a631b6",
-      "size": 4223,
+      "sha256": "75e2f23ae18443f89492fabbf72a1e7e9eb98eb4d78c2feb4794ccc5f89466ee",
+      "size": 4258,
       "group": "runtime"
     },
     "runtime/sources.lock.json": {
-      "sha256": "00d2948cddd32ae4767e2323a61f313227dabd7e6299b30ffe80bc81b7dfa280",
-      "size": 680,
+      "sha256": "fcca20042340f3d5e79957275ecd7e3b27901a838ddf013a0aeac543abe0df1f",
+      "size": 1168,
       "group": "runtime"
     },
     "runtime/test_steam_options.py": {
       "sha256": "7de093d40ab67c057fb8204b4f5bd3812ac498e274d1a3c8731c891afc829b99",
       "size": 3412,
+      "group": "runtime"
+    },
+    "runtime/tests/README.md": {
+      "sha256": "898f4e13ebbcddf57e992a27a3df730a7d9e7c607c3d0c560cf33083e94d3a59",
+      "size": 945,
+      "group": "runtime"
+    },
+    "runtime/tests/fiber_stack_open_contract.c": {
+      "sha256": "252c10d7c8541fa10229675e80410bfe3d5cbd70cadbe48ea02a191693f549c6",
+      "size": 4946,
+      "group": "runtime"
+    },
+    "runtime/tests/qualify_fiber_stack_open.py": {
+      "sha256": "cb5dcb583c79058926701eaa0dad62ae7966337750241f5320dc150576679564",
+      "size": 6974,
       "group": "runtime"
     },
     "scripts/bundle_app.sh": {

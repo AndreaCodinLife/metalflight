@@ -1,0 +1,175 @@
+diff --git a/dlls/ntdll/unix/virtual.c b/dlls/ntdll/unix/virtual.c
+index 47cfcd2..ace6367 100644
+--- a/dlls/ntdll/unix/virtual.c
++++ b/dlls/ntdll/unix/virtual.c
+@@ -134,6 +134,7 @@ struct file_view
+     unsigned int  protect;       /* protection for all pages at allocation time and SEC_* flags */
+     BOOL platform_stack, platform_fiber_primed, platform_stack_decommitted;
+     ULONG_PTR platform_fiber_limit, platform_fiber_guaranteed;
++    ULONG_PTR platform_open_limit;
+ };
+ 
+ /* per-page protection flags */
+@@ -1887,6 +1888,7 @@ static NTSTATUS create_view( struct file_view **view_ret, void *base, size_t siz
+     view->size    = size;
+     view->protect = vprot;
+     view->platform_stack = view->platform_fiber_primed = view->platform_stack_decommitted = FALSE;
++    view->platform_open_limit = 0;
+     if (use_kernel_writewatch) vprot &= ~VPROT_WRITEWATCH;
+     set_page_vprot( base, size, vprot );
+ 
+@@ -2293,6 +2295,7 @@ static NTSTATUS set_protection( struct file_view *view, void *base, SIZE_T size,
+     }
+ 
+     if (!set_vprot( view, base, size, vprot | VPROT_COMMITTED )) return STATUS_ACCESS_DENIED;
++    view->platform_open_limit = 0;
+     return STATUS_SUCCESS;
+ }
+ 
+@@ -2745,6 +2748,7 @@ static NTSTATUS decommit_pages( struct file_view *view, char *base, size_t size
+     char *host_end, *host_start = (char *)ROUND_SIZE( 0, base, host_page_mask );
+ 
+     view->platform_fiber_primed = FALSE;
++    view->platform_open_limit = 0;
+     if (view->platform_stack) view->platform_stack_decommitted = TRUE;
+ 
+     if (!size)
+@@ -2771,6 +2775,7 @@ static NTSTATUS remove_pages_from_view( struct file_view *view, char *base, size
+ {
+     assert( size < view->size );
+     view->platform_stack = view->platform_fiber_primed = FALSE;
++    view->platform_open_limit = 0;
+ 
+     if (view->base != base && base + size != (char *)view->base + view->size)
+     {
+@@ -2785,6 +2790,8 @@ static NTSTATUS remove_pages_from_view( struct file_view *view, char *base, size
+         new_view->size    = (char *)view->base + view->size - (char *)new_view->base;
+         new_view->protect = view->protect;
+         new_view->platform_stack = new_view->platform_fiber_primed = new_view->platform_stack_decommitted = FALSE;
++        new_view->platform_open_limit = 0;
++        view->platform_open_limit = 0;
+ 
+         unregister_view( view );
+         view->size = base - (char *)view->base;
+@@ -2842,6 +2849,7 @@ static NTSTATUS free_pages_preserve_placeholder( struct file_view *view, char *b
+     }
+ 
+     view->protect = VPROT_PLACEHOLDER | VPROT_FREE_PLACEHOLDER;
++    view->platform_open_limit = 0;
+     set_page_vprot( view->base, view->size, 0 );
+     anon_mmap_fixed( view->base, ROUND_SIZE( 0, view->size, host_page_mask ), PROT_NONE, 0 );
+     return STATUS_SUCCESS;
+@@ -4801,7 +4809,10 @@ void virtual_platform_mark_stack(void *base, SIZE_T size)
+     server_enter_uninterrupted_section(&virtual_mutex,&sigset);
+     view=find_view(base,size);
+     if (view && view->base==base && view->size==size && is_view_valloc(view))
++    {
+         view->platform_stack=TRUE;
++        view->platform_open_limit=0;
++    }
+     server_leave_uninterrupted_section(&virtual_mutex,&sigset);
+ }
+ 
+@@ -4945,6 +4956,34 @@ NTSTATUS virtual_platform_prime_fiber(void *args)
+     return STATUS_SUCCESS;
+ }
+ 
++static ULONG_PTR platform_stack_preflight_window(void)
++{
++    static ULONG_PTR window;
++
++    if (!window)
++    {
++        const char *env = getenv( "MSFS24_WINE_STACK_PREFLIGHT_WINDOW" );
++        ULONG_PTR value = env ? strtoul( env, NULL, 0 ) : 0x40000;
++
++        if (value < 0x4000) value = 0x4000;
++        if (value > 0x400000) value = 0x400000;
++        window = (value + host_page_mask) & ~host_page_mask;
++    }
++    return window;
++}
++
++static BOOL platform_stack_open_enabled(void)
++{
++    static int enabled = -1;
++
++    if (enabled == -1)
++    {
++        const char *env = getenv( "MSFS24_WINE_STACK_OPEN" );
++        enabled = env && !strcmp( env, "1" );
++    }
++    return enabled;
++}
++
+ BOOL virtual_platform_stack_guard_near(ULONG_PTR rsp, BOOL preflight)
+ {
+     struct thread_stack_info stack;
+@@ -4954,16 +4993,18 @@ BOOL virtual_platform_stack_guard_near(ULONG_PTR rsp, BOOL preflight)
+     ULONG_PTR declined_page=0;
+     BYTE declined_prot=0, below_prot=0;
+     sigset_t sigset;
++    ULONG_PTR window = platform_stack_preflight_window(), scan;
+     if (!is_inside_thread_stack((void *)rsp,&stack)) return FALSE;
+-    first=max((ULONG_PTR)stack.start,rsp>0x4000 ? rsp-0x4000 : 0);
++    first=max((ULONG_PTR)stack.start,rsp>window ? rsp-window : 0);
+     first=(ULONG_PTR)ROUND_ADDR((void *)first,host_page_mask);
+     server_enter_uninterrupted_section(&virtual_mutex,&sigset);
+-    for (attempt=0;attempt<8;attempt++)
++    for (attempt=0;attempt<window/host_page_size+8;attempt++)
+     {
+         near=FALSE;
+         /* Grow the nearest guard first, just as a descending stack would hit it.
+          * Starting at the lowest guard can leave higher guards unresolved. */
+-        for (page=(ULONG_PTR)ROUND_ADDR((void *)rsp,host_page_mask);page>=first;page-=host_page_size)
++        scan=max(rsp,(ULONG_PTR)stack.limit);
++        for (page=(ULONG_PTR)ROUND_ADDR((void *)scan,host_page_mask);page>=first;page-=host_page_size)
+         {
+             if (get_host_page_vprot((void *)page)&VPROT_GUARD) {near=TRUE;break;}
+             if (page<host_page_size) break;
+@@ -4994,6 +5035,45 @@ BOOL virtual_platform_stack_guard_near(ULONG_PTR rsp, BOOL preflight)
+             break;
+         }
+     }
++    if (preflight && platform_stack_open_enabled())
++    {
++        struct file_view *view = NULL;
++        ULONG_PTR start = (ULONG_PTR)stack.start, end = (ULONG_PTR)stack.end;
++        ULONG_PTR limit = (ULONG_PTR)ROUND_ADDR( stack.limit, host_page_mask );
++        ULONG_PTR guard;
++
++        /* Keep the reserve's bottom page inaccessible, but open its adjacent
++         * guard page in the host mapping. Wine's page metadata and TEB remain
++         * untouched so Rosetta prologues can cross the stale guard safely. */
++        if (end > start && end - start <= 64 * 1024 * 1024 &&
++            stack.guaranteed <= end - start && limit > start + host_page_size &&
++            limit <= end && !(limit & host_page_mask))
++        {
++            view = find_view( stack.start, end - start );
++            guard = limit - host_page_size;
++            if (view && view->base == stack.start && view->size == (size_t)(end - start) &&
++                is_view_valloc( view ) && !(view->protect & (SEC_FILE | VPROT_FREE_PLACEHOLDER)) &&
++                (get_host_page_vprot( (void *)guard ) & VPROT_GUARD) &&
++                view->platform_open_limit != limit)
++            {
++                if (!mprotect( (void *)guard, host_page_size, PROT_READ | PROT_WRITE ))
++                {
++                    static unsigned int opens;
++                    view->platform_open_limit = limit;
++                    if (__sync_fetch_and_add( &opens, 1 ) < 64)
++                        WARN_(msfs_platform)( "stack host-guard opened: tid=%04x rsp=%lx start=%lx limit=%lx guard=%lx size=%lx\n",
++                                              GetCurrentThreadId(), rsp, start, limit, guard, host_page_size );
++                }
++                else
++                {
++                    static unsigned int failures;
++                    if (__sync_fetch_and_add( &failures, 1 ) < 16)
++                        WARN_(msfs_platform)( "stack host-guard open failed: tid=%04x rsp=%lx start=%lx limit=%lx guard=%lx errno=%d\n",
++                                              GetCurrentThreadId(), rsp, start, limit, guard, errno );
++                }
++            }
++        }
++    }
+     server_leave_uninterrupted_section(&virtual_mutex,&sigset);
+     if (declined_page)
+     {

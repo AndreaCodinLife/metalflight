@@ -65,7 +65,8 @@
     "WINEMSYNC": "0",
     "WINEPATH": "C:\\Program Files (x86)\\Steam;C:\\windows\\system32;C:\\windows;C:\\windows\\system32\\wbem;C:\\windows\\system32\\WindowsPowerShell\\v1.0",
     "MULLION_EXPERIMENTAL_DEVICE12": "1",
-    "MULLION_EXPERIMENTAL_BC1_CAST": "1"
+    "MULLION_EXPERIMENTAL_BC1_CAST": "1",
+    "MSFS24_WINE_STACK_OPEN": "1"
   },
   "steamArguments": [
     "-cef-force-gpu",

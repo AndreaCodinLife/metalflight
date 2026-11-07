@@ -50,29 +50,31 @@ def run(step, cmd, cwd):
 
 
 def prepare_wine_source():
-    """Apply and verify the source-only credential enumeration patch."""
+    """Apply and verify the source-only Wine patches in the runtime lock."""
     lock = json.loads((ROOT / 'sources.lock.json').read_text())
     wine = lock['wine']
-    patch_info = wine['patch']
-    patch = ROOT / patch_info['path'].removeprefix('runtime/')
-    if sha(patch) != patch_info['sha256']:
-        raise SystemExit('credential patch SHA-256 mismatch')
     commit = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=TREE, capture_output=True, text=True, check=True).stdout.strip()
     if commit != wine['commit']:
         raise SystemExit(f'Wine source commit mismatch: {commit}')
-    source = TREE / 'dlls/advapi32/cred.c'
-    source_hash = sha(source)
+    patches = wine['patches'] if 'patches' in wine else [wine['patch']]
+    expected_status = []
+    for patch_info in patches:
+        patch = ROOT / patch_info['path'].removeprefix('runtime/')
+        if sha(patch) != patch_info['sha256']:
+            raise SystemExit(f"{patch_info['path']}: patch SHA-256 mismatch")
+        source = TREE / patch_info['source_path']
+        source_hash = sha(source)
+        if source_hash == patch_info['base_source_sha256']:
+            subprocess.run(['git', 'apply', '--check', str(patch)], cwd=TREE, check=True)
+            subprocess.run(['git', 'apply', str(patch)], cwd=TREE, check=True)
+            source_hash = sha(source)
+        if source_hash != patch_info['patched_source_sha256']:
+            raise SystemExit(f"{patch_info['source_path']}: patched source SHA-256 mismatch")
+        expected_status.append(' M ' + patch_info['source_path'])
     status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'], cwd=TREE,
                             capture_output=True, text=True, check=True).stdout.splitlines()
-    expected_status = [' M dlls/advapi32/cred.c']
-    if source_hash == patch_info['base_source_sha256'] and not status:
-        subprocess.run(['git', 'apply', '--check', str(patch)], cwd=TREE, check=True)
-        subprocess.run(['git', 'apply', str(patch)], cwd=TREE, check=True)
-        source_hash = sha(source)
-        status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'], cwd=TREE,
-                                capture_output=True, text=True, check=True).stdout.splitlines()
-    if source_hash != patch_info['patched_source_sha256'] or status != expected_status:
-        raise SystemExit('Wine source is not exactly the pinned credential patch')
+    if status != sorted(expected_status):
+        raise SystemExit(f'Wine source has unexpected changes: {status!r}')
 
 
 def build_tool_lib64():
