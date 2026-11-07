@@ -160,6 +160,7 @@ final class AppModel {
             Task.detached {
                 process.waitUntilExit()
                 let code = process.terminationStatus
+                try? launch.resolutionOverride?.restore()
                 await MainActor.run {
                     self.playing = false
                     if code == 53 {

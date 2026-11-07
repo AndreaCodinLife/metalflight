@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 /// Prefix creation, Steam installation, and the Steam + MSFS 2024 launch sequence.
@@ -135,18 +136,30 @@ struct Launcher {
         }
         status("Configuring trackpad scrolling…")
         try await configureGameTrackpadScrolling()
+        let resolutionOverride = try GameResolutionOverride.prepare(prefix: Paths.prefix,
+                                                                     support: Paths.support,
+                                                                     screen: NSScreen.main)
+        if resolutionOverride != nil {
+            status("Matching simulator resolution to the display…")
+        }
         status("Launching Microsoft Flight Simulator 2024…")
         let stamp = Int(Date().timeIntervalSince1970)
         let settings = profile.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\cpu-\(stamp).txt") }
         let gameLog = log("game-\(stamp).log")
-        let process = try wine.start(Paths.game.path, profile.gameArguments,
-                                     environment: wine.environment(dllOverrides: profile.dllOverrides, debug: profile.gameDebug, settings: settings),
-                                     directory: Paths.game.deletingLastPathComponent(), log: gameLog)
-        return GameLaunch(process: process, log: gameLog)
+        do {
+            let process = try wine.start(Paths.game.path, profile.gameArguments,
+                                         environment: wine.environment(dllOverrides: profile.dllOverrides, debug: profile.gameDebug, settings: settings),
+                                         directory: Paths.game.deletingLastPathComponent(), log: gameLog)
+            return GameLaunch(process: process, log: gameLog, resolutionOverride: resolutionOverride)
+        } catch {
+            try? resolutionOverride?.restore()
+            throw error
+        }
     }
 }
 
 struct GameLaunch {
     let process: Process
     let log: URL
+    let resolutionOverride: GameResolutionOverride?
 }

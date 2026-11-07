@@ -1,11 +1,17 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 3 / MSFS 1.9.24 compatibility; excludes this manifest",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 4; windowed resolution alignment and remembered-account credential enumeration fix; excludes this manifest.",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-wine",
-      "commit": "3384084f9de2f8e7f835ef9ed5ca36a36094b101"
+      "commit": "3384084f9de2f8e7f835ef9ed5ca36a36094b101",
+      "patch": {
+        "path": "runtime/patches/credential-enumeration.patch",
+        "sha256": "ca53e6cadb672e06b9f30d31bf9afe56841ff179002f21c85bd8b3dc7fcc9c86",
+        "base_source_sha256": "e321374103209c47dd91b169406c639408ac9971c395d2ab0b94fc651d8aef82",
+        "patched_source_sha256": "a74a53abeeae71f048f282d09b720ae3832fe09efb3c75a12ac8191ee3857bea"
+      }
     },
     "mullion": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
@@ -29,8 +35,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/AppModel.swift": {
-      "sha256": "16f7d5cb53c7cd3f1e9fbf79d32cf3926095dcfbd8cd48c2b4bce703d8b4bea5",
-      "size": 7851,
+      "sha256": "ee4cf680e9b892b03b2cad958d86b5d09b736837010f00a8770cec48a5ad300d",
+      "size": 7909,
       "group": "app"
     },
     "App/Sources/MetalFlight/AppUpdates.swift": {
@@ -58,14 +64,19 @@
       "size": 2253,
       "group": "app"
     },
+    "App/Sources/MetalFlight/GameResolution.swift": {
+      "sha256": "b7d71b328adbda4f7076ce8167dadcdf4d31a855304fa71033053640f2cf804d",
+      "size": 7697,
+      "group": "app"
+    },
     "App/Sources/MetalFlight/Headless.swift": {
       "sha256": "984fc92ced6b7c41c5c7b4e67abe232e9017f863e8ee76d5ba56d39cbba2f0d3",
       "size": 4958,
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "3f6e6e9b33ce4a8d28ca0401793cc23a10b75ed77972529c414bd7c1d490aa30",
-      "size": 7956,
+      "sha256": "c05aa9d0eb8c9e4e90dab861373c2e698adf8dcc322cace7924908225068ed2b",
+      "size": 8584,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
@@ -143,9 +154,14 @@
       "size": 846,
       "group": "app"
     },
+    "App/Tests/MetalFlightTests/GameResolutionTests.swift": {
+      "sha256": "7133550130a4bdd36bc657cbc23bc44b80533ec73378bb0d408efd6540067526",
+      "size": 4945,
+      "group": "app"
+    },
     "App/Tests/MetalFlightTests/UpdaterTests.swift": {
-      "sha256": "097f386b59a7d87d36a7fe2b50c6f35656f51caa05af4f0738f60a8ed68fd3bd",
-      "size": 8306,
+      "sha256": "b73728ffe7d015f73fb4eed4c032170a2c2ae37f4f875ceadbbea23ee0f11c3d",
+      "size": 9769,
       "group": "app"
     },
     "App/Tests/MetalFlightTests/VisualCppTests.swift": {
@@ -156,7 +172,7 @@
     "LICENSE": {
       "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195",
       "size": 35150,
-      "group": "licence"
+      "group": "distribution"
     },
     "README.md": {
       "sha256": "4a5e4d3314b4b84dc71460af8c0471219cdcba878f1c02cfaca4d200e57d7f3d",
@@ -166,7 +182,7 @@
     "THIRD-PARTY-NOTICES.md": {
       "sha256": "339c8ad097534de3d5b5a950f5c9bac7e832deb568ec65da117e614ae6b782cc",
       "size": 1603,
-      "group": "licence"
+      "group": "distribution"
     },
     "config/update-public-key.txt": {
       "sha256": "95145651d365c9adc0d7489747b9f1272edd4606e07c12b961e4b56ef8b813d5",
@@ -176,17 +192,27 @@
     "docs/BUILDING.md": {
       "sha256": "3c2f91adcd907ca203075ec41a349498fde630133ac2413ef60b81328f1c9918",
       "size": 17778,
-      "group": "distribution"
+      "group": "documentation"
+    },
+    "docs/ISSUE-9-RESOLUTION-AND-SIGNIN.md": {
+      "sha256": "ffd6e1cf0ebff35c9e9baa5d880d5b3c5dfe31f2034e6384247cd55d37be34cb",
+      "size": 2770,
+      "group": "documentation"
     },
     "docs/MSFS-1.9.24-validation.json": {
       "sha256": "fa5b5bf63f1cbc8669e14a8b892c991f71f53309c63c501fd7c7c96e1e575473",
       "size": 6531,
-      "group": "distribution"
+      "group": "documentation"
     },
     "docs/MSFS-1.9.24.md": {
       "sha256": "fbefa1c40f83934ecb3c1e59dfd831d7ef71c4e6c0cc446cf98a2cb831f0010e",
       "size": 3273,
-      "group": "distribution"
+      "group": "documentation"
+    },
+    "docs/RELEASE-NOTES-BETA4.md": {
+      "sha256": "8a36d292ec4cc62c128c75a7a650050cad9c1f9642996b80d66b1b3681f238e1",
+      "size": 1779,
+      "group": "documentation"
     },
     "helper/build.sh": {
       "sha256": "ee80c85013705b702f8fa4e0f5d6e7da270af0a37282c6e014cd860b32c9049e",
@@ -366,42 +392,47 @@
     "probes/steam_launch_options.c": {
       "sha256": "862da316d4c2eb05f59ac46b4827e63635c17ed0e99f72545953ef462a0089ff",
       "size": 2212,
-      "group": "distribution"
+      "group": "probes"
     },
     "probes/steam_session.c": {
       "sha256": "cc7b31659aa83248969d404ccd1c554882068a2e5f30f26ac5ab582da27daf63",
       "size": 4614,
-      "group": "distribution"
+      "group": "probes"
     },
     "runtime/build_deps.py": {
       "sha256": "12dfdc9f79a1f44536834925922874ce621cb25011e5fc7e101c7ed10b8a4c07",
       "size": 16930,
-      "group": "runtime-build"
+      "group": "runtime"
     },
     "runtime/build_wine.py": {
-      "sha256": "d825cb554a8138ed6bdd20c222d941f6d65bb913f1234c435843e297854750c4",
-      "size": 8567,
-      "group": "runtime-build"
+      "sha256": "00d3d95cad77a9ccdb0c2e58bd6b864f6c2da8893fbeb4ab5a8deb828b4f3808",
+      "size": 10003,
+      "group": "runtime"
     },
     "runtime/fetch_sources.py": {
       "sha256": "120c8a3c423ba57087bbf4ef3994291b7f0e0d1334c9987682c2c260b5a61a97",
       "size": 2871,
-      "group": "runtime-build"
+      "group": "runtime"
+    },
+    "runtime/patches/credential-enumeration.patch": {
+      "sha256": "ca53e6cadb672e06b9f30d31bf9afe56841ff179002f21c85bd8b3dc7fcc9c86",
+      "size": 960,
+      "group": "runtime"
     },
     "runtime/profile.json": {
       "sha256": "85ca8745625431d2e65ed120e4772f462960f57a47374b7847a1330846a631b6",
       "size": 4223,
-      "group": "runtime-build"
+      "group": "runtime"
     },
     "runtime/sources.lock.json": {
-      "sha256": "875356d56517737a947ea1943add1c7d99edcb4c0d93b860ba9cb6dfeff75581",
-      "size": 318,
-      "group": "runtime-build"
+      "sha256": "00d2948cddd32ae4767e2323a61f313227dabd7e6299b30ffe80bc81b7dfa280",
+      "size": 680,
+      "group": "runtime"
     },
     "runtime/test_steam_options.py": {
       "sha256": "7de093d40ab67c057fb8204b4f5bd3812ac498e274d1a3c8731c891afc829b99",
       "size": 3412,
-      "group": "runtime-build"
+      "group": "runtime"
     },
     "scripts/bundle_app.sh": {
       "sha256": "c4ccfb06ddf9e2889a871dc4f3a3e94b508882df13f89603ff35a980d9d6042a",
@@ -418,13 +449,5 @@
       "size": 5852,
       "group": "distribution"
     }
-  },
-  "groups": {
-    "distribution": 11,
-    "app": 27,
-    "licence": 2,
-    "helper": 35,
-    "runtime-build": 6
-  },
-  "private_prefixes_included": false
+  }
 }

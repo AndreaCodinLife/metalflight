@@ -133,4 +133,28 @@ final class UpdaterTests: XCTestCase {
         XCTAssertNil(Paths.resolvedRuntime())
         XCTAssertFalse(FileManager.default.fileExists(atPath: Paths.runtimes.appendingPathComponent("invalid").path))
     }
+
+    /// Set METALFLIGHT_TEST_REAL_RUNTIME_ARCHIVE to exercise the updater against
+    /// a packaged runtime in its normal isolated test support directory.
+    func testPackagedRuntimeInstallReinstallAndRollback() async throws {
+        guard let archivePath = ProcessInfo.processInfo.environment["METALFLIGHT_TEST_REAL_RUNTIME_ARCHIVE"] else {
+            throw XCTSkip("Set METALFLIGHT_TEST_REAL_RUNTIME_ARCHIVE to qualify a release archive")
+        }
+        let archive = URL(fileURLWithPath: archivePath)
+        let manifestPath = archive.deletingLastPathComponent().appendingPathComponent("metalflight-manifest.json")
+        let manifest = try JSONDecoder().decode(ReleaseManifest.self, from: Data(contentsOf: manifestPath))
+        let published = manifest.runtime
+        let runtime = ReleaseManifest.Runtime(version: published.version, url: archive,
+                                              sha256: published.sha256, size: published.size)
+        let previous = try fixture("previous")
+
+        try await Updater.install(previous, progress: { _ in })
+        try await Updater.install(runtime, progress: { _ in })
+        XCTAssertEqual(Updater.installedVersion(), runtime.version)
+        try await Updater.install(runtime, progress: { _ in })
+        try Updater.rollback()
+        XCTAssertEqual(Updater.installedVersion(), "previous")
+        try Updater.rollback()
+        XCTAssertEqual(Updater.installedVersion(), runtime.version)
+    }
 }

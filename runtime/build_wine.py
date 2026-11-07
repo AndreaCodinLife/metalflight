@@ -49,6 +49,32 @@ def run(step, cmd, cwd):
     if r.returncode: raise SystemExit(f'{step} failed ({r.returncode}); see {LOGS / (step + ".log")}')
 
 
+def prepare_wine_source():
+    """Apply and verify the source-only credential enumeration patch."""
+    lock = json.loads((ROOT / 'sources.lock.json').read_text())
+    wine = lock['wine']
+    patch_info = wine['patch']
+    patch = ROOT / patch_info['path'].removeprefix('runtime/')
+    if sha(patch) != patch_info['sha256']:
+        raise SystemExit('credential patch SHA-256 mismatch')
+    commit = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=TREE, capture_output=True, text=True, check=True).stdout.strip()
+    if commit != wine['commit']:
+        raise SystemExit(f'Wine source commit mismatch: {commit}')
+    source = TREE / 'dlls/advapi32/cred.c'
+    source_hash = sha(source)
+    status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'], cwd=TREE,
+                            capture_output=True, text=True, check=True).stdout.splitlines()
+    expected_status = [' M dlls/advapi32/cred.c']
+    if source_hash == patch_info['base_source_sha256'] and not status:
+        subprocess.run(['git', 'apply', '--check', str(patch)], cwd=TREE, check=True)
+        subprocess.run(['git', 'apply', str(patch)], cwd=TREE, check=True)
+        source_hash = sha(source)
+        status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'], cwd=TREE,
+                                capture_output=True, text=True, check=True).stdout.splitlines()
+    if source_hash != patch_info['patched_source_sha256'] or status != expected_status:
+        raise SystemExit('Wine source is not exactly the pinned credential patch')
+
+
 def build_tool_lib64():
     """Build-time tools (sfnt2fon, ...) run from BUILD/tools/<tool>/ and resolve @loader_path/../../../lib64,
     i.e. WORK/lib64. macOS strips DYLD_* through /usr/bin/make, so give them that directory instead."""
@@ -141,7 +167,7 @@ def main():
     ap.add_argument('--jobs', type=int, default=8); ap.add_argument('--label', default='msfs24-wine-dev')
     ap.add_argument('--keep-build', action='store_true', help='Do not wipe an existing build directory on configure')
     args = ap.parse_args()
-    assert not subprocess.run(['git', 'status', '--porcelain'], cwd=TREE, capture_output=True, text=True).stdout, 'msfs24-wine has uncommitted changes'
+    prepare_wine_source()
     for step in STEPS:
         if step in args.steps:
             t = time.time(); print('step', step, flush=True)
