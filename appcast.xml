@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?><!-- sparkle-sign-warning:
 IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
---><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0"><channel><title>MetalFlight</title><item><title>MetalFlight 0.1.8 Beta 5</title><sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.5</sparkle:fullReleaseNotesLink><sparkle:channel>beta</sparkle:channel><sparkle:version>0.1.8b5</sparkle:version><sparkle:shortVersionString>0.1.8 Beta 5</sparkle:shortVersionString><sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion><sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements><description sparkle:format="markdown">MetalFlight **0.1.8 Beta 5** updates the opt-in Preview channel. Stable remains
-**0.1.7**. This release adds runtime `2026.11.07-dev12-preview1` for testing the
-experimental issue #8 workaround. Updating the app alone does not install the
-runtime; select **Settings → Updates → Preview**, then install the runtime
-update.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0"><channel><title>MetalFlight</title><item><title>MetalFlight 0.1.8 Beta 6</title><sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.6</sparkle:fullReleaseNotesLink><sparkle:channel>beta</sparkle:channel><sparkle:version>0.1.8b6</sparkle:version><sparkle:shortVersionString>0.1.8 Beta 6</sparkle:shortVersionString><sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion><sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements><description sparkle:format="markdown">MetalFlight 0.1.8 Beta 6 adds a **Controllers** panel to the Preview launcher. It shows the controllers macOS detects, displays their inputs, and can check whether Wine can open and enumerate them.
 
-### Issue #8 Preview experiment
+If macOS detects no controller when you click **Play**, MetalFlight offers to cancel or launch anyway. Connect your HOTAS before starting MSFS 2024. Controllers connected after launch may require restarting the simulator.
 
-- Adds a targeted TEB fiber stack preflight in Wine `ntdll` for the MSFS game
-  process. It preserves Windows guard-page and `StackLimit` bookkeeping.
-- Enables the workaround only for `FlightSimulator2024.exe` through the game
-  profile. Steam is not opted in.
-- The owned four-fiber positive control and disabled/wrong-target guard-page
-  controls pass. The app's exact runtime install/reinstall/rollback check also
-  passes.
-- **The PMDG 737-800 POS INIT and iFly 737 MAX 8 SID cases have not been tested
-  with this Preview runtime. This is an experimental test build; the issue is
-  not confirmed fixed.** Please report results and sanitized logs on
-  [issue #8](https://github.com/AndreaCodinLife/metalflight/issues/8).
+This app update uses the existing Preview runtime `2026.11.07-dev12-preview1`. App and runtime updates are managed separately under **Settings → Updates → Preview**. If you already have that runtime, keep using it.
 
-The runtime archive contains 1,866 inventoried files and 52 safe symlinks.
-The app is ad-hoc signed and not Apple-notarized. The Preview feed and update
-signatures use the existing Sparkle signing key. A full interactive updater
-transition between notarized releases remains unverified.
-</description><enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.5/MetalFlight-0.1.8-beta.5.dmg" length="3212059" type="application/octet-stream" sparkle:edSignature="xkXctJGz568OdKPwe0/oT9Xf52SUYkEDS8NahwyytTdI4IISJ5YK2r8EUsE/Ub8RNWyLe5o93cosumZVzCyaCg=="></enclosure></item></channel></rss><!-- sparkle-signatures:
-edSignature: rykSvky8IQH9LyBAQzOhxO0Cukiob8lWDgUnVCwf4RM6AiErRRjpMHYc3i1COQK23nnaB3a6cwNTM+gzxVMVBg==
-length: 2620
+The controller panel and Play warning are part of the launcher. In-game controller detection, hot-plugging and a full interactive updater transition still need testing. The macOS app is ad-hoc signed and has no Apple notarization. For a manual install, extract the ZIP and move MetalFlight to Applications.
+</description><enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.6/MetalFlight-0.1.8-beta.6.zip" length="3118889" type="application/octet-stream" sparkle:edSignature="Txm+DNkkGFZcazLnG8H0T8F2GjEugtZtrD/f8IfG4IKDqPdOE8toww5tgd3FrytnAQ7r2mLHAWjSnlzwvSIPDw=="></enclosure></item></channel></rss><!-- sparkle-signatures:
+edSignature: 51CCfmWnqys31CbSJqx76gerSA+nbmW46hZplicL6n396H0X5+DWaWcw+GhMLeF976IiVpoozN893NFLXb/VAw==
+length: 2195
 -->
