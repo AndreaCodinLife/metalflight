@@ -77,8 +77,12 @@ Stage the inputs as described in `scripts/package_runtime.py`, then:
 python3 scripts/package_runtime.py --wine runtime/work/runtime/<version> --inputs <inputs> \
     --profile runtime/profile.json --version <version> --output dist \
     --base-url https://github.com/AndreaCodinLife/metalflight/releases/download/<tag>/ --strip-debug
-scripts/bundle_app.sh <app-version> "Developer ID Application: …"
+METALFLIGHT_WINDOWS_CC=/path/to/llvm-mingw-20260908-ucrt-macos-universal/bin/x86_64-w64-mingw32-clang \
+    scripts/bundle_app.sh <app-version> "Developer ID Application: …"
 ```
+
+The app bundle includes a Windows controller probe compiled from `App/Tools/controller_probe.c`.
+The compiler override is optional when `x86_64-w64-mingw32-clang` is already on PATH.
 
 Upload `metalflight-runtime-<version>.tar.xz` and `metalflight-manifest.json` to the release.
 The app reads `releases/latest/download/metalflight-manifest.json`.

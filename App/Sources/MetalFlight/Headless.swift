@@ -2,6 +2,7 @@ import Foundation
 
 /// `MetalFlight --headless <command>`: the app's own code paths without the window (tests, CI).
 ///   status | check-runtime | install-runtime | rollback | import-gptk [PATH] | prepare-prefix | apply-patches | install-steam | start-steam | install-prerequisites
+///   check-controller VID:PID  (same Wine visibility check as the Controllers panel)
 ///   configure-controllers  (same flight controller setup used by Play; no game launch)
 ///   run PROGRAM [ARGS...]   (in the prefix, with the game's environment and DLL overrides)
 ///   play                   (normal launch sequence, reports exit; retains Steam)
@@ -54,6 +55,14 @@ enum Headless {
             try await launcher().preparePrefix(); print("prefix: ready")
         case "apply-patches":
             try launcher().applyPatches(); print("patches: applied")
+        case "check-controller":
+            guard arguments.count == 2, let id = ControllerID(arguments[1]) else {
+                throw MetalFlightError.message("check-controller needs a USB ID such as 044f:b68d.")
+            }
+            let l = try launcher()
+            guard l.prefixReady else { throw MetalFlightError.message("Create the Windows environment first.") }
+            let result = try await ControllerCheck.run(id: id, wine: l.wine)
+            print("controller \(id.hex): DirectInput=\(result.directInput) HID-present=\(result.hidPresent) HID-open=\(result.hidOpen) Windows-error=\(result.win32Error)")
         case "configure-controllers":
             let changed = try await launcher().configureGameControllers()
             print("flight controllers: configured; Wine refreshed=\(changed)")

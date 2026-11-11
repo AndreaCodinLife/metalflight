@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 5; issue #8 TEB fiber stack preflight Preview test; excludes this manifest.",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 6 with the Controllers panel and Play warning. Excludes this manifest.",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -45,8 +45,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/AppModel.swift": {
-      "sha256": "ee4cf680e9b892b03b2cad958d86b5d09b736837010f00a8770cec48a5ad300d",
-      "size": 7909,
+      "sha256": "7db7d6a1651cf2568b51c6944ae14273b0cd0ddf6c31202e7cda06628589f073",
+      "size": 8622,
       "group": "app"
     },
     "App/Sources/MetalFlight/AppUpdates.swift": {
@@ -55,8 +55,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/ContentView.swift": {
-      "sha256": "22fec8ad3fa2c98c493ac088076dab26874909cee4d0aba7a4d5b1cbe9f3b21b",
-      "size": 5239,
+      "sha256": "0b55af87a661cac618f836ace44b0bb87ddeea267a3891bfe8153103c6fcd4e0",
+      "size": 5500,
       "group": "app"
     },
     "App/Sources/MetalFlight/GPTK.swift": {
@@ -80,8 +80,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Headless.swift": {
-      "sha256": "984fc92ced6b7c41c5c7b4e67abe232e9017f863e8ee76d5ba56d39cbba2f0d3",
-      "size": 4958,
+      "sha256": "96228d020d62e3e39ff9270c190b08442da41e1ac02f98a19bd92b62e4baec0d",
+      "size": 5672,
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
@@ -200,8 +200,8 @@
       "group": "distribution"
     },
     "docs/BUILDING.md": {
-      "sha256": "bb27dd20292f56b1059e65c1777b9dd503e6c219b68b537f54bb178b2bbcc88e",
-      "size": 18837,
+      "sha256": "4e31510d8b109669ae01e5979e4265c418aae94d19c4df973c74958e500fe0a8",
+      "size": 19129,
       "group": "documentation"
     },
     "docs/ISSUE-8-TEB-FIBER-PREFLIGHT.md": {
@@ -475,8 +475,8 @@
       "group": "runtime"
     },
     "scripts/bundle_app.sh": {
-      "sha256": "c4ccfb06ddf9e2889a871dc4f3a3e94b508882df13f89603ff35a980d9d6042a",
-      "size": 4924,
+      "sha256": "c181ae01776d10d3b5552c988d57214035c2f8132fc9325d3a6dcfb759efb7dc",
+      "size": 5314,
       "group": "distribution"
     },
     "scripts/package_app.sh": {
@@ -488,6 +488,31 @@
       "sha256": "cdf05b445d659069e98af83014555120e6c4afbc7432ea1fa9d4711fd5672054",
       "size": 5852,
       "group": "distribution"
+    },
+    "App/Sources/MetalFlight/ControllerCheck.swift": {
+      "sha256": "00eded84a0793fc87bfa0aea5f810431ec1e5d735589e4cc84b4f91b23c5008b",
+      "size": 3210,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/ControllerMonitor.swift": {
+      "sha256": "9c1bbaae998df9e67e19e8a1a81fa6d9482858a51984deea1b4410a3b40dc0a3",
+      "size": 5791,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/ControllersView.swift": {
+      "sha256": "5a676fbcaffd3639b798d63b7dfae286e4f6d44cd0c10f564ef651dc4ff48c17",
+      "size": 6567,
+      "group": "app"
+    },
+    "App/Tests/MetalFlightTests/ControllerCheckTests.swift": {
+      "sha256": "4f83303df3a390e9819ed4f976c39e6f1471bebdd54d491f57b9f3c207ca1368",
+      "size": 1000,
+      "group": "app"
+    },
+    "App/Tools/controller_probe.c": {
+      "sha256": "0c3bb0518e6dd9f6c0a087cdbc9ca6a295d6ddab932b46b6babc9a40e9541d72",
+      "size": 3842,
+      "group": "app"
     }
   }
 }

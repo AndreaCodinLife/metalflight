@@ -25,6 +25,7 @@ struct StepRow<Actions: View>: View {
 
 struct ContentView: View {
     @Environment(AppModel.self) private var model
+    @State private var showsControllers = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -63,6 +64,7 @@ struct ContentView: View {
                     Button("Play") { model.play() }
                         .buttonStyle(.borderedProminent)
                         .disabled(!(model.gptkInstalled && model.gameInstalled) || model.playing)
+                    Button("Controllers…") { showsControllers = true }
                     Button("Stop everything") { model.stopEverything() }
                     Button("Logs") { model.openLogs() }
                 }
@@ -82,6 +84,9 @@ struct ContentView: View {
             .padding(10)
         }
         .frame(minWidth: 640, minHeight: 620)
+        .sheet(isPresented: $showsControllers) {
+            ControllersView(prefixReady: model.prefixReady && model.busy == nil)
+        }
         .onAppear { model.refresh() }
         .onReceive(Timer.publish(every: 5, on: .main, in: .common).autoconnect()) { _ in
             model.refreshInstallation()

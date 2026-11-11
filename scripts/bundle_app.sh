@@ -24,6 +24,13 @@ if [[ -n "$BETA_NUMBER" ]]; then
 fi
 
 mkdir -p build/icon
+CC_WINDOWS="${METALFLIGHT_WINDOWS_CC:-x86_64-w64-mingw32-clang}"
+if ! command -v "$CC_WINDOWS" >/dev/null; then
+  echo "Set METALFLIGHT_WINDOWS_CC to the x86_64 llvm-mingw clang to build the controller probe." >&2
+  exit 2
+fi
+"$CC_WINDOWS" -Wall -Wextra -Werror -O2 App/Tools/controller_probe.c \
+  -o build/ControllerProbe.exe -ldinput8 -ldxguid -lsetupapi -lhid
 xcrun actool "$PROJECT_ROOT/App/Sources/MetalFlight/Resources/MetalFlight.icon" \
   --compile "$PROJECT_ROOT/build/icon" --app-icon MetalFlight \
   --enable-on-demand-resources NO --target-device mac --platform macosx \
@@ -38,7 +45,7 @@ cp "$BIN/MetalFlight" "$OUT/Contents/MacOS/MetalFlight"
 for RESOURCE_BUNDLE in "$BIN"/*.bundle; do
   [[ -d "$RESOURCE_BUNDLE" ]] && ditto "$RESOURCE_BUNDLE" "$OUT/Contents/Resources/$(basename "$RESOURCE_BUNDLE")"
 done
-cp build/icon/Assets.car build/icon/MetalFlight.icns "$OUT/Contents/Resources/"
+cp build/icon/Assets.car build/icon/MetalFlight.icns build/ControllerProbe.exe "$OUT/Contents/Resources/"
 SPARKLE="App/.build/artifacts/sparkle/Sparkle"
 ditto "$SPARKLE/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework" "$OUT/Contents/Frameworks/Sparkle.framework"
 cp LICENSE THIRD-PARTY-NOTICES.md "$OUT/Contents/Resources/"

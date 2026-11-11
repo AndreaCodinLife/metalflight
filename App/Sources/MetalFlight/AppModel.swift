@@ -147,6 +147,17 @@ final class AppModel {
     func openSteam() { perform("Starting Steam…") { try self.launcher().startSteam() } }
 
     func play() {
+        guard busy == nil, !playing else { return }
+        if ControllerMonitor.hasConnectedController() == false {
+            let alert = NSAlert()
+            alert.alertStyle = .warning
+            alert.messageText = "Connect your controller before launching"
+            alert.informativeText = "No HOTAS or game controller is connected. Connect it before starting MSFS 2024. Controllers connected after launch may not appear until you restart the simulator."
+            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: "Launch anyway")
+            NSApp.activate(ignoringOtherApps: true)
+            guard alert.runModal() == .alertSecondButtonReturn else { return }
+        }
         perform("Preparing launch…") { [self] in
             let launch = try await self.launcher().play { message in Task { @MainActor in self.note(message) } }
             let process = launch.process
