@@ -1,13 +1,27 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!-- sparkle-sign-warning:
+<?xml version="1.0" standalone="yes"?><!-- sparkle-sign-warning:
 IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
---><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0"><channel><title>MetalFlight</title><item><title>MetalFlight 0.1.8 Beta 6</title><sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.8-beta.6</sparkle:fullReleaseNotesLink><sparkle:channel>beta</sparkle:channel><sparkle:version>0.1.8b6</sparkle:version><sparkle:shortVersionString>0.1.8 Beta 6</sparkle:shortVersionString><sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion><sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements><description sparkle:format="markdown">MetalFlight 0.1.8 Beta 6 adds a **Controllers** panel to the Preview launcher. It shows the controllers macOS detects, displays their inputs, and can check whether Wine can open and enumerate them.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>MetalFlight</title>
+        <item>
+            <title>0.1.9</title>
+            <pubDate>Thu, 12 Nov 2026 22:49:22 +0100</pubDate>
+            <sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.9-beta.7</sparkle:fullReleaseNotesLink>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>0.1.9b7</sparkle:version>
+            <sparkle:shortVersionString>0.1.9</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[MetalFlight 0.1.9 Beta 7 adds an experimental **D3DMetal** renderer under **Settings → Renderer**. Mullion stays the default.
 
-If macOS detects no controller when you click **Play**, MetalFlight offers to cancel or launch anyway. Connect your HOTAS before starting MSFS 2024. Controllers connected after launch may require restarting the simulator.
+MetalFlight ships none of Apple's files. To enable D3DMetal, install the new runtime `2026.11.12-dev12-preview2-d3dmetal1` (**Settings → Updates → Preview**, then **Update**), open your own **Game Porting Toolkit 4.0 beta 3** disk image and import it again. Only that exact toolkit build is accepted; file hashes and Apple's signatures are checked at import and before each launch.
 
-This app update uses the existing Preview runtime `2026.11.07-dev12-preview1`. App and runtime updates are managed separately under **Settings → Updates → Preview**. If you already have that runtime, keep using it.
-
-The controller panel and Play warning are part of the launcher. In-game controller detection, hot-plugging and a full interactive updater transition still need testing. The macOS app is ad-hoc signed and has no Apple notarization. For a manual install, extract the ZIP and move MetalFlight to Applications.
-</description><enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.6/MetalFlight-0.1.8-beta.6.zip" length="3118889" type="application/octet-stream" sparkle:edSignature="Txm+DNkkGFZcazLnG8H0T8F2GjEugtZtrD/f8IfG4IKDqPdOE8toww5tgd3FrytnAQ7r2mLHAWjSnlzwvSIPDw=="></enclosure></item></channel></rss><!-- sparkle-signatures:
-edSignature: 51CCfmWnqys31CbSJqx76gerSA+nbmW46hZplicL6n396H0X5+DWaWcw+GhMLeF976IiVpoozN893NFLXb/VAw==
-length: 2195
+On the maintainer's M1 Pro, the 4K menu video plays at normal speed and a flight works; at one spot D3DMetal reached at most 44 FPS against Mullion's 32 with the same settings. Long flights, repeated launches and other Macs are untested, and D3DMetal has known limits (see the release notes). App and runtime updates are separate. The macOS app is ad-hoc signed and has no Apple notarization. For a manual install, extract the ZIP and move MetalFlight to Applications.
+]]></description>
+            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.9-beta.7/MetalFlight-0.1.9-beta.7.zip" length="3188805" type="application/octet-stream" sparkle:edSignature="H/IIuYps5kWSYDwsYc6nkpIbUkLzczGq1lDCd292RDXC52jdpH7VDMSacVIdIFNcOD7wcHXKgJgTACDjOS//CQ=="></enclosure>
+        </item>
+    </channel>
+</rss><!-- sparkle-signatures:
+edSignature: KwhFsap9ypRjRYEogXBQcux02RHq0dyXZc5AepqSIpgN4r3oMeZ7vLNpQN8WPq8CxQFgdWwADlHa3VVn44CPBA==
+length: 2418
 -->
