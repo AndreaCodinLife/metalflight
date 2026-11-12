@@ -17,6 +17,8 @@ enum Paths {
     static var prefix: URL { support.appendingPathComponent("prefix", isDirectory: true) }
     static var gptk: URL { support.appendingPathComponent("gptk", isDirectory: true) }
     static var d3dshared: URL { gptk.appendingPathComponent("libd3dshared.dylib") }
+    /// The toolkit's redist/lib (D3DMetal renderer), imported from the user's own GPTK download.
+    static var gptkRedist: URL { gptk.appendingPathComponent("redist", isDirectory: true) }
     static var downloads: URL { support.appendingPathComponent("downloads", isDirectory: true) }
     static var logs: URL { support.appendingPathComponent("logs", isDirectory: true) }
 

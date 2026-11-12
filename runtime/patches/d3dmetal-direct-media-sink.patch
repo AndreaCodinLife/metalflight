@@ -1,0 +1,205 @@
+diff --git a/dlls/mfmediaengine/video_frame_sink.c b/dlls/mfmediaengine/video_frame_sink.c
+index 88cea4e..bbbdb3b 100644
+--- a/dlls/mfmediaengine/video_frame_sink.c
++++ b/dlls/mfmediaengine/video_frame_sink.c
+@@ -89,6 +89,7 @@ struct video_frame_sink
+     IMFGetService IMFGetService_iface;
+     LONG refcount;
+     IUnknown *device_manager;
++    IMFVideoSampleAllocator *sysmem_allocator; /* MSFS24 D3DMetal direct path (growing pool wrapper) */
+     IMFMediaType *media_type;
+     IMFMediaType *current_media_type;
+     bool is_shut_down;
+@@ -679,6 +680,157 @@ static ULONG WINAPI video_frame_sink_stream_get_service_Release(IMFGetService *i
+     return IMFStreamSink_Release(&sink->IMFStreamSink_iface);
+ }
+ 
++/* MSFS24 D3DMetal direct path: a system-memory sample allocator whose pool can grow. The session initializes
++ * a sink allocator with 2 (later 4) samples, but this sink keeps up to three (two queued, one presented) while
++ * the decoder writes the next one, so a fixed pool of that size starves. InitializeSampleAllocator(count) becomes
++ * InitializeSampleAllocatorEx(count, max(count, 10)); everything else is forwarded to mfplat's allocator. */
++struct sysmem_allocator
++{
++    IMFVideoSampleAllocator IMFVideoSampleAllocator_iface;
++    IMFVideoSampleAllocatorCallback IMFVideoSampleAllocatorCallback_iface;
++    LONG refcount;
++    IMFVideoSampleAllocatorEx *inner;
++    IMFVideoSampleAllocatorCallback *inner_cb;
++};
++
++static struct sysmem_allocator *impl_from_sysmem_allocator(IMFVideoSampleAllocator *iface)
++{
++    return CONTAINING_RECORD(iface, struct sysmem_allocator, IMFVideoSampleAllocator_iface);
++}
++
++static struct sysmem_allocator *impl_from_sysmem_allocator_cb(IMFVideoSampleAllocatorCallback *iface)
++{
++    return CONTAINING_RECORD(iface, struct sysmem_allocator, IMFVideoSampleAllocatorCallback_iface);
++}
++
++static HRESULT WINAPI sysmem_allocator_QueryInterface(IMFVideoSampleAllocator *iface, REFIID riid, void **obj)
++{
++    struct sysmem_allocator *allocator = impl_from_sysmem_allocator(iface);
++    if (IsEqualIID(riid, &IID_IMFVideoSampleAllocator) || IsEqualIID(riid, &IID_IUnknown))
++        *obj = &allocator->IMFVideoSampleAllocator_iface;
++    else if (IsEqualIID(riid, &IID_IMFVideoSampleAllocatorCallback))
++        *obj = &allocator->IMFVideoSampleAllocatorCallback_iface;
++    else
++    {
++        *obj = NULL;
++        return E_NOINTERFACE;
++    }
++    IUnknown_AddRef((IUnknown *)*obj);
++    return S_OK;
++}
++
++static ULONG WINAPI sysmem_allocator_AddRef(IMFVideoSampleAllocator *iface)
++{
++    return InterlockedIncrement(&impl_from_sysmem_allocator(iface)->refcount);
++}
++
++static ULONG WINAPI sysmem_allocator_Release(IMFVideoSampleAllocator *iface)
++{
++    struct sysmem_allocator *allocator = impl_from_sysmem_allocator(iface);
++    ULONG refcount = InterlockedDecrement(&allocator->refcount);
++    if (!refcount)
++    {
++        IMFVideoSampleAllocatorCallback_Release(allocator->inner_cb);
++        IMFVideoSampleAllocatorEx_Release(allocator->inner);
++        free(allocator);
++    }
++    return refcount;
++}
++
++static HRESULT WINAPI sysmem_allocator_SetDirectXManager(IMFVideoSampleAllocator *iface, IUnknown *manager)
++{
++    return IMFVideoSampleAllocatorEx_SetDirectXManager(impl_from_sysmem_allocator(iface)->inner, manager);
++}
++
++static HRESULT WINAPI sysmem_allocator_UninitializeSampleAllocator(IMFVideoSampleAllocator *iface)
++{
++    return IMFVideoSampleAllocatorEx_UninitializeSampleAllocator(impl_from_sysmem_allocator(iface)->inner);
++}
++
++static HRESULT WINAPI sysmem_allocator_InitializeSampleAllocator(IMFVideoSampleAllocator *iface, DWORD count,
++        IMFMediaType *media_type)
++{
++    HRESULT hr = IMFVideoSampleAllocatorEx_InitializeSampleAllocatorEx(impl_from_sysmem_allocator(iface)->inner, count,
++            max(count, 10), NULL, media_type);
++    ERR("MSFS24 D3DMetal direct frames: system-memory pool initial=%lu max=%lu hr=%#lx\n", count, max(count, 10), hr);
++    return hr;
++}
++
++static HRESULT WINAPI sysmem_allocator_AllocateSample(IMFVideoSampleAllocator *iface, IMFSample **sample)
++{
++    return IMFVideoSampleAllocatorEx_AllocateSample(impl_from_sysmem_allocator(iface)->inner, sample);
++}
++
++static const IMFVideoSampleAllocatorVtbl sysmem_allocator_vtbl =
++{
++    sysmem_allocator_QueryInterface,
++    sysmem_allocator_AddRef,
++    sysmem_allocator_Release,
++    sysmem_allocator_SetDirectXManager,
++    sysmem_allocator_UninitializeSampleAllocator,
++    sysmem_allocator_InitializeSampleAllocator,
++    sysmem_allocator_AllocateSample,
++};
++
++static HRESULT WINAPI sysmem_allocator_cb_QueryInterface(IMFVideoSampleAllocatorCallback *iface, REFIID riid, void **obj)
++{
++    return sysmem_allocator_QueryInterface(&impl_from_sysmem_allocator_cb(iface)->IMFVideoSampleAllocator_iface, riid, obj);
++}
++
++static ULONG WINAPI sysmem_allocator_cb_AddRef(IMFVideoSampleAllocatorCallback *iface)
++{
++    return sysmem_allocator_AddRef(&impl_from_sysmem_allocator_cb(iface)->IMFVideoSampleAllocator_iface);
++}
++
++static ULONG WINAPI sysmem_allocator_cb_Release(IMFVideoSampleAllocatorCallback *iface)
++{
++    return sysmem_allocator_Release(&impl_from_sysmem_allocator_cb(iface)->IMFVideoSampleAllocator_iface);
++}
++
++static HRESULT WINAPI sysmem_allocator_cb_SetCallback(IMFVideoSampleAllocatorCallback *iface, IMFVideoSampleAllocatorNotify *notify)
++{
++    return IMFVideoSampleAllocatorCallback_SetCallback(impl_from_sysmem_allocator_cb(iface)->inner_cb, notify);
++}
++
++static HRESULT WINAPI sysmem_allocator_cb_GetFreeSampleCount(IMFVideoSampleAllocatorCallback *iface, LONG *count)
++{
++    return IMFVideoSampleAllocatorCallback_GetFreeSampleCount(impl_from_sysmem_allocator_cb(iface)->inner_cb, count);
++}
++
++static const IMFVideoSampleAllocatorCallbackVtbl sysmem_allocator_cb_vtbl =
++{
++    sysmem_allocator_cb_QueryInterface,
++    sysmem_allocator_cb_AddRef,
++    sysmem_allocator_cb_Release,
++    sysmem_allocator_cb_SetCallback,
++    sysmem_allocator_cb_GetFreeSampleCount,
++};
++
++static HRESULT create_sysmem_allocator(IMFVideoSampleAllocator **out)
++{
++    struct sysmem_allocator *allocator;
++    HRESULT hr;
++
++    if (!(allocator = calloc(1, sizeof(*allocator)))) return E_OUTOFMEMORY;
++    allocator->IMFVideoSampleAllocator_iface.lpVtbl = &sysmem_allocator_vtbl;
++    allocator->IMFVideoSampleAllocatorCallback_iface.lpVtbl = &sysmem_allocator_cb_vtbl;
++    allocator->refcount = 1;
++    if (FAILED(hr = MFCreateVideoSampleAllocatorEx(&IID_IMFVideoSampleAllocatorEx, (void **)&allocator->inner)))
++    {
++        free(allocator);
++        return hr;
++    }
++    if (FAILED(hr = IMFVideoSampleAllocatorEx_QueryInterface(allocator->inner, &IID_IMFVideoSampleAllocatorCallback,
++            (void **)&allocator->inner_cb)))
++    {
++        IMFVideoSampleAllocatorEx_Release(allocator->inner);
++        free(allocator);
++        return hr;
++    }
++    *out = &allocator->IMFVideoSampleAllocator_iface;
++    return S_OK;
++}
++
+ static HRESULT WINAPI video_frame_sink_stream_get_service_GetService(IMFGetService *iface, REFGUID service, REFIID riid,
+         void **obj)
+ {
+@@ -688,6 +840,25 @@ static HRESULT WINAPI video_frame_sink_stream_get_service_GetService(IMFGetServi
+     {
+         if (sink->device_manager)
+             return IUnknown_QueryInterface(sink->device_manager, riid, obj);
++        /* MSFS24 D3DMetal direct path (system-memory frames): offer a recycling system-memory sample allocator,
++         * so the session does not allocate and free a whole 4K frame buffer for every decoded frame. */
++        if (IsEqualIID(riid, &IID_IMFVideoSampleAllocator))
++        {
++            char setting[2];
++            HRESULT hr;
++            if (GetEnvironmentVariableA("MSFS24_WINE_MEDIA_D3DMETAL_DIRECT", setting, sizeof(setting)) != 1 || setting[0] != '1')
++                return E_NOINTERFACE;
++            EnterCriticalSection(&sink->cs);
++            if (!sink->sysmem_allocator && FAILED(hr = create_sysmem_allocator(&sink->sysmem_allocator)))
++            {
++                LeaveCriticalSection(&sink->cs);
++                ERR("MSFS24 D3DMetal direct frames: system-memory allocator failed, hr %#lx\n", hr);
++                return hr;
++            }
++            LeaveCriticalSection(&sink->cs);
++            ERR("MSFS24 D3DMetal direct frames: system-memory sample allocator\n");
++            return IMFVideoSampleAllocator_QueryInterface(sink->sysmem_allocator, riid, obj);
++        }
+         return E_NOINTERFACE;
+     }
+ 
+@@ -758,6 +929,8 @@ static ULONG WINAPI video_frame_sink_Release(IMFMediaSink *iface)
+         IMFMediaType_Release(sink->media_type);
+         if (sink->device_manager)
+             IUnknown_Release(sink->device_manager);
++        if (sink->sysmem_allocator)
++            IMFVideoSampleAllocator_Release(sink->sysmem_allocator);
+         if (sink->event_queue)
+             IMFMediaEventQueue_Release(sink->event_queue);
+         if (sink->clock)

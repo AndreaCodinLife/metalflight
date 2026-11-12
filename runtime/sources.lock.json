@@ -17,6 +17,38 @@
         "source_path": "dlls/ntdll/unix/virtual.c",
         "base_source_sha256": "e19c3861c83a1894a8bf884de9edb8beed798b2bcd7af944b28bffebc198d024",
         "patched_source_sha256": "318abe35593b76ed4be87380758559a1e190029dfd8268ad3363fce87604abd1"
+      },
+      {
+        "path": "runtime/patches/d3dmetal-stack-guard-cache.patch",
+        "sha256": "b9201c74a8e4126000686c1c792e134480380c9b650d97a59c5c2b2022b1b302",
+        "source_path": "dlls/ntdll/unix/virtual.c",
+        "base_source_sha256": "318abe35593b76ed4be87380758559a1e190029dfd8268ad3363fce87604abd1",
+        "patched_source_sha256": "1e1420e539271f0c9caf4d0fc4904443eb807ff0b0523d79cd59bdc95460bb76",
+        "purpose": "Opt-in (MSFS24_WINE_STACK_CACHE=1, D3DMetal renderer only): expected-guard fast path and a lock-free per-thread stack-guard answer cache against a page-protection/view generation. Off, the guard search is the published one."
+      },
+      {
+        "path": "runtime/patches/d3dmetal-stack-guard-cache-thread-data.patch",
+        "sha256": "c15ff03ca2f5744a0af79b9c678f214935006f38c3652530577b217f99b959d4",
+        "source_path": "dlls/ntdll/unix/unix_private.h",
+        "base_source_sha256": "01709c0245d6dca61e7b91faea32f160616d404e5563b56b56e9394d9bdf90f5",
+        "patched_source_sha256": "351057ea16035d1b33159a506ddc398b225defc814d8dfa13b6193bf27476412",
+        "purpose": "Per-thread cache fields appended to ntdll_thread_data (inside GdiTebBatch)."
+      },
+      {
+        "path": "runtime/patches/d3dmetal-direct-media-engine.patch",
+        "sha256": "348f76fd6acff8f04d9681fa62fdcee9b94006fb5b37747e616a0edf0e7ae2a2",
+        "source_path": "dlls/mfmediaengine/main.c",
+        "base_source_sha256": "8a50b8cfc59b78671aa5bf25604656da6869fa311bae3aa1258664b9629c5005",
+        "patched_source_sha256": "e0b99cfe650849570b887272baab094c7f98da7e1cf37580d2a1138f75af8329",
+        "purpose": "Opt-in (MSFS24_WINE_MEDIA_D3DMETAL_DIRECT=1): system-memory decoder output; whole-frame transfers to a bridged texture of the video size/format go to the D3DMetal shim export MSFS24BridgeSubmitFrame."
+      },
+      {
+        "path": "runtime/patches/d3dmetal-direct-media-sink.patch",
+        "sha256": "ff6454c4dbc6675a9759833419315c973482eb5098af64123baabe3b49a87ff6",
+        "source_path": "dlls/mfmediaengine/video_frame_sink.c",
+        "base_source_sha256": "2073f38b3603007c2a88bf580dc908bacb99d49e8c283431ec5f9ed54be89f2d",
+        "patched_source_sha256": "831ffa5631e8593f1f76820129cbfc7958a14bf430b4cfac94a5cbb9137ab57c",
+        "purpose": "Opt-in: the frame sink offers a recycling system-memory sample allocator whose pool can grow to 10."
       }
     ]
   },

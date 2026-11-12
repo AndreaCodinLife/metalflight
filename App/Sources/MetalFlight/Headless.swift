@@ -6,6 +6,7 @@ import Foundation
 ///   configure-controllers  (same flight controller setup used by Play; no game launch)
 ///   run PROGRAM [ARGS...]   (in the prefix, with the game's environment and DLL overrides)
 ///   play                   (normal launch sequence, reports exit; retains Steam)
+///   METALFLIGHT_RENDERER=mullion|d3dmetal selects the renderer for this invocation (default: the saved setting)
 enum Headless {
     static func run(_ arguments: [String]) -> Int32 {
         var status: Int32 = 0
@@ -20,7 +21,13 @@ enum Headless {
 
     private static func launcher() throws -> Launcher {
         guard let runtime = Paths.resolvedRuntime() else { throw MetalFlightError.message("no runtime installed") }
-        return try Launcher(runtime: runtime)
+        let renderer = ProcessInfo.processInfo.environment["METALFLIGHT_RENDERER"].flatMap(Renderer.init(rawValue:)) ?? Renderer.selected
+        return try Launcher(runtime: runtime, renderer: renderer)
+    }
+
+    private static func d3dmetalOverlay() -> RendererProfile? {
+        guard let runtime = Paths.resolvedRuntime(), let profile = try? Profile.load(runtime: runtime) else { return nil }
+        return profile.renderers?[Renderer.d3dmetal.rawValue]
     }
 
     private static func execute(_ arguments: [String]) async throws {
@@ -30,7 +37,7 @@ enum Headless {
             let s = SystemCheck.run()
             print("support: \(Paths.support.path)")
             print("system: arm64=\(s.appleSilicon) macOS=\(s.macOSVersion) rosetta=\(s.rosetta) freeGB=\(s.freeGigabytes)")
-            print("runtime: \(Updater.installedVersion() ?? "none")  gptk: \(GPTK.installed)")
+            print("runtime: \(Updater.installedVersion() ?? "none")  gptk: \(GPTK.installed)  d3dmetal: \(GPTK.redistInstalled(d3dmetalOverlay()))")
             if let l = try? launcher() { print("prefix: \(l.prefixReady)  steam: \(l.steamInstalled)  game: \(l.gameInstalled)  visual-cpp: \(VisualCpp.installed(in: l.wine.prefix))") }
         case "install-prerequisites":
             try await VisualCpp.ensure(wine: launcher().wine, status: { print($0) })
@@ -50,7 +57,13 @@ enum Headless {
             guard let source = arguments.count > 1 ? URL(fileURLWithPath: arguments[1]) : GPTK.findSource() else {
                 throw MetalFlightError.message("no Game Porting Toolkit source found")
             }
-            try await GPTK.importLibrary(from: source); print("gptk: imported and verified")
+            let result = try await GPTK.importLibrary(from: source, d3dmetal: d3dmetalOverlay())
+            print("gptk: imported and verified")
+            switch result {
+            case .notRequested: print("d3dmetal: not imported (no D3DMetal renderer in this runtime, or not a disk image)")
+            case .imported(let name): print("d3dmetal: imported \(name)")
+            case .unsupported(let reason): print("d3dmetal: not imported: \(reason)")
+            }
         case "prepare-prefix":
             try await launcher().preparePrefix(); print("prefix: ready")
         case "apply-patches":
@@ -81,9 +94,12 @@ enum Headless {
         case "run":
             guard arguments.count > 1 else { throw MetalFlightError.message("run needs a program") }
             let l = try launcher()
+            try l.checkRenderer()
             try l.applyPatches()
-            let settings = l.profile.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\headless.txt") }
-            let env = l.wine.environment(dllOverrides: l.profile.dllOverrides, debug: "-all", settings: settings)
+            let configuration = try l.configuration()
+            let settings = configuration.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\headless.txt") }
+            let env = l.wine.environment(dllOverrides: configuration.dllOverrides,
+                                         debug: ProcessInfo.processInfo.environment["METALFLIGHT_HEADLESS_DEBUG"] ?? "-all", settings: settings)
             let code = try await l.wine.run(arguments[1], Array(arguments.dropFirst(2)), environment: env, log: l.log("headless-run.log"))
             await l.wine.stopAll()
             print("exit: \(code)")

@@ -5,10 +5,29 @@ import Foundation
 struct Launcher {
     let wine: Wine
     let profile: Profile
+    let renderer: Renderer
 
-    init(runtime: URL) throws {
+    init(runtime: URL, renderer: Renderer = Renderer.selected) throws {
         wine = Wine(runtime: runtime)
         profile = try Profile.load(runtime: runtime)
+        self.renderer = renderer
+    }
+
+    /// The selected renderer's effective settings (Mullion: the profile unchanged).
+    func configuration() throws -> LaunchConfiguration {
+        try LaunchConfiguration.make(profile: profile, renderer: renderer, runtime: wine.runtime, redist: Paths.gptkRedist)
+    }
+
+    /// D3DMetal needs the exact qualified toolkit build imported from the user's own GPTK download.
+    func checkRenderer() throws {
+        guard renderer == .d3dmetal else { return }
+        let overlay = profile.renderers?[Renderer.d3dmetal.rawValue]
+        guard overlay != nil else {
+            throw MetalFlightError.message("This runtime does not include the D3DMetal renderer. Choose Mullion in Settings.")
+        }
+        guard GPTK.redistInstalled(overlay) else {
+            throw MetalFlightError.message("D3DMetal needs \(overlay?.gptk?.name ?? "the qualified Game Porting Toolkit") imported from your own Game Porting Toolkit download. Import it again, or choose Mullion in Settings.")
+        }
     }
 
     static let steamInstaller = URL(string: "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe")!
@@ -43,11 +62,10 @@ struct Launcher {
     func applyPatches() throws {
         let fm = FileManager.default
         let system32 = Paths.prefix.appendingPathComponent("drive_c/windows/system32")
-        for relative in profile.system32 {
-            let source = wine.runtime.appendingPathComponent(relative)
-            let destination = system32.appendingPathComponent(source.lastPathComponent)
+        for file in try configuration().system32 {
+            let destination = system32.appendingPathComponent(file.name)
             try? fm.removeItem(at: destination)
-            try fm.copyItem(at: source, to: destination)
+            try fm.copyItem(at: file.source, to: destination)
         }
         try fm.createDirectory(at: Paths.prefixTools.appendingPathComponent("logs"), withIntermediateDirectories: true)
         let helper = Paths.prefixTools.appendingPathComponent("split_push_helper.dll")
@@ -55,7 +73,9 @@ struct Launcher {
         try fm.copyItem(at: wine.runtime.appendingPathComponent(profile.helper), to: helper)
     }
 
-    var steamEnvironment: [String: String] { wine.environment(debug: profile.steamDebug, settings: profile.steamSettings) }
+    var steamEnvironment: [String: String] {
+        wine.environment(debug: profile.steamDebug, settings: (try? configuration().steamSettings) ?? profile.steamSettings)
+    }
 
     /// True when the Steam client is running, signed in and owns the game (genuine SDK check).
     func steamReady() async -> Bool {
@@ -120,6 +140,8 @@ struct Launcher {
     func play(status: @escaping (String) -> Void) async throws -> GameLaunch {
         guard gameInstalled else { throw MetalFlightError.message("Install Microsoft Flight Simulator 2024 from Steam first.") }
         _ = try GameBuild.verify(Paths.game, supported: profile.supportedGameBuilds)
+        try checkRenderer()
+        let configuration = try configuration()
         status("Configuring flight controllers…")
         try await configureGameControllers()
         try await VisualCpp.ensure(wine: wine, status: status)
@@ -142,13 +164,13 @@ struct Launcher {
         if resolutionOverride != nil {
             status("Matching simulator resolution to the display…")
         }
-        status("Launching Microsoft Flight Simulator 2024…")
+        status(configuration.renderer == .d3dmetal ? "Launching Microsoft Flight Simulator 2024 with D3DMetal…" : "Launching Microsoft Flight Simulator 2024…")
         let stamp = Int(Date().timeIntervalSince1970)
-        let settings = profile.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\cpu-\(stamp).txt") }
+        let settings = configuration.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\cpu-\(stamp).txt") }
         let gameLog = log("game-\(stamp).log")
         do {
             let process = try wine.start(Paths.game.path, profile.gameArguments,
-                                         environment: wine.environment(dllOverrides: profile.dllOverrides, debug: profile.gameDebug, settings: settings),
+                                         environment: wine.environment(dllOverrides: configuration.dllOverrides, debug: profile.gameDebug, settings: settings),
                                          directory: Paths.game.deletingLastPathComponent(), log: gameLog)
             return GameLaunch(process: process, log: gameLog, resolutionOverride: resolutionOverride)
         } catch {

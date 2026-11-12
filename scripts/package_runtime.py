@@ -67,8 +67,11 @@ def main():
     shutil.copytree(a.inputs / 'helper', share / 'helper')
     shutil.copytree(a.inputs / 'probes', share / 'probes')
     shutil.copytree(a.inputs / 'licenses', share / 'licenses')
+    if (a.inputs / 'd3dmetal').is_dir():  # our D3DMetal renderer shim only; Apple's files come from the user's GPTK
+        shutil.copytree(a.inputs / 'd3dmetal', share / 'd3dmetal')
     profile = json.loads(a.profile.read_text())
-    for rel in profile['system32'] + [profile['helper'], profile['readinessProbe']]:
+    renderer_files = [rel for r in profile.get('renderers', {}).values() for rel in r.get('system32Replace', {}).values()]
+    for rel in profile['system32'] + [profile['helper'], profile['readinessProbe']] + renderer_files:
         if not (root / rel).is_file(): raise SystemExit(f'profile references a missing file: {rel}')
     shutil.copy2(a.profile, share / 'profile.json')
     if a.source_lock:

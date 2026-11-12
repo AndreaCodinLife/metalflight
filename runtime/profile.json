@@ -102,5 +102,68 @@
     "23faa2f27fc86bf5bc347498b8afd09968fd12d1f198d325acfd63c5c7360b13": "1.9.18.0",
     "5cccf10e882be7aacd56e95e06ffb12986bcae08f3719879924b89cef1fbea70": "1.9.21.0",
     "7f07d859d6c94eec905a7ee914b8f1db2268b3b5952b0ed755e7ed798c484a07": "1.9.24.0"
+  },
+  "renderers": {
+    "d3dmetal": {
+      "label": "D3DMetal (experimental)",
+      "description": "Apple's D3DMetal from your own Game Porting Toolkit download, with MetalFlight's shim. Mullion stays the default.",
+      "dllOverrides": "d3d12=n;d3dm12,d3d12core,d3d11,dxgi=b;d3d10core=n;winemetal=b;nvapi64,nvngx-on-metalfx=;concrt140,msvcp140,msvcp140_1,msvcp140_2,vcruntime140,vcruntime140_1=n;winedbg.exe=b",
+      "gameSettings": {
+        "MSFS24_WINE_MEDIA_D3DMETAL_DIRECT": "1",
+        "MSFS24_WINE_MEDIA_SHARED_WAIT": "0",
+        "MSFS24_WINE_STACK_CACHE": "1",
+        "MSFS24_WINE_STACK_PREFLIGHT_WINDOW": "0x40000"
+      },
+      "steamDllOverridesAppend": "nvapi64,nvngx-on-metalfx=",
+      "system32Replace": {
+        "d3d12.dll": "share/metalflight/d3dmetal/d3d12.dll"
+      },
+      "gptkSystem32": {
+        "d3dm12.dll": "wine/x86_64-windows/d3d12.dll"
+      },
+      "gptkAliases": {
+        "wine/x86_64-windows/d3dm12.dll": "wine/x86_64-windows/d3d12.dll",
+        "wine/x86_64-unix/d3dm12.so": "../../external/libd3dshared.dylib"
+      },
+      "gptk": {
+        "name": "Game Porting Toolkit 4.0 beta 3",
+        "redistFiles": {
+          "external/D3DMetal.framework/Versions/A/D3DMetal": "b16aab78127dcf6dbbaba4cfaf8120b96c90ee7b31a48be8599847932a4931e1",
+          "external/D3DMetal.framework/Versions/A/Resources/Info.plist": "26e3166820a15850f9977e2336ee7f4d1237f402c8520a1bd30716fc2655ea18",
+          "external/D3DMetal.framework/Versions/A/Resources/LICENSE": "553d0035773ddd1590045f8fdc3a4c6ead31e36336721aeca8421e88ed1c9f80",
+          "external/D3DMetal.framework/Versions/A/Resources/default.metallib": "c1ea924b9818099d60c861eedb23266632a7db39240b2412a7d405c3a7695408",
+          "external/D3DMetal.framework/Versions/A/Resources/libdxccontainer.dylib": "4dd75c9912ef49739953bb70dc57c6d96e2ebe26eb733215483ae3796a3a7eec",
+          "external/D3DMetal.framework/Versions/A/Resources/libdxcompiler.dylib": "51cbd8aeb6c85b2db4ca2a50b97f5bd05b9e52f60bcdcfe5f601991c082540f4",
+          "external/D3DMetal.framework/Versions/A/Resources/libdxilconv.dylib": "6d519078f5774a18fd33ec4b1b592fcd5ce26ca4c2dd935f169662c5dacedd05",
+          "external/D3DMetal.framework/Versions/A/Resources/libmetalirconverter.dylib": "1793762142986252eaefe154f333542e3577155a5c156456322ebf220072f203",
+          "external/D3DMetal.framework/Versions/A/Resources/version.plist": "a8f0d17d004f80db1380030fcbc8577268c38d1a435b76a15dd85316f9764a66",
+          "external/D3DMetal.framework/Versions/A/_CodeSignature/CodeResources": "ffdff277570e8721ba2843a333a5e5bc9292b7888db2a57f2090e4da3d644752",
+          "external/libd3dshared.dylib": "e985a9e0b9807856018ee63ac40de3b3baaca7c33568f672d80d89934fbc41f1",
+          "wine/x86_64-windows/d3d10.dll": "8509cd61f4e25e20fa6c4444b3dea062f026d672f441e82402702fa1faf6676b",
+          "wine/x86_64-windows/d3d11.dll": "a5de9738b3f89f1d8cdfb9103e82f9231ae543ce3c46134ed761c146a2f2d3e1",
+          "wine/x86_64-windows/d3d12.dll": "02aa673497ff8694b41f976e194a920468e54897f3546ed1cd4c1b3a97179735",
+          "wine/x86_64-windows/d3d12core.dll": "1034f5989c8c69496add15f79c04e56ae47cdf2a861098e8b4323bc8835b9e29",
+          "wine/x86_64-windows/dxgi.dll": "124015390b8527033bcd6e65af6376fde8fb3923450b63a9dbe0bbef05e63f10",
+          "wine/x86_64-windows/nvapi64.dll": "60ceaeb697b5141702c372da33861f499931397b43febb9be9f087f18276d772",
+          "wine/x86_64-windows/nvngx-on-metalfx.dll": "2e522873d2dec412c29f73096f1c1dc6bd8016dc40fd76fbeddd2eb7e226d3cb"
+        },
+        "redistLinks": {
+          "external/D3DMetal.framework/D3DMetal": "Versions/Current/D3DMetal",
+          "external/D3DMetal.framework/Resources": "Versions/Current/Resources",
+          "external/D3DMetal.framework/Versions/Current": "A",
+          "wine/x86_64-unix/d3d10.so": "../../external/libd3dshared.dylib",
+          "wine/x86_64-unix/d3d11.so": "../../external/libd3dshared.dylib",
+          "wine/x86_64-unix/d3d12.so": "../../external/libd3dshared.dylib",
+          "wine/x86_64-unix/d3d12core.so": "../../external/libd3dshared.dylib",
+          "wine/x86_64-unix/dxgi.so": "../../external/libd3dshared.dylib",
+          "wine/x86_64-unix/nvapi64.so": "../../external/libd3dshared.dylib",
+          "wine/x86_64-unix/nvngx-on-metalfx.so": "../../external/libd3dshared.dylib"
+        },
+        "signed": [
+          "external/libd3dshared.dylib",
+          "external/D3DMetal.framework"
+        ]
+      }
+    }
   }
 }

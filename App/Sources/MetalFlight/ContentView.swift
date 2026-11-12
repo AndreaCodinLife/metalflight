@@ -45,7 +45,8 @@ struct ContentView: View {
                     if model.installedRuntime != nil { Button("Roll back") { model.rollbackRuntime() }.disabled(model.playing) }
                 }
                 StepRow(number: 3, title: "Apple Game Porting Toolkit",
-                        detail: "Download the Game Porting Toolkit from developer.apple.com (free Apple Account, Apple's licence) and open its disk image. MetalFlight copies only libd3dshared.dylib, after checking Apple's signature.",
+                        detail: "Download the Game Porting Toolkit from developer.apple.com (free Apple Account, Apple's licence) and open its disk image. MetalFlight copies libd3dshared.dylib, after checking Apple's signature"
+                            + (model.d3dmetalSupported ? ", and the toolkit's D3DMetal files for the experimental renderer (exact qualified build only)" + (model.d3dmetalImported ? ": imported." : ".") : "."),
                         done: model.gptkInstalled) {
                     Button("Open Apple's download page") { NSWorkspace.shared.open(URL(string: "https://developer.apple.com/download/all/?q=game%20porting%20toolkit")!) }
                     Button("Import from mounted disk") { model.importGPTK() }
@@ -59,7 +60,7 @@ struct ContentView: View {
                     if !model.steamInstalled { Button("Install Steam") { model.installSteam() }.disabled(!model.prefixReady) }
                     else { Button("Open Steam") { model.openSteam() }.disabled(model.playing) }
                 }
-                StepRow(number: 6, title: "Play", detail: model.playing ? "Microsoft Flight Simulator 2024 is running." : "Starts Steam if needed, then the simulator with MetalFlight's patches.",
+                StepRow(number: 6, title: "Play", detail: model.playing ? "Microsoft Flight Simulator 2024 is running." : "Starts Steam if needed, then the simulator with MetalFlight's patches. Renderer: \(model.renderer.title) (Settings).",
                         done: false) {
                     Button("Play") { model.play() }
                         .buttonStyle(.borderedProminent)

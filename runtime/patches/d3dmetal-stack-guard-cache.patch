@@ -1,0 +1,218 @@
+--- a/dlls/ntdll/unix/virtual.c	2026-11-12 21:33:25
++++ b/dlls/ntdll/unix/virtual.c	2026-11-12 21:33:25
+@@ -1212,11 +1212,22 @@
+  *
+  * Set a range of page protection bytes.
+  */
++/* MSFS24: bumped (under virtual_mutex) by every page-protection or view-tree change.
++ * virtual_platform_stack_guard_near caches its answer per thread against it. Never 0. */
++static unsigned int platform_vprot_generation = 1;
++
++static inline void platform_vprot_changed(void)
++{
++    if (!__atomic_add_fetch( &platform_vprot_generation, 1, __ATOMIC_RELEASE ))
++        __atomic_add_fetch( &platform_vprot_generation, 1, __ATOMIC_RELEASE );
++}
++
+ static void set_page_vprot( const void *addr, size_t size, BYTE vprot )
+ {
+     size_t idx = (size_t)addr >> page_shift;
+     size_t end = ((size_t)addr + size + page_mask) >> page_shift;
+ 
++    platform_vprot_changed();
+ #ifdef _WIN64
+     while (idx >> pages_vprot_shift != end >> pages_vprot_shift)
+     {
+@@ -1241,6 +1252,8 @@
+     size_t idx = (size_t)addr >> page_shift;
+     size_t end = ((size_t)addr + size + page_mask) >> page_shift;
+ 
++    platform_vprot_changed();
++
+ #ifdef _WIN64
+     for ( ; idx < end; idx++)
+     {
+@@ -1265,6 +1278,8 @@
+     size_t idx = (size_t)addr >> page_shift;
+     size_t end = ((size_t)addr + size + page_mask) >> page_shift;
+ 
++    platform_vprot_changed();
++
+     for ( ; idx < end; idx++)
+     {
+         BYTE *ptr = pages_vprot[idx >> pages_vprot_shift] + (idx & pages_vprot_mask);
+@@ -1816,6 +1831,7 @@
+  */
+ static void unregister_view( struct file_view *view )
+ {
++    platform_vprot_changed();
+     if (mmap_is_in_reserved_area( view->base, view->size ))
+         free_ranges_remove_view( view );
+     wine_rb_remove( &views_tree, &view->entry );
+@@ -1844,6 +1860,7 @@
+  */
+ static void register_view( struct file_view *view )
+ {
++    platform_vprot_changed();
+     wine_rb_put( &views_tree, view->base, &view->entry );
+     if (mmap_is_in_reserved_area( view->base, view->size ))
+         free_ranges_insert_view( view );
+@@ -2296,6 +2313,7 @@
+ 
+     if (!set_vprot( view, base, size, vprot | VPROT_COMMITTED )) return STATUS_ACCESS_DENIED;
+     view->platform_open_limit = 0;
++    platform_vprot_changed();
+     return STATUS_SUCCESS;
+ }
+ 
+@@ -2750,6 +2768,7 @@
+     view->platform_fiber_primed = FALSE;
+     view->platform_open_limit = 0;
+     if (view->platform_stack) view->platform_stack_decommitted = TRUE;
++    platform_vprot_changed();
+ 
+     if (!size)
+     {
+@@ -4812,6 +4831,7 @@
+     {
+         view->platform_stack=TRUE;
+         view->platform_open_limit=0;
++        platform_vprot_changed();
+     }
+     server_leave_uninterrupted_section(&virtual_mutex,&sigset);
+ }
+@@ -4979,14 +4999,41 @@
+     if (enabled == -1)
+     {
+         const char *env = getenv( "MSFS24_WINE_STACK_OPEN" );
++        enabled = env && !strcmp( env, "1" );
++    }
++    return enabled;
++}
++
++static BOOL platform_stack_cache_enabled(void)
++{
++    static int enabled = -1;
++
++    if (enabled == -1)
++    {
++        const char *env = getenv( "MSFS24_WINE_STACK_CACHE" );
+         enabled = env && !strcmp( env, "1" );
++        WARN_(msfs_platform)( "stack guard cache: enabled=%d\n", enabled );
+     }
+     return enabled;
+ }
+ 
++/* Slow-path statistics only: hits are counted per thread, with no shared write. */
++static void platform_stack_cache_miss(struct ntdll_thread_data *thread_data, BOOL cached)
++{
++    static unsigned int misses, logs;
++    unsigned int n = __atomic_add_fetch( &misses, 1, __ATOMIC_RELAXED );
++    thread_data->platform_stack_cache_misses++;
++    if ((n == 100 || !(n & 0x3fff)) && __atomic_add_fetch( &logs, 1, __ATOMIC_RELAXED ) <= 256)
++        WARN_(msfs_platform)( "stack guard cache: misses=%u tid=%04x thread_hits=%u thread_misses=%u cached=%u generation=%u\n",
++                              n, GetCurrentThreadId(), thread_data->platform_stack_cache_hits,
++                              thread_data->platform_stack_cache_misses, cached,
++                              __atomic_load_n( &platform_vprot_generation, __ATOMIC_RELAXED ) );
++}
++
+ BOOL virtual_platform_stack_guard_near(ULONG_PTR rsp, BOOL preflight)
+ {
+     struct thread_stack_info stack;
++    struct file_view *stack_view;
+     ULONG_PTR page, first;
+     BOOL near=FALSE;
+     unsigned int attempt;
+@@ -4994,18 +5041,62 @@
+     BYTE declined_prot=0, below_prot=0;
+     sigset_t sigset;
+     ULONG_PTR window = platform_stack_preflight_window(), scan;
++    struct ntdll_thread_data *thread_data = ntdll_get_thread_data();
++    TEB *teb = NtCurrentTeb();
++    BOOL cache = preflight && platform_stack_cache_enabled(), far_guard = FALSE, open_failed = FALSE;
++    ULONG_PTR far_guard_page = 0;
++
++    /* Lock-free repeat of an earlier "guard outside the preflight range" answer. It is exact
++     * while no page protection or view changed (generation), the TEB stack bounds are the
++     * same and rsp has not descended below the lowest rsp that answer holds for. */
++    if (cache && thread_data->platform_stack_cache_gen &&
++        thread_data->platform_stack_cache_gen == __atomic_load_n( &platform_vprot_generation, __ATOMIC_ACQUIRE ) &&
++        teb->DeallocationStack == thread_data->platform_stack_cache_start &&
++        teb->Tib.StackBase == thread_data->platform_stack_cache_end &&
++        teb->Tib.StackLimit == thread_data->platform_stack_cache_limit &&
++        teb->GuaranteedStackBytes == thread_data->platform_stack_cache_guaranteed &&
++        rsp >= thread_data->platform_stack_cache_rsp && rsp <= (ULONG_PTR)teb->Tib.StackBase)
++    {
++        if (!(++thread_data->platform_stack_cache_hits & 0xfffff))
++        {
++            static unsigned int logs;
++            if (__atomic_add_fetch( &logs, 1, __ATOMIC_RELAXED ) <= 256)
++                WARN_(msfs_platform)( "stack guard cache: tid=%04x thread_hits=%u thread_misses=%u\n", GetCurrentThreadId(),
++                                      thread_data->platform_stack_cache_hits, thread_data->platform_stack_cache_misses );
++        }
++        return FALSE;
++    }
++    if (cache) thread_data->platform_stack_cache_gen = 0;
+     if (!is_inside_thread_stack((void *)rsp,&stack)) return FALSE;
+     first=max((ULONG_PTR)stack.start,rsp>window ? rsp-window : 0);
+     first=(ULONG_PTR)ROUND_ADDR((void *)first,host_page_mask);
+     server_enter_uninterrupted_section(&virtual_mutex,&sigset);
++    stack_view=find_view(stack.start,stack.end-stack.start);
+     for (attempt=0;attempt<window/host_page_size+8;attempt++)
+     {
++        ULONG_PTR expected_guard;
+         near=FALSE;
+         /* Grow the nearest guard first, just as a descending stack would hit it.
+          * Starting at the lowest guard can leave higher guards unresolved. */
+         scan=max(rsp,(ULONG_PTR)stack.limit);
+-        for (page=(ULONG_PTR)ROUND_ADDR((void *)scan,host_page_mask);page>=first;page-=host_page_size)
++        /* Marked Wine stack views have one moving guard immediately below the
++         * TEB StackLimit. Check that page directly instead of looking up every
++         * host page in the 256 KiB preflight range on every syscall return.
++         * Keep the complete range and fall back to the original search if the
++         * expected guard is absent, so noncanonical/legacy stack layouts retain
++         * the old behavior. */
++        expected_guard=(ULONG_PTR)ROUND_ADDR((void *)((ULONG_PTR)stack.limit-1),host_page_mask);
++        /* The expected-guard fast path is opt-in together with the cache (MSFS24_WINE_STACK_CACHE=1); without it
++         * the search is the published one. */
++        if (cache && stack_view && stack_view->platform_stack && !stack_view->platform_stack_decommitted &&
++            (get_host_page_vprot((void *)expected_guard)&VPROT_GUARD))
+         {
++            if (expected_guard<first) { far_guard = TRUE; far_guard_page = expected_guard; break; }
++            page=expected_guard;
++            near=TRUE;
++        }
++        else for (page=(ULONG_PTR)ROUND_ADDR((void *)scan,host_page_mask);page>=first;page-=host_page_size)
++        {
+             if (get_host_page_vprot((void *)page)&VPROT_GUARD) {near=TRUE;break;}
+             if (page<host_page_size) break;
+         }
+@@ -5067,12 +5158,28 @@
+                 else
+                 {
+                     static unsigned int failures;
++                    open_failed = TRUE;
+                     if (__sync_fetch_and_add( &failures, 1 ) < 16)
+                         WARN_(msfs_platform)( "stack host-guard open failed: tid=%04x rsp=%lx start=%lx limit=%lx guard=%lx errno=%d\n",
+                                               GetCurrentThreadId(), rsp, start, limit, guard, errno );
+                 }
+             }
++        }
++    }
++    if (cache)
++    {
++        /* Record the answer under the lock, after any growth or host-guard opening above. */
++        if (!near && far_guard && !declined_page && !open_failed && !stack.is_wow &&
++            (ULONG_PTR)teb->Tib.StackLimit == (ULONG_PTR)stack.limit)
++        {
++            thread_data->platform_stack_cache_rsp = far_guard_page + host_page_size + window;
++            thread_data->platform_stack_cache_start = teb->DeallocationStack;
++            thread_data->platform_stack_cache_end = teb->Tib.StackBase;
++            thread_data->platform_stack_cache_limit = teb->Tib.StackLimit;
++            thread_data->platform_stack_cache_guaranteed = teb->GuaranteedStackBytes;
++            thread_data->platform_stack_cache_gen = __atomic_load_n( &platform_vprot_generation, __ATOMIC_RELAXED );
+         }
++        platform_stack_cache_miss( thread_data, thread_data->platform_stack_cache_gen != 0 );
+     }
+     server_leave_uninterrupted_section(&virtual_mutex,&sigset);
+     if (declined_page)

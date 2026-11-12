@@ -32,6 +32,7 @@ struct MetalFlightApp: App {
                 model.updateChannelDidChange(UpdateChannel.selected)
                 updates.channelDidChange()
             }
+            .environment(model)
         }
         .commands {
             CommandGroup(replacing: .newItem) {}

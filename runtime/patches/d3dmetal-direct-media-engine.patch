@@ -1,0 +1,109 @@
+diff --git a/dlls/mfmediaengine/main.c b/dlls/mfmediaengine/main.c
+index 9ac2bad..6022d35 100644
+--- a/dlls/mfmediaengine/main.c
++++ b/dlls/mfmediaengine/main.c
+@@ -1224,7 +1224,18 @@ static HRESULT media_engine_create_video_renderer(struct media_engine *engine, I
+     IMFMediaType_SetGUID(media_type, &MF_MT_MAJOR_TYPE, &MFMediaType_Video);
+     IMFMediaType_SetGUID(media_type, &MF_MT_SUBTYPE, &subtype);
+ 
+-    hr = create_video_frame_sink(media_type, (IUnknown *)engine->device_manager, &engine->sink_events, &engine->presentation.frame_sink);
++    {
++        /* MSFS24 D3DMetal direct path: without the DXGI manager on the sink, the decoder delivers system-memory
++         * frames, which media_engine_try_direct_frame can hand to the shim. With D3DMetal, a DXGI-surface frame costs
++         * a staging READ_WRITE map (CPU untile), copy, unmap (CPU tile) and GPU copy per 4K frame. The engine keeps
++         * its device manager for its own D3D11 transfers. */
++        char setting[2];
++        BOOL direct = GetEnvironmentVariableA("MSFS24_WINE_MEDIA_D3DMETAL_DIRECT", setting, sizeof(setting)) == 1 &&
++                setting[0] == '1';
++        if (direct) ERR("MSFS24 D3DMetal direct frames: system-memory decoder output\n");
++        hr = create_video_frame_sink(media_type, direct ? NULL : (IUnknown *)engine->device_manager, &engine->sink_events,
++                &engine->presentation.frame_sink);
++    }
+     IMFMediaType_Release(media_type);
+     if (FAILED(hr))
+         return hr;
+@@ -2629,6 +2640,74 @@ static HRESULT media_engine_transfer_d3d11(struct media_engine *engine, ID3D11Te
+     return hr;
+ }
+ 
++/* MSFS24 D3DMetal direct path (MSFS24_WINE_MEDIA_D3DMETAL_DIRECT=1). The D3DMetal research shim (d3d12.dll)
++ * bridges shared D3D11 textures to D3D12 and exports MSFS24BridgeSubmitFrame. When the whole destination is a
++ * bridged texture of exactly the video size and output format, and the whole source is used, the point-sampled
++ * draw below is an identity copy of the decoded frame. Hand that CPU frame to the shim instead: it is written to
++ * the D3D12 texture without a D3D11 upload, draw or flush. Returns FALSE (nothing done, frame kept for the
++ * normal path) whenever any condition does not hold or the shim declines. */
++typedef BOOL (WINAPI *msfs24_bridge_submit_fn)(ID3D11Texture2D *, const void *, UINT, UINT, UINT, DXGI_FORMAT);
++
++static BOOL media_engine_try_direct_frame(struct media_engine *engine, ID3D11Texture2D *texture,
++        const D3D11_TEXTURE2D_DESC *desc, const MFVideoNormalizedRect *src_rect, const RECT *dst_rect)
++{
++    static msfs24_bridge_submit_fn submit;
++    static int enabled = -1;
++    IMFMediaBuffer *media_buffer;
++    IMFSample *sample;
++    BOOL handled = FALSE;
++
++    if (enabled == -1)
++    {
++        char setting[2];
++        HMODULE shim;
++        enabled = GetEnvironmentVariableA("MSFS24_WINE_MEDIA_D3DMETAL_DIRECT", setting, sizeof(setting)) == 1 &&
++                setting[0] == '1';
++        if (enabled && (shim = GetModuleHandleA("d3d12.dll")))
++            submit = (msfs24_bridge_submit_fn)(void *)GetProcAddress(shim, "MSFS24BridgeSubmitFrame");
++        if (enabled) ERR("MSFS24 D3DMetal direct frames: enabled=1 shim_export=%d\n", submit != NULL);
++    }
++    if (!enabled || !submit) return FALSE;
++    if (!(desc->MiscFlags & D3D11_RESOURCE_MISC_SHARED) || desc->MipLevels != 1 || desc->ArraySize != 1) return FALSE;
++    if (desc->Width != engine->video_frame.size.cx || desc->Height != engine->video_frame.size.cy) return FALSE;
++    if (desc->Format != engine->video_frame.output_format ||
++            (desc->Format != DXGI_FORMAT_B8G8R8A8_UNORM && desc->Format != DXGI_FORMAT_B8G8R8X8_UNORM)) return FALSE;
++    if (src_rect && (src_rect->left != 0.0f || src_rect->top != 0.0f || src_rect->right != 1.0f || src_rect->bottom != 1.0f))
++        return FALSE;
++    if (dst_rect && (dst_rect->left > 0 || dst_rect->top > 0 || dst_rect->right < (LONG)desc->Width ||
++            dst_rect->bottom < (LONG)desc->Height)) return FALSE;
++    if (!video_frame_sink_get_sample(engine->presentation.frame_sink, &sample)) return FALSE;
++
++    if (SUCCEEDED(IMFSample_ConvertToContiguousBuffer(sample, &media_buffer)))
++    {
++        DWORD buffer_size, contiguous;
++        IMF2DBuffer *buffer_2d;
++        BYTE *buffer;
++        LONG pitch;
++        /* A 2D buffer's Lock() copies the whole frame into a temporary linear buffer; Lock2D() does not. */
++        if (SUCCEEDED(IMFMediaBuffer_QueryInterface(media_buffer, &IID_IMF2DBuffer, (void **)&buffer_2d)))
++        {
++            if (SUCCEEDED(IMF2DBuffer_GetContiguousLength(buffer_2d, &contiguous)) &&
++                    SUCCEEDED(IMF2DBuffer_Lock2D(buffer_2d, &buffer, &pitch)))
++            {
++                if (pitch >= (LONG)desc->Width * 4 && contiguous >= (DWORD)pitch * (desc->Height - 1) + desc->Width * 4)
++                    handled = submit(texture, buffer, pitch, desc->Width, desc->Height, desc->Format);
++                IMF2DBuffer_Unlock2D(buffer_2d);
++            }
++            IMF2DBuffer_Release(buffer_2d);
++        }
++        else if (SUCCEEDED(IMFMediaBuffer_Lock(media_buffer, &buffer, NULL, &buffer_size)))
++        {
++            if (buffer_size == desc->Width * 4 * desc->Height)
++                handled = submit(texture, buffer, desc->Width * 4, desc->Width, desc->Height, desc->Format);
++            IMFMediaBuffer_Unlock(media_buffer);
++        }
++        IMFMediaBuffer_Release(media_buffer);
++    }
++    IMFSample_Release(sample);
++    return handled;
++}
++
+ static HRESULT media_engine_transfer_to_d3d11_texture(struct media_engine *engine, ID3D11Texture2D *texture,
+         const MFVideoNormalizedRect *src_rect, const RECT *dst_rect, const MFARGB *color)
+ {
+@@ -2668,6 +2747,9 @@ static HRESULT media_engine_transfer_to_d3d11_texture(struct media_engine *engin
+ 
+     ID3D11Texture2D_GetDesc(texture, &desc);
+ 
++    if (media_engine_try_direct_frame(engine, texture, &desc, src_rect, dst_rect))
++        goto done;
++
+     if (FAILED(hr = ID3D11Device_CreateRenderTargetView(device, (ID3D11Resource *)texture, NULL, &rtv)))
+     {
+         WARN("Failed to create an rtv, hr %#lx.\n", hr);

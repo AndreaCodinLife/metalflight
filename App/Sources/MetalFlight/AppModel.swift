@@ -9,6 +9,10 @@ final class AppModel {
     var availableRuntime: String?
     private(set) var updateChannel = UpdateChannel.selected
     var gptkInstalled = false
+    /// The installed runtime offers the D3DMetal renderer / its toolkit files are imported.
+    var d3dmetalSupported = false
+    var d3dmetalImported = false
+    var renderer = Renderer.selected
     var prefixReady = false
     var steamInstalled = false
     var gameInstalled = false
@@ -55,11 +59,16 @@ final class AppModel {
         installedRuntime = Updater.installedVersion()
         gptkInstalled = GPTK.installed
         prefixReady = false; steamInstalled = false; gameInstalled = false
+        d3dmetalSupported = false; d3dmetalImported = false
         if let runtime = Paths.resolvedRuntime(), let launcher = try? Launcher(runtime: runtime) {
             prefixReady = launcher.prefixReady
             steamInstalled = launcher.steamInstalled
             gameInstalled = launcher.gameInstalled
+            let overlay = launcher.profile.renderers?[Renderer.d3dmetal.rawValue]
+            d3dmetalSupported = overlay != nil
+            d3dmetalImported = GPTK.redistPresent(overlay)
         }
+        renderer = Renderer.selected
         playing = game?.isRunning ?? false
     }
 
@@ -114,13 +123,25 @@ final class AppModel {
     }
 
     func importGPTK(from url: URL? = nil) {
-        perform("Importing libd3dshared from the Game Porting Toolkit…") {
+        perform("Importing from the Game Porting Toolkit…") {
             guard let source = url ?? GPTK.findSource() else {
                 throw MetalFlightError.message("Mount the Game Porting Toolkit disk image downloaded from developer.apple.com, then try again.")
             }
-            try await GPTK.importLibrary(from: source)
+            let overlay = Paths.resolvedRuntime().flatMap { try? Profile.load(runtime: $0) }?.renderers?[Renderer.d3dmetal.rawValue]
+            let result = try await GPTK.importLibrary(from: source, d3dmetal: overlay)
             self.note("libd3dshared.dylib imported and verified (Apple signature).")
+            switch result {
+            case .notRequested: break
+            case .imported(let name): self.note("D3DMetal imported from \(name) and verified (Apple signatures, qualified file hashes).")
+            case .unsupported(let reason): self.note("D3DMetal not imported: \(reason). Mullion is unaffected.")
+            }
         }
+    }
+
+    func rendererDidChange(_ renderer: Renderer) {
+        Renderer.selected = renderer
+        self.renderer = renderer
+        note(renderer == .d3dmetal ? "Renderer: D3DMetal (experimental) for the next launch." : "Renderer: Mullion for the next launch.")
     }
 
     func chooseGPTK() {

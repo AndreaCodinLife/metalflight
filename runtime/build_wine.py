@@ -57,20 +57,25 @@ def prepare_wine_source():
     if commit != wine['commit']:
         raise SystemExit(f'Wine source commit mismatch: {commit}')
     patches = wine['patches'] if 'patches' in wine else [wine['patch']]
-    expected_status = []
+    # Patches may be chained on one file (each base is the previous patched hash). A tree that already
+    # carries a file's final result skips the earlier links of that chain.
+    final = {p['source_path']: p['patched_source_sha256'] for p in patches}
+    expected_status = set()
     for patch_info in patches:
         patch = ROOT / patch_info['path'].removeprefix('runtime/')
         if sha(patch) != patch_info['sha256']:
             raise SystemExit(f"{patch_info['path']}: patch SHA-256 mismatch")
         source = TREE / patch_info['source_path']
         source_hash = sha(source)
+        expected_status.add(' M ' + patch_info['source_path'])
+        if source_hash == final[patch_info['source_path']] and source_hash != patch_info['patched_source_sha256']:
+            continue
         if source_hash == patch_info['base_source_sha256']:
             subprocess.run(['git', 'apply', '--check', str(patch)], cwd=TREE, check=True)
             subprocess.run(['git', 'apply', str(patch)], cwd=TREE, check=True)
             source_hash = sha(source)
         if source_hash != patch_info['patched_source_sha256']:
             raise SystemExit(f"{patch_info['source_path']}: patched source SHA-256 mismatch")
-        expected_status.append(' M ' + patch_info['source_path'])
     status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'], cwd=TREE,
                             capture_output=True, text=True, check=True).stdout.splitlines()
     if status != sorted(expected_status):

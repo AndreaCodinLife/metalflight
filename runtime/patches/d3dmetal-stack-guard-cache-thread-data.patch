@@ -1,0 +1,20 @@
+diff --git a/dlls/ntdll/unix/unix_private.h b/dlls/ntdll/unix/unix_private.h
+index 353afcc..269ab64 100644
+--- a/dlls/ntdll/unix/unix_private.h
++++ b/dlls/ntdll/unix/unix_private.h
+@@ -116,6 +116,15 @@ struct ntdll_thread_data
+     PRTL_THREAD_START_ROUTINE start;         /* thread entry point */
+     void                     *param;         /* thread entry point parameter */
+     void                     *jmp_buf;       /* setjmp buffer for exception handling */
++    /* MSFS24 stack-guard cache: a "no guard in range" answer of virtual_platform_stack_guard_near,
++     * valid while the page-protection generation and the TEB stack bounds are unchanged. */
++    unsigned int              platform_stack_cache_gen;   /* 0 = empty */
++    ULONG_PTR                 platform_stack_cache_rsp;   /* lowest rsp the answer holds for */
++    void                     *platform_stack_cache_start; /* TEB DeallocationStack */
++    void                     *platform_stack_cache_end;   /* TEB StackBase */
++    void                     *platform_stack_cache_limit; /* TEB StackLimit */
++    SIZE_T                    platform_stack_cache_guaranteed; /* TEB GuaranteedStackBytes */
++    unsigned int              platform_stack_cache_hits, platform_stack_cache_misses; /* this thread */
+ };
+ 
+ C_ASSERT( sizeof(struct ntdll_thread_data) <= sizeof(((TEB *)0)->GdiTebBatch) );

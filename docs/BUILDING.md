@@ -8,6 +8,12 @@ targeted `ntdll.so` change, game profile, source lock and inventory.
 `helper/tests/README.md` describes the owned control sources, including explicit
 mission-guard mappings and unknown-build refusal.
 
+For Preview Beta 7's experimental D3DMetal renderer, see [D3DMetal renderer](D3DMETAL-RENDERER.md). Runtime
+`2026.11.12-dev12-preview2-d3dmetal1` keeps runtime `2026.11.07-dev12-preview1`'s components except `ntdll.so` and
+`mfmediaengine.dll`, which are rebuilt with the four `runtime/patches/d3dmetal-*.patch` patches (opt-in, D3DMetal only).
+It adds `share/metalflight/d3dmetal/d3d12.dll`, built by `d3dmetal/build.sh`, and the profile's `renderers` overlay. No
+Apple file is shipped.
+
 Everything builds on an Apple Silicon Mac (macOS 15+) with Xcode, Rosetta and Homebrew. The runtime
 is x86_64 and runs under Rosetta. The app is arm64.
 

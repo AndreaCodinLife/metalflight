@@ -111,12 +111,20 @@ versions. Bloom and the hardware-context correction remain enabled. Previous
 runtime releases remain available for rollback. Install the new runtime with
 **Update** in the app; updating the application alone does not install Wine patches.
 
-## Preview channel (0.1.8 Beta 5 — issue #8 test build)
+## Preview channel (0.1.9 Beta 7 — experimental D3DMetal renderer)
 
-[Download MetalFlight 0.1.8 Beta 5](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.8-beta.5/MetalFlight-0.1.8-beta.5.dmg).
+[Download MetalFlight 0.1.9 Beta 7](https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.9-beta.7/MetalFlight-0.1.9-beta.7.zip).
 After installing it, select **Settings → Updates → Preview**, then use **Update**
-to install runtime **2026.11.07-dev12-preview1**. Updating the app alone does not
+to install runtime **2026.11.12-dev12-preview2-d3dmetal1**. Updating the app alone does not
 install the runtime. Stable remains 0.1.7.
+
+Beta 7 adds an opt-in **D3DMetal (experimental)** renderer under **Settings → Renderer**.
+Mullion stays the default. MetalFlight ships none of Apple's files: re-import your own
+**Game Porting Toolkit 4.0 beta 3** disk image (exact build only; hashes and Apple
+signatures are checked) to enable it. On the maintainer's M1 Pro the 4K menu video plays
+at normal speed and a flight works; at one spot D3DMetal reached at most 44 FPS against
+Mullion's 32 with the same settings. Long flights, repeated launches and other Macs are
+untested. [How it works and its known limits](docs/D3DMETAL-RENDERER.md).
 
 Beta 5 includes an experimental Wine workaround for the PMDG/iFly WASM fiber
 stack hangs reported in [issue #8](https://github.com/AndreaCodinLife/metalflight/issues/8).
