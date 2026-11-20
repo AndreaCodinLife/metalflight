@@ -5,23 +5,37 @@ IMPORTANT: This file was signed by Sparkle. Any modifications to this file requi
         <title>MetalFlight</title>
         <item>
             <title>0.1.9</title>
-            <pubDate>Thu, 12 Nov 2026 22:49:22 +0100</pubDate>
-            <sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.9-beta.7</sparkle:fullReleaseNotesLink>
+            <pubDate>Fri, 20 Nov 2026 22:22:18 +0100</pubDate>
+            <sparkle:fullReleaseNotesLink>https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.9-beta.8</sparkle:fullReleaseNotesLink>
             <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>0.1.9b7</sparkle:version>
+            <sparkle:version>0.1.9b8</sparkle:version>
             <sparkle:shortVersionString>0.1.9</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <description sparkle:format="markdown"><![CDATA[MetalFlight 0.1.9 Beta 7 adds an experimental **D3DMetal** renderer under **Settings → Renderer**. Mullion stays the default.
+            <description sparkle:format="markdown"><![CDATA[MetalFlight 0.1.9 Beta 8 is an app update for the Preview channel.
 
-MetalFlight ships none of Apple's files. To enable D3DMetal, install the new runtime `2026.11.12-dev12-preview2-d3dmetal1` (**Settings → Updates → Preview**, then **Update**), open your own **Game Porting Toolkit 4.0 beta 3** disk image and import it again. Only that exact toolkit build is accepted; file hashes and Apple's signatures are checked at import and before each launch.
+### Honeycomb flight controls
 
-On the maintainer's M1 Pro, the 4K menu video plays at normal speed and a flight works; at one spot D3DMetal reached at most 44 FPS against Mullion's 32 with the same settings. Long flights, repeated launches and other Macs are untested, and D3DMetal has known limits (see the release notes). App and runtime updates are separate. The macOS app is ad-hoc signed and has no Apple notarization. For a manual install, extract the ZIP and move MetalFlight to Applications.
+Connect the Alpha yoke and Bravo throttle before pressing **Play**. MetalFlight now configures Wine to use raw HID for Honeycomb devices, which helps the simulator see their individual axes and buttons. MetalFlight refreshes its Windows environment the first time it applies the setting. If Steam was already running and you previously configured Honeycomb support by hand, close the simulator, choose **Stop everything**, then press **Play** again. Use **Controllers… → Check Wine** to check each device.
+
+The new setting loaded in an isolated Wine prefix. Physical Alpha, Bravo and Charlie input in MSFS still needs confirmation. See [issue #12](https://github.com/AndreaCodinLife/metalflight/issues/12).
+
+### Microsoft security-key prompt
+
+**Sign-in help** beside **Play** explains how to locate a prompt hidden behind the simulator. MSFS keeps its window above other windows, which prevents MetalFlight from reliably bringing the prompt forward. Press **Control–Up Arrow** to open Mission Control and look for the prompt. If the simulator is full screen, check the desktop in the Spaces bar. To switch methods, click **Cancel** in the security-key prompt, then select another available method on Microsoft's sign-in screen.
+
+The help was verified in the packaged app. The live Microsoft security-key flow still needs confirmation. See [issue #11](https://github.com/AndreaCodinLife/metalflight/issues/11).
+
+### Installation
+
+Select **Preview** under **Settings → Updates**, then choose **Check for Application Updates…**. For a manual install, extract the ZIP and move the app to Applications. The app is ad-hoc signed and has no Apple notarization. The full interactive updater transition remains unverified.
+
+App and runtime updates are separate. Beta 8 uses the same runtime as Beta 7, `2026.11.12-dev12-preview2-d3dmetal1`. If you already have it installed, the app update is sufficient. Mullion is the default renderer. The experimental D3DMetal option and the existing startup and flight limitations carry forward from [Beta 7](https://github.com/AndreaCodinLife/metalflight/releases/tag/v0.1.9-beta.7).
 ]]></description>
-            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.9-beta.7/MetalFlight-0.1.9-beta.7.zip" length="3188805" type="application/octet-stream" sparkle:edSignature="H/IIuYps5kWSYDwsYc6nkpIbUkLzczGq1lDCd292RDXC52jdpH7VDMSacVIdIFNcOD7wcHXKgJgTACDjOS//CQ=="></enclosure>
+            <enclosure url="https://github.com/AndreaCodinLife/metalflight/releases/download/v0.1.9-beta.8/MetalFlight-0.1.9-beta.8.zip" length="3105507" type="application/octet-stream" sparkle:edSignature="VAwIrfJ7P+ITREnVtRpxwy1AB9l01ErXIHXGRx/dRQww4SkNfi1NneWhmX5K4xoj1RBosw2xMMTT5cmdC+AGCQ=="></enclosure>
         </item>
     </channel>
 </rss><!-- sparkle-signatures:
-edSignature: KwhFsap9ypRjRYEogXBQcux02RHq0dyXZc5AepqSIpgN4r3oMeZ7vLNpQN8WPq8CxQFgdWwADlHa3VVn44CPBA==
-length: 2418
+edSignature: z5l+alxxjHWVJdnWTakzYs0GwDaOd0TR4JjhikrUBgWgbc2Rp3esRsbjy1HRB9Cm8EOQtTO8CR0+t/l+b8bFCw==
+length: 3656
 -->
