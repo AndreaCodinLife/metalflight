@@ -26,6 +26,7 @@ struct StepRow<Actions: View>: View {
 struct ContentView: View {
     @Environment(AppModel.self) private var model
     @State private var showsControllers = false
+    @State private var showsSignInHelp = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -66,6 +67,17 @@ struct ContentView: View {
                         .buttonStyle(.borderedProminent)
                         .disabled(!(model.gptkInstalled && model.gameInstalled) || model.playing)
                     Button("Controllers…") { showsControllers = true }
+                    Button("Sign-in help") { showsSignInHelp = true }
+                        .popover(isPresented: $showsSignInHelp, arrowEdge: .bottom) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Microsoft sign-in is waiting for a security key").font(.headline)
+                                Text("Flight Simulator keeps its window above other windows, so the security key prompt can open behind it.")
+                                Text("Press Control–Up Arrow to open Mission Control. Select the security key prompt. If Flight Simulator is full screen, check the desktop in the Spaces bar at the top.")
+                                Text("To use a different method, click Cancel in the security key prompt. Back on the Microsoft sign-in screen, choose another available method, such as Microsoft Authenticator.")
+                            }
+                            .padding(16)
+                            .frame(width: 360, alignment: .leading)
+                        }
                     Button("Stop everything") { model.stopEverything() }
                     Button("Logs") { model.openLogs() }
                 }

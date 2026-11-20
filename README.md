@@ -71,6 +71,29 @@ to say which game the app runs.
    and moving video in an isolated research prefix; long-term reliability and the
    issue reporter's M2 Max remain unverified.
 
+## Troubleshooting
+
+### Microsoft sign-in waits for a security key
+
+Flight Simulator keeps its window above other windows, so the security key prompt
+can open behind it. MetalFlight has no reliable way to bring the prompt forward
+while the simulator holds that window priority. Press **Control–Up Arrow** to
+open Mission Control and select the prompt. If the simulator is full
+screen, check the desktop in the Spaces bar at the top. To use a different
+method, click **Cancel** in the security key prompt, then choose another
+available method on the Microsoft sign-in screen, such as Microsoft
+Authenticator. The **Sign-in help** button beside **Play** shows these steps.
+
+### Honeycomb Alpha or Bravo is missing
+
+Connect the yoke and throttle before pressing **Play**. MetalFlight enables
+Wine's raw HID path for Honeycomb devices and refreshes its Windows environment
+the first time it applies the setting. Use **Controllers… → Check Wine** to
+check whether Wine sees each device. If you already set up Honeycomb support
+manually and left Steam running while updating MetalFlight, close the simulator,
+click **Stop everything**, then press **Play** to restart Wine with the new
+controller settings.
+
 ## What the runtime contains
 
 | Component | Source | Licence |

@@ -71,6 +71,10 @@ struct ControllersView: View {
                           systemImage: "exclamationmark.triangle")
                 } else {
                     Label("Wine doesn’t list this controller.", systemImage: "exclamationmark.triangle")
+                    if controller.usbID.vendor == 0x294b {
+                        Text("MetalFlight applies Honeycomb support when you press Play. Connect the controller before launching, then check again.")
+                            .foregroundStyle(.secondary)
+                    }
                 }
             } else if checkedID == controller.id, let checkError {
                 Label(checkError, systemImage: "exclamationmark.triangle")

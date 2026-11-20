@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.8 Beta 6 with the Controllers panel and Play warning. Excludes this manifest.",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.9 Beta 8. Excludes this manifest.",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -20,12 +20,57 @@
           "source_path": "dlls/ntdll/unix/virtual.c",
           "base_source_sha256": "e19c3861c83a1894a8bf884de9edb8beed798b2bcd7af944b28bffebc198d024",
           "patched_source_sha256": "318abe35593b76ed4be87380758559a1e190029dfd8268ad3363fce87604abd1"
+        },
+        {
+          "path": "runtime/patches/d3dmetal-stack-guard-cache.patch",
+          "sha256": "b9201c74a8e4126000686c1c792e134480380c9b650d97a59c5c2b2022b1b302",
+          "source_path": "dlls/ntdll/unix/virtual.c",
+          "base_source_sha256": "318abe35593b76ed4be87380758559a1e190029dfd8268ad3363fce87604abd1",
+          "patched_source_sha256": "1e1420e539271f0c9caf4d0fc4904443eb807ff0b0523d79cd59bdc95460bb76",
+          "purpose": "Opt-in (MSFS24_WINE_STACK_CACHE=1, D3DMetal renderer only): expected-guard fast path and a lock-free per-thread stack-guard answer cache against a page-protection/view generation. Off, the guard search is the published one."
+        },
+        {
+          "path": "runtime/patches/d3dmetal-stack-guard-cache-thread-data.patch",
+          "sha256": "c15ff03ca2f5744a0af79b9c678f214935006f38c3652530577b217f99b959d4",
+          "source_path": "dlls/ntdll/unix/unix_private.h",
+          "base_source_sha256": "01709c0245d6dca61e7b91faea32f160616d404e5563b56b56e9394d9bdf90f5",
+          "patched_source_sha256": "351057ea16035d1b33159a506ddc398b225defc814d8dfa13b6193bf27476412",
+          "purpose": "Per-thread cache fields appended to ntdll_thread_data (inside GdiTebBatch)."
+        },
+        {
+          "path": "runtime/patches/d3dmetal-direct-media-engine.patch",
+          "sha256": "348f76fd6acff8f04d9681fa62fdcee9b94006fb5b37747e616a0edf0e7ae2a2",
+          "source_path": "dlls/mfmediaengine/main.c",
+          "base_source_sha256": "8a50b8cfc59b78671aa5bf25604656da6869fa311bae3aa1258664b9629c5005",
+          "patched_source_sha256": "e0b99cfe650849570b887272baab094c7f98da7e1cf37580d2a1138f75af8329",
+          "purpose": "Opt-in (MSFS24_WINE_MEDIA_D3DMETAL_DIRECT=1): system-memory decoder output; whole-frame transfers to a bridged texture of the video size/format go to the D3DMetal shim export MSFS24BridgeSubmitFrame."
+        },
+        {
+          "path": "runtime/patches/d3dmetal-direct-media-sink.patch",
+          "sha256": "ff6454c4dbc6675a9759833419315c973482eb5098af64123baabe3b49a87ff6",
+          "source_path": "dlls/mfmediaengine/video_frame_sink.c",
+          "base_source_sha256": "2073f38b3603007c2a88bf580dc908bacb99d49e8c283431ec5f9ed54be89f2d",
+          "patched_source_sha256": "831ffa5631e8593f1f76820129cbfc7958a14bf430b4cfac94a5cbb9137ab57c",
+          "purpose": "Opt-in: the frame sink offers a recycling system-memory sample allocator whose pool can grow to 10."
         }
       ]
     },
     "mullion": {
       "repository": "https://github.com/AndreaCodinLife/metalflight-mullion",
       "commit": "54530b939b21eb040a6cf3bd91c7c79ce12f53f3"
+    },
+    "helper": {
+      "repository": "https://github.com/AndreaCodinLife/metalflight",
+      "commit": "2adce3934c7de3c97453104f5f46babd90e5d9c8",
+      "path": "helper"
+    },
+    "d3dmetal_shim": {
+      "source": "d3dmetal/ in the app and helper source archive",
+      "build": "d3dmetal/build.sh with llvm-mingw 20260908 (UCRT)",
+      "output": "share/metalflight/d3dmetal/d3d12.dll",
+      "sha256": "c71f8c2e6c65142f36efb6c96d8acf4ad4a816589170140abed05ff88fae0d28",
+      "apple_files_shipped": false,
+      "apple_files": "imported by the app from the user's own Game Porting Toolkit 4.0 beta 3"
     }
   },
   "files": {
@@ -45,8 +90,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/AppModel.swift": {
-      "sha256": "7db7d6a1651cf2568b51c6944ae14273b0cd0ddf6c31202e7cda06628589f073",
-      "size": 8622,
+      "sha256": "0ea7805fc3be1d553357f76fd3542362f89676561f5d1ed26e9f190b72b49035",
+      "size": 9853,
       "group": "app"
     },
     "App/Sources/MetalFlight/AppUpdates.swift": {
@@ -55,13 +100,28 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/ContentView.swift": {
-      "sha256": "0b55af87a661cac618f836ace44b0bb87ddeea267a3891bfe8153103c6fcd4e0",
-      "size": 5500,
+      "sha256": "64d32adf7af0822d862c4b043c5b4ebfb261918596e30e691fbadb0e3dec1ee6",
+      "size": 6851,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/ControllerCheck.swift": {
+      "sha256": "00eded84a0793fc87bfa0aea5f810431ec1e5d735589e4cc84b4f91b23c5008b",
+      "size": 3210,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/ControllerMonitor.swift": {
+      "sha256": "9c1bbaae998df9e67e19e8a1a81fa6d9482858a51984deea1b4410a3b40dc0a3",
+      "size": 5791,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/ControllersView.swift": {
+      "sha256": "12110b9bbdfb422a1f99b4400f23bb44bab1c519a3908a7f7005385e10b6417e",
+      "size": 6855,
       "group": "app"
     },
     "App/Sources/MetalFlight/GPTK.swift": {
-      "sha256": "408129569c407f3cd04e4124a61f939e19328b0b5a98112bc70f42504952d65a",
-      "size": 3255,
+      "sha256": "0795116b1ef5a0bed8e91512a16da257242c646dde2196ec20367685f626f664",
+      "size": 9273,
       "group": "app"
     },
     "App/Sources/MetalFlight/GameBuild.swift": {
@@ -80,28 +140,33 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Headless.swift": {
-      "sha256": "96228d020d62e3e39ff9270c190b08442da41e1ac02f98a19bd92b62e4baec0d",
-      "size": 5672,
+      "sha256": "f7d5efddeda7dd333a11bce8d22b52a679e58ae7de780354683b45e5ceb6ae4e",
+      "size": 6839,
       "group": "app"
     },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "c05aa9d0eb8c9e4e90dab861373c2e698adf8dcc322cace7924908225068ed2b",
-      "size": 8584,
+      "sha256": "fe5c833dd74a29fb9f00823b9395d89898d9502af12410fde6b14e6b41fcafb1",
+      "size": 10314,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
-      "sha256": "ac26decd503aad3d842d56ec72118fe101b65b450a525ced6e2b1f26863697d5",
-      "size": 1494,
+      "sha256": "fa195011901f9063d997acbf5070048734dba8e36054ddf07ede236724c216d5",
+      "size": 1526,
       "group": "app"
     },
     "App/Sources/MetalFlight/Models.swift": {
-      "sha256": "d0a3627cb0eb7eb976b45a187baa9eaa13285b32efa8b16a73a3e23316ae4212",
-      "size": 1767,
+      "sha256": "1eba766148a309bf8b87197cc3ee5f760f4a9eb24f50b94292d5becc4ad790b8",
+      "size": 3338,
       "group": "app"
     },
     "App/Sources/MetalFlight/Paths.swift": {
-      "sha256": "bd49532970e0377c3fa96646455288213925e23503913db24ad4a429ed8cd2f5",
-      "size": 2640,
+      "sha256": "cec1253bf5c272ffdb7398bf71239536358670d71cbf53dab04cae8386b11a33",
+      "size": 2830,
+      "group": "app"
+    },
+    "App/Sources/MetalFlight/Renderer.swift": {
+      "sha256": "bcafacfaf820eb3a9ee35b9c46a3cc1427afaf60aeee3f9126fb5b87403e924c",
+      "size": 3414,
       "group": "app"
     },
     "App/Sources/MetalFlight/Resources/MetalFlight.icns": {
@@ -120,8 +185,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/SettingsView.swift": {
-      "sha256": "1cc6ddd1aee91639306f7b0bbbfaa8b0735cc8f7966e2bf963a0eb694382c5a1",
-      "size": 1206,
+      "sha256": "bd6de8cbcc954168d900fb1aaa2ecb87641197e619030a44d2c951f725bdc7b9",
+      "size": 2379,
       "group": "app"
     },
     "App/Sources/MetalFlight/Shell.swift": {
@@ -150,13 +215,18 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Wine.swift": {
-      "sha256": "cf5e11eafaa34b3c80bfafd3f4107265f598133b9ad765114e70eded1fbd2bd3",
-      "size": 2825,
+      "sha256": "d06a4070d7c0302b941da1c5c2c262d5547b4eda33de763158130860b07998bc",
+      "size": 3090,
       "group": "app"
     },
     "App/Tests/MetalFlightTests/AppModelTests.swift": {
       "sha256": "8a4bc933495172dfddc9eb03d6318d7d3eaad18db23a6c5a942cd9456c2710c0",
       "size": 5402,
+      "group": "app"
+    },
+    "App/Tests/MetalFlightTests/ControllerCheckTests.swift": {
+      "sha256": "4f83303df3a390e9819ed4f976c39e6f1471bebdd54d491f57b9f3c207ca1368",
+      "size": 1000,
       "group": "app"
     },
     "App/Tests/MetalFlightTests/GameBuildTests.swift": {
@@ -169,6 +239,11 @@
       "size": 4945,
       "group": "app"
     },
+    "App/Tests/MetalFlightTests/RendererTests.swift": {
+      "sha256": "f2cfcb1ff4d593162c7ce2ab988f7246e278d7a951a0e49f8d0c759fba6b50b9",
+      "size": 9280,
+      "group": "app"
+    },
     "App/Tests/MetalFlightTests/UpdaterTests.swift": {
       "sha256": "b73728ffe7d015f73fb4eed4c032170a2c2ae37f4f875ceadbbea23ee0f11c3d",
       "size": 9769,
@@ -179,14 +254,19 @@
       "size": 2643,
       "group": "app"
     },
+    "App/Tools/controller_probe.c": {
+      "sha256": "0c3bb0518e6dd9f6c0a087cdbc9ca6a295d6ddab932b46b6babc9a40e9541d72",
+      "size": 3842,
+      "group": "app"
+    },
     "LICENSE": {
       "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195",
       "size": 35150,
       "group": "distribution"
     },
     "README.md": {
-      "sha256": "bf74c430dfa8b9a50b379a7c4061efdd4bade2e23e7ed37ee45e0608ea8358f7",
-      "size": 12145,
+      "sha256": "ddedf5ae0b91ed28e95e5faf99dc7604513d90ec603cdc5081e2233bfc4ef291",
+      "size": 13975,
       "group": "distribution"
     },
     "THIRD-PARTY-NOTICES.md": {
@@ -199,10 +279,50 @@
       "size": 45,
       "group": "distribution"
     },
+    "d3dmetal/build.sh": {
+      "sha256": "67709cdc1c25592014f4a3a52e44e5013f797f90999fb46845f3214f0197a78b",
+      "size": 1167,
+      "group": "runtime-build"
+    },
+    "d3dmetal/src/d3d12.def": {
+      "sha256": "cfe8728e62569eb766e78025f0fe9cb5353012e9333285b49f693c6b4987f8ac",
+      "size": 895,
+      "group": "runtime-build"
+    },
+    "d3dmetal/src/d3d12_helper_shim.c": {
+      "sha256": "49958a174cb08bd049eff58c1e7b0f71cc065022a76d96135c052c5c9c5a989d",
+      "size": 2981,
+      "group": "runtime-build"
+    },
+    "d3dmetal/src/shared_bridge.c": {
+      "sha256": "d55584c4da4de270203ab8f09f04717c626b603521e3333147506158c8cc998b",
+      "size": 32051,
+      "group": "runtime-build"
+    },
+    "d3dmetal/src/shared_bridge.h": {
+      "sha256": "69572f5c95a95a8912d535498d97b43651c1b764019b87d7c61b68e931a6ca72",
+      "size": 182,
+      "group": "runtime-build"
+    },
+    "d3dmetal/src/vblank.c": {
+      "sha256": "4aa81452de17c51415d71fa0f5d1d2c986dab12249bd6b93ae03c7774f2565bc",
+      "size": 2908,
+      "group": "runtime-build"
+    },
+    "d3dmetal/src/vblank.h": {
+      "sha256": "82cd3f38f59e766dd6ac24f5db98f32f57a3a97968496e393f652e7cea56ee0c",
+      "size": 140,
+      "group": "runtime-build"
+    },
     "docs/BUILDING.md": {
-      "sha256": "4e31510d8b109669ae01e5979e4265c418aae94d19c4df973c74958e500fe0a8",
-      "size": 19129,
+      "sha256": "6981296d83d72d13f84c1b518e92d66afe7d77b76168420c05fb9fe735cfdfe7",
+      "size": 19617,
       "group": "documentation"
+    },
+    "docs/D3DMETAL-RENDERER.md": {
+      "sha256": "ab523a6646ebc81f451f0906a9e0ae6b381c32b932ff06583771f8ae145bb865",
+      "size": 4081,
+      "group": "distribution"
     },
     "docs/ISSUE-8-TEB-FIBER-PREFLIGHT.md": {
       "sha256": "ff76074cd87ce4977faa3a18e54a78db0944898d0f05e731893ee03da670dee4",
@@ -233,6 +353,11 @@
       "sha256": "0d896e1f7fed2d99339b5f7aeb44f3cab5dea5dc0b8179398e7f6d4f22607cec",
       "size": 1374,
       "group": "documentation"
+    },
+    "docs/RELEASE-NOTES-BETA7.md": {
+      "sha256": "afbf02458068bd40d444ae47493afc814e49903d156b8e63c18680619579105b",
+      "size": 2780,
+      "group": "distribution"
     },
     "helper/build.sh": {
       "sha256": "ee80c85013705b702f8fa4e0f5d6e7da270af0a37282c6e014cd860b32c9049e",
@@ -425,8 +550,8 @@
       "group": "runtime"
     },
     "runtime/build_wine.py": {
-      "sha256": "c15eed820eacf7e084f6c0ff306125378f3563aff73bd55cf8041abb38ac5403",
-      "size": 10063,
+      "sha256": "be71ae1598e3643e737f120f646a09281894844f427a9c22bffb79e835fade49",
+      "size": 10453,
       "group": "runtime"
     },
     "runtime/fetch_sources.py": {
@@ -439,19 +564,39 @@
       "size": 960,
       "group": "runtime"
     },
+    "runtime/patches/d3dmetal-direct-media-engine.patch": {
+      "sha256": "348f76fd6acff8f04d9681fa62fdcee9b94006fb5b37747e616a0edf0e7ae2a2",
+      "size": 6183,
+      "group": "runtime-build"
+    },
+    "runtime/patches/d3dmetal-direct-media-sink.patch": {
+      "sha256": "ff6454c4dbc6675a9759833419315c973482eb5098af64123baabe3b49a87ff6",
+      "size": 8909,
+      "group": "runtime-build"
+    },
+    "runtime/patches/d3dmetal-stack-guard-cache-thread-data.patch": {
+      "sha256": "c15ff03ca2f5744a0af79b9c678f214935006f38c3652530577b217f99b959d4",
+      "size": 1369,
+      "group": "runtime-build"
+    },
+    "runtime/patches/d3dmetal-stack-guard-cache.patch": {
+      "sha256": "b9201c74a8e4126000686c1c792e134480380c9b650d97a59c5c2b2022b1b302",
+      "size": 9681,
+      "group": "runtime-build"
+    },
     "runtime/patches/teb-fiber-host-guard.patch": {
       "sha256": "442d95be0792dedc77c3710959c4f147831d8f4f91b004c0f05f13b46ed228e3",
       "size": 7789,
       "group": "runtime"
     },
     "runtime/profile.json": {
-      "sha256": "75e2f23ae18443f89492fabbf72a1e7e9eb98eb4d78c2feb4794ccc5f89466ee",
-      "size": 4258,
+      "sha256": "8706b99f517c43c95eb7697fcb1e3f622797dac7487429b8cce9063defa1256a",
+      "size": 8716,
       "group": "runtime"
     },
     "runtime/sources.lock.json": {
-      "sha256": "fcca20042340f3d5e79957275ecd7e3b27901a838ddf013a0aeac543abe0df1f",
-      "size": 1168,
+      "sha256": "33d7df2eee94ce209f994056237a0afc66d96024e187c187197220a575dcf647",
+      "size": 3571,
       "group": "runtime"
     },
     "runtime/test_steam_options.py": {
@@ -485,34 +630,9 @@
       "group": "distribution"
     },
     "scripts/package_runtime.py": {
-      "sha256": "cdf05b445d659069e98af83014555120e6c4afbc7432ea1fa9d4711fd5672054",
-      "size": 5852,
+      "sha256": "d588629e1c362bb2c958e9423873112b166b681ed1bb2d93475ee919c33a3bc6",
+      "size": 6176,
       "group": "distribution"
-    },
-    "App/Sources/MetalFlight/ControllerCheck.swift": {
-      "sha256": "00eded84a0793fc87bfa0aea5f810431ec1e5d735589e4cc84b4f91b23c5008b",
-      "size": 3210,
-      "group": "app"
-    },
-    "App/Sources/MetalFlight/ControllerMonitor.swift": {
-      "sha256": "9c1bbaae998df9e67e19e8a1a81fa6d9482858a51984deea1b4410a3b40dc0a3",
-      "size": 5791,
-      "group": "app"
-    },
-    "App/Sources/MetalFlight/ControllersView.swift": {
-      "sha256": "5a676fbcaffd3639b798d63b7dfae286e4f6d44cd0c10f564ef651dc4ff48c17",
-      "size": 6567,
-      "group": "app"
-    },
-    "App/Tests/MetalFlightTests/ControllerCheckTests.swift": {
-      "sha256": "4f83303df3a390e9819ed4f976c39e6f1471bebdd54d491f57b9f3c207ca1368",
-      "size": 1000,
-      "group": "app"
-    },
-    "App/Tools/controller_probe.c": {
-      "sha256": "0c3bb0518e6dd9f6c0a087cdbc9ca6a295d6ddab932b46b6babc9a40e9541d72",
-      "size": 3842,
-      "group": "app"
     }
   }
 }

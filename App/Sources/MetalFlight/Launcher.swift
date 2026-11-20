@@ -110,30 +110,40 @@ struct Launcher {
         }
     }
 
-    /// The T.Flight Hotas One MSFS Edition needs Wine's raw HID path instead
-    /// of SDL's gamepad mapping. WineBus reads this option when its driver starts.
-    /// Refresh this prefix once after a change, before starting Steam or the game.
+    /// Select raw HID for flight controls that SDL can hide or present as gamepads.
+    /// WineBus reads these settings at startup, so refresh the prefix after writing them.
     @discardableResult
     func configureGameControllers() async throws -> Bool {
-        let key = "HKLM\\System\\CurrentControlSet\\Services\\WineBus\\Devices\\044f/b68d"
+        let devices = ["044f/b68d", "294b"]  // T.Flight HOTAS One MSFS Edition and Honeycomb
         let wine = self.wine
-        let (queryStatus, output) = try await Task.detached {
-            try Shell.capture(wine.loader.path, ["reg.exe", "query", key, "/v", "Hidraw"],
-                              environment: wine.environment())
-        }.value
-        if queryStatus == 0,
-           output.range(of: #"(?im)^\s*Hidraw\s+REG_DWORD\s+0x0*1\s*$"#,
-                        options: .regularExpression) != nil {
-            return false
+        let environment = wine.environment()
+        var changed = false
+        do {
+            for device in devices {
+                let key = "HKLM\\System\\CurrentControlSet\\Services\\WineBus\\Devices\\\(device)"
+                let (queryStatus, output) = try await Task.detached {
+                    try Shell.capture(wine.loader.path, ["reg.exe", "query", key, "/v", "Hidraw"],
+                                      environment: environment)
+                }.value
+                if queryStatus == 0,
+                   output.range(of: #"(?im)^\s*Hidraw\s+REG_DWORD\s+0x0*1\s*$"#,
+                                options: .regularExpression) != nil {
+                    continue
+                }
+                let status = try await wine.run("reg.exe", [
+                    "add", key, "/v", "Hidraw", "/t", "REG_DWORD", "/d", "1", "/f",
+                ], environment: environment, log: log("flight-controllers.log"))
+                guard status == 0 else {
+                    throw MetalFlightError.message("The flight controller setting for \(device) could not be applied (exit \(status)).")
+                }
+                changed = true
+            }
+        } catch {
+            if changed { await wine.stopAll() }
+            throw error
         }
-        let status = try await wine.run("reg.exe", [
-            "add", key, "/v", "Hidraw", "/t", "REG_DWORD", "/d", "1", "/f",
-        ], log: log("flight-controllers.log"))
-        guard status == 0 else {
-            throw MetalFlightError.message("The flight controller setting could not be applied (exit \(status)).")
-        }
-        await wine.stopAll()
-        return true
+        if changed { await wine.stopAll() }
+        return changed
     }
 
     /// Starts Steam if needed, waits for genuine readiness, then launches the game.

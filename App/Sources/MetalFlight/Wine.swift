@@ -14,6 +14,9 @@ struct Wine {
         var env = ProcessInfo.processInfo.environment.filter { key, _ in !stripped.contains { key.hasPrefix($0) } }
         env["WINEPREFIX"] = prefix.path
         env["WINEDEBUG"] = debug
+        // WineBus can start with any Wine command, including Steam and the controller probe.
+        // Prefer SDL's other backends so the macOS Game Controller backend doesn't mask flight controls.
+        env["SDL_JOYSTICK_MFI"] = env["SDL_JOYSTICK_MFI"] ?? "0"
         if let dllOverrides { env["WINEDLLOVERRIDES"] = dllOverrides }
         env["PATH"] = runtime.appendingPathComponent("bin").path + ":" + (env["PATH"] ?? "/usr/bin:/bin:/usr/sbin:/sbin")
         env["GST_PLUGIN_SYSTEM_PATH"] = runtime.appendingPathComponent("lib64/gstreamer-1.0").path
