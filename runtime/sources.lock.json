@@ -49,6 +49,22 @@
         "base_source_sha256": "2073f38b3603007c2a88bf580dc908bacb99d49e8c283431ec5f9ed54be89f2d",
         "patched_source_sha256": "831ffa5631e8593f1f76820129cbfc7958a14bf430b4cfac94a5cbb9137ab57c",
         "purpose": "Opt-in: the frame sink offers a recycling system-memory sample allocator whose pool can grow to 10."
+      },
+      {
+        "path": "runtime/patches/keyboard-probe-message.patch",
+        "sha256": "873d6352c4711e8c0e299dd58e4b142e8a1ff7cff1bb4ed8015122cd94943720",
+        "source_path": "dlls/win32u/message.c",
+        "base_source_sha256": "9f45f022d84190aa0131b2d0fffc1e81fe86384b0ef32b679381a9e3167574fb",
+        "patched_source_sha256": "f6fbe84be567532422e8ff48e7d659230bce286cb6c9989ccd1e827bdebb7cde",
+        "purpose": "Opt-in issue #13 event counts for one A tap in a two-second window."
+      },
+      {
+        "path": "runtime/patches/keyboard-probe-rawinput.patch",
+        "sha256": "1a8df761e3c18ee7ae354c64f621ea1f04b3926ccdfe36c5037be2b0ecddbccb",
+        "source_path": "dlls/win32u/rawinput.c",
+        "base_source_sha256": "d70cfe75611a99de192d5482c48c790d3e4d06ed68099e7ced704cf931d0135a",
+        "patched_source_sha256": "a45c27d057c84874b48592b13c35beaab06fc984aa73dac0d2204120aacefd3a",
+        "purpose": "Opt-in issue #13 event counts for one A tap in a two-second window."
       }
     ]
   },

@@ -165,5 +165,6 @@
         ]
       }
     }
-  }
+  },
+  "keyboardProbe": true
 }

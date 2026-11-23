@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "purpose": "Reviewed public source inventory for MetalFlight 0.1.9 Beta 8. Excludes this manifest.",
+  "purpose": "Reviewed public source inventory for MetalFlight 0.1.9 Beta 9. Excludes this manifest.",
   "corresponding_runtime_sources": {
     "schema": 1,
     "wine": {
@@ -52,6 +52,22 @@
           "base_source_sha256": "2073f38b3603007c2a88bf580dc908bacb99d49e8c283431ec5f9ed54be89f2d",
           "patched_source_sha256": "831ffa5631e8593f1f76820129cbfc7958a14bf430b4cfac94a5cbb9137ab57c",
           "purpose": "Opt-in: the frame sink offers a recycling system-memory sample allocator whose pool can grow to 10."
+        },
+        {
+          "path": "runtime/patches/keyboard-probe-message.patch",
+          "sha256": "873d6352c4711e8c0e299dd58e4b142e8a1ff7cff1bb4ed8015122cd94943720",
+          "source_path": "dlls/win32u/message.c",
+          "base_source_sha256": "9f45f022d84190aa0131b2d0fffc1e81fe86384b0ef32b679381a9e3167574fb",
+          "patched_source_sha256": "f6fbe84be567532422e8ff48e7d659230bce286cb6c9989ccd1e827bdebb7cde",
+          "purpose": "Opt-in issue #13 event counts for one A tap in a two-second window."
+        },
+        {
+          "path": "runtime/patches/keyboard-probe-rawinput.patch",
+          "sha256": "1a8df761e3c18ee7ae354c64f621ea1f04b3926ccdfe36c5037be2b0ecddbccb",
+          "source_path": "dlls/win32u/rawinput.c",
+          "base_source_sha256": "d70cfe75611a99de192d5482c48c790d3e4d06ed68099e7ced704cf931d0135a",
+          "patched_source_sha256": "a45c27d057c84874b48592b13c35beaab06fc984aa73dac0d2204120aacefd3a",
+          "purpose": "Opt-in issue #13 event counts for one A tap in a two-second window."
         }
       ]
     },
@@ -90,8 +106,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/AppModel.swift": {
-      "sha256": "0ea7805fc3be1d553357f76fd3542362f89676561f5d1ed26e9f190b72b49035",
-      "size": 9853,
+      "sha256": "a47b2fe8d9e4b4a7bde08bfd2cca9b6065a1aada50b498223aca13586f91636f",
+      "size": 11215,
       "group": "app"
     },
     "App/Sources/MetalFlight/AppUpdates.swift": {
@@ -100,8 +116,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/ContentView.swift": {
-      "sha256": "64d32adf7af0822d862c4b043c5b4ebfb261918596e30e691fbadb0e3dec1ee6",
-      "size": 6851,
+      "sha256": "5b9ef78a7012b74c8108d6b9e2cd9414d46e3a504cac81a5ddb760caadead5e8",
+      "size": 8270,
       "group": "app"
     },
     "App/Sources/MetalFlight/ControllerCheck.swift": {
@@ -144,9 +160,14 @@
       "size": 6839,
       "group": "app"
     },
+    "App/Sources/MetalFlight/KeyboardProbe.swift": {
+      "sha256": "01cd74801cc32024bfbb02a7aeca2436d50ee142c96f8b2dfec0676e4686fe5c",
+      "size": 1705,
+      "group": "app"
+    },
     "App/Sources/MetalFlight/Launcher.swift": {
-      "sha256": "fe5c833dd74a29fb9f00823b9395d89898d9502af12410fde6b14e6b41fcafb1",
-      "size": 10314,
+      "sha256": "13623990b93923c0f4d759004fe5be56eda665958344a27434e9bcab04e23d65",
+      "size": 10661,
       "group": "app"
     },
     "App/Sources/MetalFlight/MetalFlightApp.swift": {
@@ -155,8 +176,8 @@
       "group": "app"
     },
     "App/Sources/MetalFlight/Models.swift": {
-      "sha256": "1eba766148a309bf8b87197cc3ee5f760f4a9eb24f50b94292d5becc4ad790b8",
-      "size": 3338,
+      "sha256": "4ba4cc50b26ee15580e2ea0077388008f9e4bd724445c33afdb011a3e2fa37e8",
+      "size": 3450,
       "group": "app"
     },
     "App/Sources/MetalFlight/Paths.swift": {
@@ -237,6 +258,11 @@
     "App/Tests/MetalFlightTests/GameResolutionTests.swift": {
       "sha256": "7133550130a4bdd36bc657cbc23bc44b80533ec73378bb0d408efd6540067526",
       "size": 4945,
+      "group": "app"
+    },
+    "App/Tests/MetalFlightTests/KeyboardProbeTests.swift": {
+      "sha256": "2dd57060a483cb9cca8052c8cff034fdf172f485781e8e273c1dedf8136674c3",
+      "size": 1582,
       "group": "app"
     },
     "App/Tests/MetalFlightTests/RendererTests.swift": {
@@ -357,6 +383,11 @@
     "docs/RELEASE-NOTES-BETA7.md": {
       "sha256": "afbf02458068bd40d444ae47493afc814e49903d156b8e63c18680619579105b",
       "size": 2780,
+      "group": "distribution"
+    },
+    "docs/RELEASE-NOTES-BETA9.md": {
+      "sha256": "24800f82c3076f357b201204211a014c78abaaef40577a759a5f31f2177e262f",
+      "size": 1271,
       "group": "distribution"
     },
     "helper/build.sh": {
@@ -584,19 +615,29 @@
       "size": 9681,
       "group": "runtime-build"
     },
+    "runtime/patches/keyboard-probe-message.patch": {
+      "sha256": "873d6352c4711e8c0e299dd58e4b142e8a1ff7cff1bb4ed8015122cd94943720",
+      "size": 4171,
+      "group": "runtime-build"
+    },
+    "runtime/patches/keyboard-probe-rawinput.patch": {
+      "sha256": "1a8df761e3c18ee7ae354c64f621ea1f04b3926ccdfe36c5037be2b0ecddbccb",
+      "size": 1957,
+      "group": "runtime-build"
+    },
     "runtime/patches/teb-fiber-host-guard.patch": {
       "sha256": "442d95be0792dedc77c3710959c4f147831d8f4f91b004c0f05f13b46ed228e3",
       "size": 7789,
       "group": "runtime"
     },
     "runtime/profile.json": {
-      "sha256": "8706b99f517c43c95eb7697fcb1e3f622797dac7487429b8cce9063defa1256a",
-      "size": 8716,
+      "sha256": "d4d3cbe23a55cfd6e08cb7e14b2cd54c2cb21924be4272be51209a6c99a734a5",
+      "size": 8741,
       "group": "runtime"
     },
     "runtime/sources.lock.json": {
-      "sha256": "33d7df2eee94ce209f994056237a0afc66d96024e187c187197220a575dcf647",
-      "size": 3571,
+      "sha256": "8d053631ec6f82b7435394d1f46cb132e0dcd4f004117b66b89833604a7ea9f1",
+      "size": 4579,
       "group": "runtime"
     },
     "runtime/test_steam_options.py": {

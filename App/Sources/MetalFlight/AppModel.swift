@@ -20,6 +20,9 @@ final class AppModel {
     var busy: String?
     var lastError: String?
     var lines: [String] = []
+    private(set) var keyboardProbe: KeyboardProbe?
+    private(set) var keyboardProbeArmed = false
+    private(set) var keyboardProbeFeedback: String?
 
     private var game: Process?
     private var memoryErrorMonitor: Task<Void, Never>?
@@ -189,10 +192,14 @@ final class AppModel {
             }
             self.game = process
             self.playing = true
+            self.keyboardProbe = launch.keyboardProbe
+            self.keyboardProbeArmed = false
+            self.keyboardProbeFeedback = nil
             Task.detached {
                 process.waitUntilExit()
                 let code = process.terminationStatus
                 try? launch.resolutionOverride?.restore()
+                launch.keyboardProbe?.disarm()
                 await MainActor.run {
                     self.playing = false
                     if code == 53 {
@@ -218,6 +225,32 @@ final class AppModel {
 
     func stopEverything() {
         perform("Stopping Wine…") { try await self.launcher().wine.stopAll() }
+    }
+
+    func armKeyboardProbe() {
+        guard playing, game?.isRunning == true, !keyboardProbeArmed, let keyboardProbe else { return }
+        do {
+            try keyboardProbe.arm()
+            keyboardProbeArmed = true
+            keyboardProbeFeedback = "Armed. Return to the search field and tap A once."
+        } catch {
+            keyboardProbeFeedback = error.localizedDescription
+        }
+    }
+
+    func copyKeyboardProbe() {
+        guard let keyboardProbe else { return }
+        do {
+            guard let report = try keyboardProbe.report() else {
+                keyboardProbeFeedback = "No sample yet. Arm the test, then tap A once in the game."
+                return
+            }
+            NSPasteboard.general.clearContents()
+            keyboardProbeFeedback = NSPasteboard.general.setString(report, forType: .string)
+                ? "Keyboard event counts copied." : "Could not copy the counts."
+        } catch {
+            keyboardProbeFeedback = error.localizedDescription
+        }
     }
 
     func openLogs() { NSWorkspace.shared.open(Paths.logs) }

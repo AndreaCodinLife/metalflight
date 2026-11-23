@@ -35,6 +35,8 @@ struct Profile: Codable {
     var supportedGameBuilds: [String: String]? = nil
     /// Optional renderers besides the default (Mullion), keyed by Renderer.rawValue. Absent in older profiles.
     var renderers: [String: RendererProfile]? = nil
+    /// Enables the optional keyboard event counter in a diagnostic runtime.
+    var keyboardProbe: Bool? = nil
 
     static func load(runtime: URL) throws -> Profile {
         let data = try Data(contentsOf: runtime.appendingPathComponent("share/metalflight/profile.json"))

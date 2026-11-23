@@ -27,6 +27,7 @@ struct ContentView: View {
     @Environment(AppModel.self) private var model
     @State private var showsControllers = false
     @State private var showsSignInHelp = false
+    @State private var showsKeyboardProbe = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -86,6 +87,25 @@ struct ContentView: View {
             VStack(alignment: .leading, spacing: 4) {
                 if let busy = model.busy { HStack { ProgressView().controlSize(.small); Text(busy) } }
                 if let error = model.lastError { Text(error).foregroundStyle(.red) }
+                if model.keyboardProbe != nil {
+                    Button("Keyboard test…") { showsKeyboardProbe = true }
+                        .popover(isPresented: $showsKeyboardProbe, arrowEdge: .top) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Keyboard test for issue #13").font(.headline)
+                                Text("Open the Free Flight departure search in MSFS. Arm the test, return to the search field, and tap A once. Wait two seconds, then copy the counts here.")
+                                Text("The test collects event counts for A only. It runs once per game launch.")
+                                    .foregroundStyle(.secondary)
+                                HStack {
+                                    Button("Arm test") { model.armKeyboardProbe() }
+                                        .disabled(!model.playing || model.keyboardProbeArmed)
+                                    Button("Copy counts") { model.copyKeyboardProbe() }
+                                }
+                                if let feedback = model.keyboardProbeFeedback { Text(feedback).font(.callout) }
+                            }
+                            .padding(16)
+                            .frame(width: 370, alignment: .leading)
+                        }
+                }
                 ScrollView {
                     Text(model.lines.joined(separator: "\n"))
                         .font(.system(.caption, design: .monospaced))

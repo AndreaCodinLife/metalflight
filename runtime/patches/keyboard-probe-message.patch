@@ -1,0 +1,117 @@
+--- a/dlls/win32u/message.c
++++ b/dlls/win32u/message.c
+@@ -25,6 +25,10 @@
+ #endif
+ 
+ #include <assert.h>
++#include <stdatomic.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
+ #include "ntstatus.h"
+ #define WIN32_NO_STATUS
+ #include "winternl.h"
+@@ -78,6 +82,71 @@
+     while (high != atomic_load_long( &user_shared_data->TickCount.High2Time ));
+     /* note: we ignore TickCountMultiplier */
+     return (UINT64)high << 32 | low;
++}
++
++
++/* Local one-shot diagnostic. Record event kinds for the single known test
++ * key only, with no character payload, key codes, window IDs, or timing. */
++static _Atomic UINT64 metalflight_key_probe_deadline;
++static _Atomic unsigned int metalflight_key_probe_lines;
++
++BOOL metalflight_key_probe_active(void)
++{
++    UINT64 deadline = atomic_load_explicit( &metalflight_key_probe_deadline, memory_order_relaxed );
++    return deadline && get_tick_count() < deadline;
++}
++
++static void metalflight_key_probe_record( const char *kind )
++{
++    if (metalflight_key_probe_active() &&
++        atomic_fetch_add_explicit( &metalflight_key_probe_lines, 1, memory_order_relaxed ) < 32)
++        fprintf( stderr, "[MF KEY PROBE] %s\n", kind );
++}
++
++static void metalflight_key_probe_driver( const INPUT *input, UINT flags )
++{
++    if (input->type != INPUT_KEYBOARD || input->ki.wVk != 'A') return;
++    if (!(input->ki.dwFlags & KEYEVENTF_KEYUP) && !(flags & SEND_HWMSG_INJECTED) &&
++        !atomic_load_explicit( &metalflight_key_probe_deadline, memory_order_relaxed ))
++    {
++        const char *marker = getenv( "METALFLIGHT_KEY_PROBE_ARM" );
++        UINT64 unarmed = 0;
++        if (marker && !access( marker, F_OK ) &&
++            atomic_compare_exchange_strong( &metalflight_key_probe_deadline, &unarmed, get_tick_count() + 2000 ))
++            metalflight_key_probe_record( "started" );
++    }
++    if (flags & SEND_HWMSG_INJECTED)
++        metalflight_key_probe_record( input->ki.dwFlags & KEYEVENTF_KEYUP ? "injected-up" : "injected-down" );
++    else
++        metalflight_key_probe_record( input->ki.dwFlags & KEYEVENTF_KEYUP ? "driver-up" : "driver-down" );
++}
++
++static void metalflight_key_probe_queue( const MSG *msg )
++{
++    switch (msg->message)
++    {
++    case WM_KEYDOWN:
++    case WM_SYSKEYDOWN:
++        if (msg->wParam == 'A') metalflight_key_probe_record( "queue-down" );
++        if (msg->wParam == VK_PROCESSKEY) metalflight_key_probe_record( "queue-ime-key" );
++        break;
++    case WM_KEYUP:
++    case WM_SYSKEYUP:
++        if (msg->wParam == 'A') metalflight_key_probe_record( "queue-up" );
++        break;
++    case WM_CHAR:
++    case WM_SYSCHAR:
++    case WM_IME_CHAR:
++        if (msg->wParam == 'a' || msg->wParam == 'A')
++            metalflight_key_probe_record( msg->message == WM_IME_CHAR ? "queue-ime-char" : "queue-char" );
++        break;
++    }
++}
++
++void metalflight_key_probe_raw( const RAWKEYBOARD *keyboard )
++{
++    if (keyboard->VKey == 'A')
++        metalflight_key_probe_record( keyboard->Flags & RI_KEY_BREAK ? "raw-read-up" : "raw-read-down" );
+ }
+ 
+ #define MAX_WINPROC_RECURSION  64
+@@ -3594,6 +3663,7 @@
+         RtlSetLastWin32Error( ERROR_NOACCESS );
+         return FALSE;
+     }
++    if (flags & PM_REMOVE) metalflight_key_probe_queue( &msg );
+     *msg_out = msg;
+     return TRUE;
+ }
+@@ -3632,6 +3702,7 @@
+ 
+     check_for_driver_events();
+ 
++    metalflight_key_probe_queue( msg );
+     return msg->message != WM_QUIT;
+ }
+ 
+@@ -3915,6 +3986,7 @@
+     info.timeout  = 0;
+     info.params   = NULL;
+ 
++    metalflight_key_probe_driver( input, flags );
+     if (input->type == INPUT_MOUSE && (input->mi.dwFlags & (MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_RIGHTDOWN)))
+         clip_fullscreen_window( hwnd, FALSE );
+ 
+@@ -4829,6 +4901,7 @@
+         return ImmTranslateMessage( msg->hwnd, msg->message, msg->wParam, msg->lParam );
+     }
+     if (msg->message != WM_KEYDOWN && msg->message != WM_SYSKEYDOWN) return TRUE;
++    if (msg->wParam == 'A') metalflight_key_probe_record( "translate-down" );
+ 
+     TRACE_(key)( "Translating key %s (%04x), scancode %04x\n",
+                  debugstr_vkey_name( msg->wParam ), LOWORD(msg->wParam), HIWORD(msg->lParam) );

@@ -176,13 +176,18 @@ struct Launcher {
         }
         status(configuration.renderer == .d3dmetal ? "Launching Microsoft Flight Simulator 2024 with D3DMetal…" : "Launching Microsoft Flight Simulator 2024…")
         let stamp = Int(Date().timeIntervalSince1970)
-        let settings = configuration.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\cpu-\(stamp).txt") }
+        var settings = configuration.gameSettings.mapValues { $0.replacingOccurrences(of: "{log}", with: "C:\\metalflight\\logs\\cpu-\(stamp).txt") }
         let gameLog = log("game-\(stamp).log")
+        let keyboardProbe = profile.keyboardProbe == true
+            ? KeyboardProbe(marker: log("keyboard-\(UUID().uuidString).arm"), log: gameLog)
+            : nil
+        settings["METALFLIGHT_KEY_PROBE_ARM"] = keyboardProbe?.marker.path ?? ""
         do {
             let process = try wine.start(Paths.game.path, profile.gameArguments,
                                          environment: wine.environment(dllOverrides: configuration.dllOverrides, debug: profile.gameDebug, settings: settings),
                                          directory: Paths.game.deletingLastPathComponent(), log: gameLog)
-            return GameLaunch(process: process, log: gameLog, resolutionOverride: resolutionOverride)
+            return GameLaunch(process: process, log: gameLog, resolutionOverride: resolutionOverride,
+                              keyboardProbe: keyboardProbe)
         } catch {
             try? resolutionOverride?.restore()
             throw error
@@ -194,4 +199,5 @@ struct GameLaunch {
     let process: Process
     let log: URL
     let resolutionOverride: GameResolutionOverride?
+    let keyboardProbe: KeyboardProbe?
 }

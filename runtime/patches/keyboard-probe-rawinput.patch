@@ -1,0 +1,56 @@
+--- a/dlls/win32u/rawinput.c
++++ b/dlls/win32u/rawinput.c
+@@ -37,6 +37,9 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(rawinput);
+ 
++extern BOOL metalflight_key_probe_active(void);
++extern void metalflight_key_probe_raw( const RAWKEYBOARD *keyboard );
++
+ #define WINE_MOUSE_HANDLE       ((HANDLE)1)
+ #define WINE_KEYBOARD_HANDLE    ((HANDLE)2)
+ 
+@@ -456,6 +459,7 @@
+ {
+     struct user_thread_info *thread_info;
+     UINT count;
++    UINT result_size = 0;
+ 
+     TRACE( "data %p, data_size %p, header_size %u\n", data, data_size, header_size );
+ 
+@@ -481,11 +485,27 @@
+         if ((req->read_data = !!data)) wine_server_set_reply( req, data, *data_size );
+         if (!wine_server_call_err( req )) count = reply->count;
+         else count = -1;
++        if (data) result_size = *data_size;
+         *data_size = reply->next_size;
+         if (reply->count) thread_info->client_info.message_time = reply->time;
+     }
+     SERVER_END_REQ;
+ 
++    if (data && count != (UINT)-1 && metalflight_key_probe_active())
++    {
++        const BYTE *bytes = (const BYTE *)data;
++        UINT offset = 0, i;
++        for (i = 0; i < count && offset + sizeof( RAWINPUTHEADER ) <= result_size; i++)
++        {
++            const RAWINPUT *item = (const RAWINPUT *)(bytes + offset);
++            UINT size = item->header.dwSize;
++            if (size < sizeof( RAWINPUTHEADER ) || size > result_size - offset) break;
++            if (item->header.dwType == RIM_TYPEKEYBOARD &&
++                size >= sizeof( RAWINPUTHEADER ) + sizeof( RAWKEYBOARD ))
++                metalflight_key_probe_raw( &item->data.keyboard );
++            offset += (size + 7) & ~7;
++        }
++    }
+     return count;
+ }
+ 
+@@ -544,6 +564,7 @@
+     {
+         if (size != sizeof(RAWKEYBOARD)) goto failed;
+         rawinput->data.keyboard = *(RAWKEYBOARD *)(msg_data + 1);
++        metalflight_key_probe_raw( &rawinput->data.keyboard );
+     }
+     else if (msg_data->rawinput.type == RIM_TYPEHID)
+     {
